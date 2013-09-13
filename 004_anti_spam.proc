@@ -1,0 +1,163 @@
+#########################################################################
+# 	004	anti-spam-processing					#
+#########################################################################
+
+#LOG="¤¤ Entering anti-spam${NL}"
+
+
+#
+# The following rules (01, 02, 03, 05) are never used, so I comment them out (20041105)
+#
+
+#########################################################################
+# RULE 01	ANTI-SPAM						#
+# You can mail yourself a request for the list of pending senders	#
+#########################################################################
+#:0
+#*$ ^From:.*($ME)
+#* ^Subject: List\/.*
+#{
+#	NMB = $MATCH
+#	LOG = "** RULE: LISTING_SPAM $NL"
+#
+#	:0 fbw
+#	| $LIST_SPAM
+#
+#	:0:
+#	$DEFAULT
+#}
+
+#########################################################################
+# RULE 02	ANTI-SPAM						#
+# You can mail yourself to approve an address				#
+#########################################################################
+#:0 fW: $PENDING_DIR/Pending$LOCKEXT
+#*$ ^From:.*($ME)
+#* ^Subject: Accept \/.*
+#* ? echo $MATCH >> $DB
+#* ? test -e $PENDING_DIR/$MATCH
+#| (( cat $PENDING_DIR/$MATCH; rm $PENDING_DIR/$MATCH ) || true )
+
+#########################################################################
+# RULE 03	ANTI-SPAM						#
+# You can mail yourself to view a pending email				#
+#########################################################################
+#:0 fW: $PENDING_DIR/Pending$LOCKEXT
+#*$ ^From:.*($ME)
+#* ^Subject: View \/.*
+#* ? test -e $PENDING_DIR/$MATCH
+#| ( cat $PENDING_DIR/$MATCH | $FORMAIL -A"$MY_XLOOP" ) || true
+
+#########################################################################
+# RULE 04	ANTI-SPAM						#
+# You can mail yourself to deny an address				#
+#########################################################################
+#:0: $PENDING_DIR/Pending$LOCKEXT
+#*$ ^From:.*($ME)
+#* ^Subject: Deny \/.*
+#* ? echo $MATCH >> $DENY_DB
+#* ? rm $PENDING_DIR/$MATCH
+#/dev/null
+
+
+#########################################################################
+# RULE 05	ANTI-SPAM						#
+# change subject for spam-listing-mails					#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(cron:.*list_pending.pl|cron.*list_spam)
+{
+ 	LOG = "** RULE: SPAM-CRON $NL"
+
+	:0 fhw
+	| $FORMAIL -i"Subject: SPAM $NOW" -I"From: fmr@rodland.no" -I"To: fmr@rodland.no"
+}
+
+#########################################################################
+# RULE 06								#
+# send matches from last rule to outlook				#
+#########################################################################
+:0 A
+{
+	:0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 07								#
+# spam-adresses e.g. peter@rodland.no					#
+#########################################################################
+:0
+*$ ($TO_FROM):.*($SPAM_ADR_ROD)
+{
+        LOG = "** RULE: SPAM-ADR-ROD $NL"
+
+        :0:
+        $SPAMDIR/junk
+}
+
+#########################################################################
+# RULE 08								#
+# spam-domaind e.g. nate.com						#
+#########################################################################
+:0
+*$ ($TO_FROM):.*@($SPAM_DOMAINS)
+{
+        LOG = "** RULE: SPAM-DOMAINS $NL"
+
+        :0:
+        $SPAMDIR/junk
+}
+
+#########################################################################
+# RULE 09								#
+# just hard-coded junk							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*($SPAM_ADR)
+{
+        LOG = "** RULE: SPAM-ADR $NL"
+
+        :0:
+        $SPAMDIR/junk
+}
+
+
+#########################################################################
+# RULE 10								#
+# deny deny (from file .deny_deny					#
+#########################################################################
+:0
+* ? $GREP -i ^$FROM $DENY_DENY_DB
+* ! ? $GREP -i ^$FROM $DB
+* ! ? $GREP -i ^$FROM $DB_BOT
+* ! ? $GREP -i ^$FROM $DB_BOT_ALL
+{
+        LOG = "** RULE: SPAM_DENY_DENY $NL"
+
+        :0
+	$SPAMDIR/junk
+}
+
+:0fw:hamlock
+| /usr/local/bin/sb_filter.py -d /usr/local/lib/hammie.db 2> /dev/null
+
+SBSCORE=`$FORMAIL -zxX-Spambayes-Classification:`
+LOG = "** SBSCORE: $SBSCORE $NL"
+
+# change name of spambayes header to eliminate confusion when filtering twice
+:0fh
+| $FORMAIL -R "$MY_SB_FIELD" "$MY_SB_OLD_FIELD"
+
+:0
+*$ ^$MY_SB_OLD_FIELD: spam
+{
+        LOG = "** RULE: SPAMBAYES_SPAM: $SBSCORE $NL"
+
+        :0
+	$SPAMDIR/spam
+}

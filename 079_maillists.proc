@@ -1,0 +1,227 @@
+#########################################################################
+# 	071	mailling-lists		071_maillists.proc		#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
+
+#########################################################################
+# RULE 28								#
+# Various mail-lists with backup which are forwarded to			#
+# outlook@rodland.no		.  					#
+# most of them use my own e-mail in the	 to-field.			#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(.*total.*ml.free.fr|\
+		@.*\.vmware\.com|\
+		@cdsfulfillment.com|\
+		dabshop@dabshop.no|\
+		Hafslund_Net.*@postsnet.com|\
+		info@innesvingen.no|\
+		@allimant.org|\
+		confirm@egullet.org|\
+		info@newsgator.com|\
+		sonos@sonos.com|\
+		marketing@eyeficard.com|\
+		eyefi@rodland.no|\
+		@bruker.sol.no|\
+		stocklinkinfo2@stocklink.no|\
+		animoto@rodland.no|\
+		stocklink@rodland.no|\
+		admin@suprnova.iddrive.com|\
+		aktive@nuug.no|\
+		annonsering@nuug.no|\
+		eBay-US@reply.ebay.com|\
+		ebay@rodland.no|\
+		noreply@googlegroups.com|\
+		develooper.com|\
+		postmaster@nhst.no|\
+		postmaster@dn.no|\
+		groupreports@groups.msn.com|\
+		info@nor.sas.com|\
+		klara.opdahl@darcy.no|\
+		kundeservice@avanse.no|\
+		kundeservice@skagenfondene.no|\
+		gadgetlab@wired.dcswx.com|\
+		gadgetlab@wired.amgcirc.com|\
+		gadgetlab@wiredmagazine.us|\
+		jobbmail@aetat.no|\
+		lastthursday@ds1.domainspa.com|\
+		medlemmer@nuug.no|\
+		mranheim@progress.com|\
+		newsflash@.*macromedia.com|\
+		Newsstand@iona.com|\
+		no_gem_reply@dell.com|\
+		utleie@rodland.no|\
+		noreply@freshmeat.net|\
+		notifications@groups.msn.com|\
+		nyhetsbrev@vps.no|\
+		oslo-bounces@nmwl.no|\
+		oslo-info-bounces@nmwl.no|\
+		oslo-info-request@nmwl.no|\
+		@haux.com|\
+		shordeaux@waterproof.fr|\
+		Wired@wiredmagazine.us|\
+		wired@email.wired.com|\
+		@waterproof.fr|\
+		info@stepstone.no|\
+		oklara@online.no|\
+		oslo@bolia.com|\
+		asaputilities-owner@yahoogroups.com|\
+		perdanie@online.no|\
+		richter@ultraconsulting.com|\
+		adsense-no@google.com|\
+		noreply@newsletter.eurofoto.no|\
+		Sonos Forums|\
+		Sonos@googlegroups.com|\
+		@poikosoft.com|\
+		info@haux.com|\
+                @idedata.no|\
+                enjoy@enjoy.no|\
+		gpspassion@free.fr|\
+                icesas@jobshop.no|\
+                jobline.no|\
+		dont-reply@foto.no|\
+                key3media_events@xmr3.com|\
+		altibox@altibox.no|\
+		dontreply@altibox.no|\
+                nettjobb@nettavisen.no|\
+                sol-nyhetsbrev@asap-asp.net|\
+                www@debet.solbors.no)
+{
+	LOG = "** RULE: MAILLISTE_BAK $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/mailliste
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 29								#
+# Various mail-lists without backup.  					#
+# most of them use my own e-mail in the	 to-field.			#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(.*info.*@bea.com|\
+		@fun.ea.com|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		webmaster@mac1.no|\
+		post@roedtangen.no|\
+		@vandyke.com|\
+		click@photojojo.com|\
+		noreply@eurofoto.no|\
+		noreply@fotovideo.no|\
+		notify2@myheritage.com|\
+		wired@rodland.no|\
+		beoinfo@bang-olufsen.dk|\
+		modmyi.com@gmail.com|\
+		xbox@email.xbox.com|\
+		club@pinnaclesys.com|\
+		Platial_Inc@mail.vresp.com|\
+		newsletter@play.com|\
+		@bounce.email.play.com|\
+		@email.play.com|\
+		newsletter@newsletters.play.com|\
+		info_norway@investtech.com|\
+		Luvbight@yahoogroups.com|\
+		Luvbight-owner@yahoogroups.com|\
+		pressemeldinger@telenor.no|\
+		emreply@progress.com|\
+		gamepro.com@.*\.netpower.no|\
+		info@confex.no|\
+		info@eyeone.com|\
+		Investor Insights|\
+		info@runkeeper.com|\
+		kontakt@nor.sas.com|\
+		ks@fineart.no|\
+		kundeservice@fineart.no|\
+		kundeservice@yatack.tk|\
+		liquid@multimediaexpress.no|\
+		firma@skarpekniver.com|\
+		noreply@worldcommunitygrid.org|\
+		news@nvidia.com|\
+		info@whcc.com|\
+		news@offers.bigfoot.com|\
+		dm@elektroimportoren.no|\
+		newsletter@mailer.altova.com|\
+		no_reply@sense.com|\
+		@lists.php.net|\
+		noreply@.*\.vmware\.com|\
+		skinews@skiinfo.com|\
+		StepStone@StepStone.no|\
+		nyhetsbrev@japanphoto.no|\
+		macheist@rodland.no|\
+		cpn-editors@canon.cccampaigns.net|\
+		Visualware@reply.m.*\.net|\
+		Windows_in_the_Enterprise@itw.itworld.com|\
+		no-reply@gametreeonline.com|\
+                yatack.no)
+{
+	LOG = "** RULE: MAILLISTE $NL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 29								#
+# Various mail-lists without backup. marked as read			#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(hilmershus@dbpartner.no|\
+		no_reply@elprice.no|\
+		no-reply@elprice.no|\
+		aogb@moller.no|\
+		smssupport@vianett.com|\
+		smssupport@vianett.no|\
+		noreply@golfstorepro.com|\
+		nyhetsbrev@dustinhome.no|\
+		utskick@dustinhome.no|\
+		weekly@pinterest.com|\
+		no-reply@dustinhome.no|\
+		@willhaben.at|\
+		infoeu@niksoftware.com)
+{
+	LOG = "** RULE: MAILLISTE READ $NL"
+
+	:0fhw
+	| formail -I "$READ" -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 29								#
+# Various mail-lists without backup. NOT marked as read			#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(verktoyforumet@gmail.com|\
+		noreply@baatplassen.no|\
+		ikkesvar@stormberg.net|\
+		stormberg@questbackcommunicator.com|\
+		newsletter@email.lumosity.com|\
+		newsletter@voddler.com|\
+		@lucidimagination.com|\
+		noreply@newrelic.com|\
+		@hifiklubben.no|\
+		@reply.github.com|\
+		newsletter@email.threadless.com|\
+		email@email.ononesoftware.com|\
+		info@500px.com|\
+		no-reply@news.spotifymail.com|\
+		@quora.com)
+{
+        LOG = "** RULE: MISC READ $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+        :0
+        ! outlook@rodland.no
+}

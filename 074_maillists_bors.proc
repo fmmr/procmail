@@ -1,0 +1,130 @@
+#########################################################################
+# 	074	bors-mailling-lists		074_maillists_bors.proc	#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
+
+#########################################################################
+# RULE 25	                                                        #
+# STOCKLINK daily-news mails                                            #
+#########################################################################
+:0
+* ^From:.*(@stocklink.no)
+* ^Subject:.*(Nyheter_p=E5_Stocklink|RGFnZW5zI|Dagens viktigste)
+{
+	LOG = "** RULE: Stocklink NYHETSMAIL $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS" -I "$READ"
+
+	:0 
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 26                                                               #
+# NN nyhetslarm								#
+#########################################################################
+:0
+* ^Subject:.*(Nyhetslarm: )
+* ^From:.*(kundeservice@nordnet.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: NN Nyhetslarm $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS"
+
+        :0 c:
+        ${MONTH_FOLDER}/mailliste
+                
+	:0 
+	! outlook@rodland.no
+}
+
+
+#########################################################################
+# RULE 		                                                        #
+# Telenor				                                #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(presse@telenor.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_TELENOR $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 		                                                        #
+# Hugin					                                #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@huginonline.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_HUGIN $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# dnb                                                                   #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(rapporter.kapitalforvaltning@dnbnor.no|anders.fledsberg@dnbnor.no|newsletter@businessinsider.com|anne.berg-andresen@dnbnor.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_DNB $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# investtech                                                            #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(info_norway@investtech.com|list@infoserver.investtech.com|seminar@trendtech.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_INVESTTECH $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# dn                                                            	#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(postmaster@dn.no|dn@rodland.no)
+* ^Subject: dn.no:.*
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_DN $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 7_BORS"
+
+	:0
+	! outlook@rodland.no
+}

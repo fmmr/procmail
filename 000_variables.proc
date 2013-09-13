@@ -1,0 +1,148 @@
+#########################################################################
+# 	000	variables	000_variables.proc			#
+#########################################################################
+
+#########################################################################
+# Newline & whitespaces							#
+#########################################################################
+NL = "
+"
+
+WSPC   = " 	"         # whitespace = space + tab
+SPC    = "[$WSPC]"      # regexp whitespace, the short name
+                        # SPC was chosen because you use this
+                        # a lot in condition lines.
+NSPC  = "[^$WSPC]"      # negation of whitespace
+
+LINEBUF=32768
+
+#LOG="¤¤ Entering variables ${NL}"
+
+#########################################################################
+# Flags									#
+#########################################################################
+FRAFMR			= no
+RAZOR			= no	# commented out in 003 - just uncomment to work
+SEND_SMS		= no
+#VERBOSE			= no
+NIGSCAM			= ON 
+PORNSPAM		= ON
+YAVRQUARANTPRN		= OFF
+ANTISPAM		= yes
+INBOX_ONLY_TO_ME	= no
+SPAMHAUSYAVR		= OFF
+
+#########################################################################
+# Me
+#########################################################################
+MY_NAME		= "Fredrik Rodland"
+MY_EMAIL	= "fredrik@rodland.no"
+MY_EMAIL_PRIV	= "fmr@rodland.no"
+MY_CHICKEN_REQ  = "X-chicken: yes"
+MY_XLOOP	= "X-Loop: $MY_EMAIL"
+MY_INFO		= "X-fmr-info"
+MY_EXC_INFO	= "$MY_INFO: Exchange"
+MY_PRESS_INFO	= "$MY_INFO: Press"
+MY_SOURCE	= "X-fmr-source"
+MY_MAILLIST	= "X-fmr-maillist"
+MY_SUSP		= "X-fmr-susp-rodland"
+MY_EMAIL_VERIFY = "verify@rodland.no"
+MY_SB_FIELD     = "X-Spambayes-Classification"
+MY_SB_OLD_FIELD = "X-fmr-sb-score-on-server"
+
+#########################################################################
+# Paths and shell-commands						#
+#########################################################################
+PATH		= $HOME/bin:$HOME/bin/ferdig:$HOME/bin/razor:/bin:/usr/bin
+MAILDIR		= $HOME/mail
+PERL5LIB	= $HOME/lib/perl5/site_perl/5.005
+SENDMAIL	= /usr/sbin/sendmail
+FORMAIL		= /usr/bin/formail
+GREP		= /usr/bin/grep
+HEAD		= /usr/bin/head
+LS		= /bin/ls
+REPLACE		= /usr/local/mysql/bin/replace
+TR		= /usr/bin/tr
+LIST_SPAM	= "$HOME/bin/ferdig/list_spam -n 12 -p -s -a -v"
+SPAMDIR         = $HOME/spam
+VIRDIR          = $SPAMDIR/virus
+
+#########################################################################
+# Variables used by Anti-spam system					#
+#########################################################################
+DB		= $PROCDIR/.accept
+DB_BOT		= $PROCDIR/.accept_bot
+DB_BOT_ALL	= $PROCDIR/.accept_bot_all
+DENY_DB		= $PROCDIR/.deny
+DENY_DENY_DB	= $PROCDIR/.deny_deny
+PENDING_DIR	= $PROCDIR/pending
+BACKUP_DIR	= $PROCDIR/backup
+VERFIY_TXT	= $PROCDIR/verify.txt
+VERFIY_TXT_TMP	= $PROCDIR/verify_tmp.txt
+KNOWN_DOMAINS   = (openadexchange\.net|(skogdata|finn|fast|finntech|rodland|lavtox|serviceproffen)\.no|(openadex|fastsearch)\.com)$
+SPAM_DOMAINS	= daum\.net|nate\.com|hanmail\.net|ybb\.ne\.jp|yahoo\.co\.jp|hotmail\.co\.jp|job\.com|experteer\.com|international-job-search\.com
+SPAM_ADR	= inet@microsoft.com|totcmddd@rodland.no
+SPAM_ADR_ROD	= "(tcmd|totcmd|arthurclulow|biuro|dwrodlandm|qswcmona|tgvmona|helen|adam|anna|george|joe|peter|alex|brian|jack|james|matt|mike|steve|andrew|sam|brent|claudia|dave|jerry|jim|michael|robert|serg|tom|bill|debby|jane|john|jose|julie|mary|ray|sandra|smith|stan|brenda|dan|jimmy|maria|alice|linda|leo|bob|david|kevin|samrodlandwog|gilrodlandfow|mbam)@rodland.no"
+OK_ADR_ROD	= "(drobo|logwatch|mona|reidar|rmr|martin|fredrik|fmr|cecilie|cmr|andreas|vps|sonos|eurocon|twitterbot)@rodland\.no"
+
+#########################################################################
+# Variables used when matching						#
+#########################################################################
+MONA		= "mona"
+ME		= "(fmr|fredrik|frodland|fredrik\.rodland)@((mail\.|ally\.)?rodland\.no|fast\.no|fastsearch\.com)"
+PUT_DEFAULT	= "vps@rodland.no|ansatt2004@stocknet.no|siemens@rodland.no|farvelabben@rodland.no"
+SKIP_SMS	= "$PUT_DEFAULT"
+SMS		= "99219817@mobilpost.no"
+STOCKNET	= "(velkommen|kunde?n?(service|dienst)|stocknet(info)?|support|maklare)@(stocknet|aston)\.(no|se|de|dk|com|fr)"
+STOCKLINK	= "stocklink@aston|stocklink@stocklink|redaksjonen@stocklink"
+AHS_DEV		= "maildaemon@stocknet.no|ahs-dev@aston.no|root@aston.no|stocknet@|stocknet-dev@|sybase@aston.no|whatsup@|@investtech.com|vpshandler@stocknet.no|SAXESS@aston.no"
+MY_CRON_D	= "(fail2ban|logwatch|nobody|root|twitterbot)@(mail\.|maisen\.)?rodland\.no|(fmr|root)@rodland.no \(Cron Daemon\)"
+
+#########################################################################
+# My versions of header-fields						#
+# implemented my own because Delivered-To is not part of ^TO_/^TO	#
+#########################################################################
+TO_CC="^To|^Apparently-To|^Reply-To|^Delivered-To|^Cc"
+TO_FROM="^To|^Apparently-To|^Reply-To|^Delivered-To|^Cc|^From|^Sender|^List-Post"
+
+#########################################################################
+# Some variables fetched from shell (some eith actions as well)		#
+#########################################################################
+ONLINE=`last -8 $LOGNAME`
+NOW=`date +"%d/%m/%Y %T"`
+DATE=$NOW
+NIGDIR=$DEFAULT
+PORNDIR=$DEFAULT
+
+                
+# send sms when not working
+#TIME=`date +%H%M`
+#DAY_OF_WEEK=`date +%u`
+#WEEKEND=`expr ${DAY_OF_WEEK} \> 5`
+#AFTER=`expr ${TIME} \> 1630`
+#BEFORE=`expr ${TIME} \< 0830`
+#IS_NOT_WORKTIME=`expr ${WEEKEND} \| ${AFTER} \| ${BEFORE}`
+
+# allways send sms
+IS_NOT_WORKTIME="1"
+
+# not send SMS
+#IS_NOT_WORKTIME="0"
+
+#FROM=`$FORMAIL -zxFrom`
+TO=`$FORMAIL -ztxTo:`
+#RT=`$FORMAIL -zxReply-To:`
+
+# r - gen auotreply-headers t - trust sender (this is the point, isn't it?)
+# x - xtract To:  z - zap whitespaces
+FROM=`$FORMAIL -rtzxTo:|$TR / _`
+SUB=`$FORMAIL -zxSubject:`
+
+ML=`$FORMAIL -zx$MY_MAILLIST:`
+SBSCORE=`$FORMAIL -zx$MY_SB_OLD_FIELD:`
+# LOG = "** SBSCORE: $SBSCORE $NL"
+
+# logging som variables
+LOG = "**** FROM=$FROM, TO=$TO, NOW=$NOW, SUB=$SUB WT=$IS_NOT_WORKTIME $NL"
+
+READ="Status: RO"

@@ -1,0 +1,159 @@
+#########################################################################
+# 	060	cron		060_cron.proc				#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering cron${NL}"
+
+
+#########################################################################
+# RULE 									#
+# Cron - virus								#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(f-prot|check_virus_could_be.sh)
+{
+	LOG = "** RULE: CRON-VIRUS $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# Cron - maisen IP							#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(ny_ip_maisen.sh)
+{
+	LOG = "** RULE: CRON-MAISEN-IP $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# Cron - logwatch							#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(Logwatch for ally.rodland.no)
+{
+	LOG = "** RULE: CRON-LW $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+#  									#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(tv_grab_no)
+{
+	LOG = "** RULE: CRON-TV $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+#  									#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(tidy_pending.pl)
+{
+	LOG = "** RULE: CRON-TIDY $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# Yum 									#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+* ^Subject:.*(/usr/bin/yum)
+{
+	LOG = "** RULE: CRON-YUM $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# Mail from cron-daemon gets forwarded to outlook			#
+#########################################################################
+:0
+*$ ^From:.*($MY_CRON_D)
+{
+	LOG = "** RULE: CRON $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# Denyhosts								#
+#########################################################################
+:0
+*$ ^From:.*(DenyHosts)
+* ^Subject:.*(DenyHosts Report from ally.rodland.no)
+{
+	LOG = "** RULE: CRON-DENY $NL"
+
+        :0fhw
+        | formail -I "$MY_MAILLIST: 1_CRON"
+ 
+        :0
+        ! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 									#
+# R23 router-msg							#
+#########################################################################
+:0
+*$ ^From:.*($ME)
+*$ ^To:.*($ME)
+* ^Subject:.*(R23 SYSTEM)
+{
+	LOG = "** RULE: CRON-R23 $NL"
+
+        :0fhw
+        | formail -I "$MY_MAILLIST: 1_CRON"
+ 
+        :0
+        ! outlook@rodland.no
+}

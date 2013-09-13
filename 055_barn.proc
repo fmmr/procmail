@@ -1,0 +1,170 @@
+#########################################################################
+# Various barnemail							#
+#########################################################################
+
+
+#########################################################################
+# 									#
+# Barnehagen								#
+# 									#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(hildemb@hotmail.com|\
+		elisabeth.christensen@baerum.kommune.no|\
+		heidi.tho@baerum.kommune.no|\
+		vibeke.gjertviksten@baerum.kommune.no|\
+		nina.leonthin.elvebakk@baerum.kommune.no|\
+		hovik.barnehage@baerum.kommune.no|\
+		hilde.bolset@baerum.kommune.no)
+{
+	LOG = "** RULE: BARN BARNEHAGE $NL"
+
+	:0
+	1_BARN
+}
+
+#########################################################################
+# 									#
+# Skole									#
+# 									#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(staale@hovikskole.no|\
+		ebba_asperud@hotmail.com|\
+		camilla@infografikk.no|\
+		hovik.skole@baerum.kommune.no|\
+		Tove.Roskaft@akersolutions.com|\
+		www-data@holvika.skoleveven.no|\
+		camilla.berner@broadpark.no|\
+		heleha@online.no|\
+		Lene@dinamo.no)
+{
+	LOG = "** RULE: BARN SKOLE $NL"
+
+	:0
+	1_BARN
+}
+
+#########################################################################
+#                                                                       #
+# Bandy	                                                                #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(CathrineFougner.Arnesen@sfso.no|\
+		kristin.grenan@norconsult.no|\
+		bandy2001@hovikif.no|\
+		bandy2004@hovikif.no|\
+		kgr@norconsult.no|\
+		bandy2001@hotmail.com|\
+		esben@absoluteinteractive.no)
+{
+ 	LOG = "** RULE: BARN BANDY $NL"
+        
+        :0
+        1_BARN
+}
+ 
+#########################################################################
+#                                                                       #
+# Teater                                                                #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(teaterskolen@barneteater.no|\
+		lasse@lorstem.no|\
+		annedahlenbie@hotmail.com|\
+		costadelskaar@hotmail.com|\
+		hege.schussler@kpmg.no|\
+		familienhenjum@start.no|\
+		karepra@hotmail.com|\
+		sssepost@online.no|\
+		Lena.Bjorklund@viatours.no|\
+		mbheien@hotmail.com|\
+		lasse@ossum.no)
+{
+ 	LOG = "** RULE: BARN TEATER $NL"
+        
+        :0
+        1_BARN
+}
+ 
+#########################################################################
+#                                                                       #
+# Fotball                                                               #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(janmartin.holst@dnbnor.no)
+{
+ 	LOG = "** RULE: BARN FOTBALL $NL"
+        
+        :0
+        1_BARN
+}
+ 
+#########################################################################
+#                                                                       #
+# Fotball                                                               #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(vivi.strehl@logica.com)
+{
+ 	LOG = "** RULE: BARN KORPS $NL"
+        
+        :0
+        1_BARN
+}
+ 
+#########################################################################
+#                                                                       #
+# Hovik                                                                 #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(hovik@rodland.no)
+{
+ 	LOG = "** RULE: HOVIK $NL"
+        
+        :0
+        1_BARN
+}
+ 
+#########################################################################
+#                                                                       #
+# Hovik                                                                 #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(martin@rodland.no)
+{
+ 	LOG = "** RULE: MARTIN $NL"
+        
+        :0
+        5_MARTIN
+}
+ 
+#########################################################################
+#                                                                       #
+# Anniken                                                               #
+#                                                                       #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(anniken@rodland.no)
+{
+ 	LOG = "** RULE: ANNIKEN $NL"
+        
+        :0
+        5_ANNIKEN
+}
+ 

@@ -1,0 +1,6557 @@
+#####################################################################################
+############ YAVR (Yet Another antiVirus Recipe) v2.1.2.9m 2005-05-13 (gri)
+## URL: http://agriroot.aua.gr/~nikant/nkvir/
+##
+## 13-May-2005 gri - Please contact us if you are interested to keep YAVR alive!
+## My hosting company has now virus filtering by default and I therefore cannot 
+## continue doing YAVR maintenance - gri
+##
+## Copyright (C)2003-2005 Nikos K. Kantarakias - nikant_at_freemail_dot_gr, http://www.nikant.tk
+## This program and all its previous versions, are free software;
+## you can redistribute it and/or modify it under the terms
+## of the GNU General Public License as published by the Free Software Foundation;
+## either version 2 of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+## 
+## You may get a copy of GPLv2 at http://www.gnu.org/licenses/gpl.txt
+##
+############ YAVR info and usage 
+## URL: http://agriroot.aua.gr/~nikant/nkvir/
+##      http://www.freshmeat.net/yavr/
+##
+# - use it in your .procmailrc file using INCLUDERC=
+#
+# - needs a directory /virus/ inside your Mail/ dir
+#
+# - features 
+#  - trap e-worms with base64 signatures (most known like Klez, Hybris, BugBear...)
+#  - iframe html exploit
+#  - CLSID hidden extensions exploit
+#  - xml codebase exploit
+#  - generic executable trap for bat, pif, vbs, vba, scr, lnk, com, exe
+#  - generic macro detection for doc,dot,xls,xla files
+#  - generic detection for most of nigeria scam e-mails (most of them)
+#    (please remember to configure nigeria scam filter. default is ON)
+#  - generic detection for porn spam e-mails (some of them)
+#    (please remember to configure nigeria scam filter. default is OFF)
+#  - open relay spam block through www.spamhaus.org
+#
+# - WARNINGS you receive
+#    for some of the above (plain iframe, clsid, xml, macro) e-mail is delivered
+#    normally but gets a WARNING in subject plus its old subject. Warnings are:
+#    - WARNING-XML-CODEBASE-OBJECT-$SUB
+#    - WARNING-CLSID-EXTENSION-$SUB
+#    - WARNING-IFRAME-$SUB
+#    - WARNING-MACRO-$SUB
+#    - WARNING-NSCAM-SCORE:$NKNGS-$SUB
+#    - WARNING-PORN-SCORE:$NKPRNS-$SUB
+#    - WARNING-MS-EXEC-$SUB
+#    - SPAMHAUS-$SUB
+#
+# - X- marks in headers
+#      X-YAVR: MS-EXEC  (any MS executable that wasn't identified by signatures)
+#      X-YAVR: NIGERIA  (nigeria scam)
+#      X-YAVR: PORN     (porn related)
+#      X-YAVR: MACRO    (containing macro code)
+#      X-YAVR: XML-CODEBASE
+#      X-YAVR: IFRAME
+#      X-YAVR: CLSID-EXTENSION
+#      X-YAVR: SENDMAIL-EXPLOIT
+#      X-YAVR: VIRUS
+#      X-YAVR: SPAMHAUS
+#
+#
+# - viral signatures are especially selected, DO NOT CHANGE.
+# - if you intent to use them please give appropriate credits to people that worked for those.
+#
+# - all LOG info goes to your procmailrc log so ACTIVATE IT.
+#
+# - virus names are different from AV to AV. I use the names given
+#   from http://www.viruslist.com/
+#
+# - it would really help if you zip and send me worms that drop in the 
+#   virus-could-be file at nikant_at_freemail_dot_gr
+#
+#
+# -VIRLIST: EICAR-AV-TEST(test NOT virus), Iframe exploit, SirCam, Nimda, Klez,
+# Hybris, BadTransII, Tanatos(BugBear), MTX, Elkern, Blebla, Navidad, MyParty,
+# Magistr, Lentin(Yaha), Frethem, Gibe, Mawanella, Generic, Funnypics, Happy,
+# Opasoft(a,d), Scrambler, PrettyPark, SysClock, Sobig(a,b,c,f,gen), Trood, 
+# Aliz, CodeGreen.a, IISWorm, GOPWorm, LastWord, Heyya, Sharpei, Avron(Lirva-b,c,e),
+# TrojanDownloader.Win32.Ultraset, Ganda, LovGate(f,i,r,x), NetThief, Mimail,
+# Apost, Blaster(Lovesan), P2P.VB.ai, Dumaru, PWS-LegMir, Swen, Maldal(c,k),
+# Roron(51), Icecubes, Energy, Brit (-,b,c,d,h), Sober, Darby(b,gen), Hawawi, LegendMir,
+# Torvil.d,  Dropper.Mimail.b, Backdoor.PowerSpider.a, Bagle, Novarg(MyDoom), Moodown,
+# Bridex, Zafi(Erkez), Plexus(Explet), TrojanDropper.Win32.Multijoin, Mota, Blackmal,
+# MyTob
+#
+#####################################################################################
+
+#########  filtering  ###############################################################
+#nigeria scam filtering: Do not filter if Spamassassin tagged as USER_IN_WHITELIST (20040513gri)
+:0
+* ^X-Spam-Status:.*USER_IN_WHITELIST
+{
+  NIGSCAM=OFF
+}
+
+
+#nigeria scam filtering: ON or OFF. default is ON
+#variable NIGSCAM may also be set at your main procmailrc before including YAVR
+:0
+* $ ${NIGSCAM:+!}
+{ NIGSCAM=ON }
+
+
+#porn spam filtering: ON or OFF. default is OFF
+#variable PORNSPAM may also be set at your main procmailrc before including YAVR
+:0
+* $ ${PORNSPAM:+!}
+{ PORNSPAM=OFF }
+
+
+#spamhaus filtering: ON or OFF. default is ON
+#variable SPAMHAUSYAVR may also be set at your main procmailrc before including YAVR
+:0
+* $ ${SPAMHAUSYAVR:+!}
+{ SPAMHAUSYAVR=ON }
+#####################################################################################
+
+#########  quarantine  ##############################################################
+#Microsoft EXEcutable quarantine : ON or OFF. default is ON
+#variable YAVRQUARANTEXE may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRQUARANTEXE:+!}
+{ YAVRQUARANTEXE=ON }
+
+
+#Nigeria scam quarantine : ON or OFF. default is ON
+#variable YAVRQUARANTNIG may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRQUARANTNIG:+!}
+{ YAVRQUARANTNIG=ON }
+
+
+#Porn related quarantine : ON or OFF. default is ON
+#variable YAVRQUARANTPRN may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRQUARANTPRN:+!}
+{ YAVRQUARANTPRN=ON }
+#####################################################################################
+
+#########  warnings  ################################################################
+#Nigeria scam warnings : ON or OFF. default is ON
+#variable YAVRWARNNIG may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRWARNNIG:+!}
+{ YAVRWARNNIG=ON }
+
+
+#Porn related warnings : ON or OFF. default is ON
+#variable YAVRWARNPRN may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRWARNPRN:+!}
+{ YAVRWARNPRN=ON }
+
+
+#Spamhaus warnings : ON or OFF. default is ON
+#variable YAVRWARNSPH may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRWARNSPH:+!}
+{ YAVRWARNSPH=ON }
+
+
+#Macro warnings : ON or OFF. default is ON
+#variable YAVRWARNMAC may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRWARNMAC:+!}
+{ YAVRWARNMAC=ON }
+
+
+#Executable file warnings : ON or OFF. default is ON
+#variable YAVRWARNEXE may also be set at your main procmailrc before including YAVR
+:0
+* $ ${YAVRWARNEXE:+!}
+{ YAVRWARNEXE=ON }
+#####################################################################################
+
+#########  mail folders  ############################################################
+#where you want viruses to go..
+#variable VIRDIR may also be set at your main procmailrc before including YAVR
+#default is $MAILDIR/virus/ where $MAILDIR is a variable from your main procmailrc
+#ATTENTION: /virus/ is a directory NOT a file
+:0
+* $ ${VIRDIR:+!}
+{ VIRDIR=$MAILDIR/virus }
+
+
+#nigeria destination folder
+#variable NIGDIR may also be set at your main procmailrc before including YAVR
+#default is $VIRDIR/nigeria-scam where $VIRDIR is set right above 
+:0
+* $ ${NIGDIR:+!}
+{ NIGDIR=$VIRDIR/nigeria-scam }
+
+
+#porn destination folder
+#variable PORNDIR may also be set at your main procmailrc before including YAVR
+#default is $VIRDIR/porn-spam where $VIRDIR is set right above 
+:0
+* $ ${PORNDIR:+!}
+{ PORNDIR=$VIRDIR/porn-spam }
+#####################################################################################
+
+#####################################################################################
+#DO NOT EDIT BELOW THIS LINE UNLESS YOU KNOW WHAT YOU'RE DOING.. ;)
+#####################################################################################
+
+LINEBUF=32768
+
+#vars for log
+SUB=`formail -zxSubject:`
+DATE=`date +"%d/%m/%Y %T"`
+NL="
+"
+
+# Moodown.L (try) 2004112gri
+:0BD
+* ^TVqQAAM
+* > 31000
+* < 33000
+* filename=".*@.*\.com"
+{ VNMOODOWNL=yes }
+:0
+* VNMOODOWNL ?? yes
+  {
+  LOG="---=== WORM-MOODOWNL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MoodownL
+  }
+
+# unidentified 20041229gri
+#:0BD
+#{ VNUNKNOWN=yes }
+#:0
+#* VNUNKNOWN ?? yes
+#  {
+#  LOG="---=== WORM-UNKNOWN $DATE ===---${NL}"
+#  :0fhw
+#  | formail -A "X-YAVR: VIRUS"
+#  
+#  :0:
+#  $VIRDIR/virus-Unknown
+#  }
+
+###########################################################
+# for e-worms signature-based
+###########################################################
+:0HB
+* < 500000
+* ^Content-Type[	 ]*:.*(application|audio|multipart|mixed|alternative|partial)
+* name[	 ]*[*]?[	 ]*=.*\.[	 ]*(bat|pif|pi_|cmd|vb[as]|scr|lnk|com|exe|chm|cpl|\{[-0-9a-f]+\})(\.....?)?"?[	 ]*$
+* ^Content-Transfer-Encoding[	 ]*:.*(base64|quoted-printable|7bit)
+{
+
+# - viral signatures are especially selected, DO NOT CHANGE.
+# - if you intent to use them please give appropriate credits to people that worked for those.
+
+###### START-OF-TVqQAAM-FAMILY ######
+:0BD
+* ^TVqQAAM
+{
+#for Sobig
+:0BD
+*  -800^0
+*   200^0 K/cBHSx
+*   200^0 rZVJizb
+*   200^0 DrVitFc
+*   200^0 rolkJrX
+*   200^0 zt8P9pT
+{ VNSOBIG=yes }
+#Sobig-b
+:0BD
+*  -800^0
+*   200^0 gHB/e2v
+*   200^0 j1qLR/m
+*   200^0 dAgyJY8
+*   200^0 0SOIV7x
+*   200^0 Gw47Qgh
+{ VNSOBIG=yes }
+#Sobig-c (by Fredrik Rodland)
+:0BD
+*  -800^0
+*   200^0 BSj0hvF
+*   200^0 HN8EMuX
+*   200^0 LvRtJdz
+*   200^0 MdFFlfN
+*   200^0 oikgcxQ
+{ VNSOBIG=yes }
+#Sobig-gen
+:0BD
+*  -800^0
+*   200^0 /HrcLhs
+*   200^0 qfZjXLv
+*   200^0 msFydo9
+*   200^0 iJGZx/6
+*   200^0 Gg7aCZs
+{ VNSOBIG=yes }
+#Sobig-gen (UPX packed and scrambled)
+:0BD
+*  -800^0
+*   200^0 v0ibwKA
+*   200^0 CDH2kTw
+*   200^0 YBdt6zE
+*   200^0 nblNbDU
+*   200^0 jWqE0Z6
+{ VNSOBIG=yes }
+#Sobig-f
+:0BD
+*  -800^0
+*   200^0 IOsT73k
+*   200^0 eGYh2Eo
+*   200^0 cb07glg
+*   200^0 G\+Q1KAS
+*   200^0 WaUYonD
+{ VNSOBIG=yes }
+:0
+* VNSOBIG ?? yes
+  {
+  LOG="---=== WORM-SOBIG $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sobig
+  }
+  
+
+#Swen
+:0BD
+*  -800^0
+*   200^0 wHQJagF
+*   200^0 ReRQaJA
+*   200^0 QQBQ6Ae
+*   200^0 AAAAg\+w
+*   200^0 AVjDi2X
+{ VNSWEN=yes }
+# Swen-upx (someone released Swen compressed... lamers..) 
+:0BD
+*  -800^0
+*   200^0 w57t927
+*   200^0 CZ/aINt
+*   200^0 BxkwgiQ
+*   200^0 CjghxrM
+*   200^0 DGvIKyM
+{ VNSWEN=yes }
+:0
+* VNSWEN ?? yes
+  {
+  LOG="---=== WORM-SWEN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Swen
+  }
+
+    
+#for Sober
+:0BD
+*  -800^0
+*   200^0 xCzjUCs
+*   200^0 ByF8Jl9
+*   200^0 XwPS1ST
+*   200^0 BxY0PPB
+*   200^0 cjsG0Tu
+{ VNSOBER=yes }
+#Sober-c
+:0BD
+*  -800^0
+*   200^0 zwYOwBJ
+*   200^0 LAdpnBi
+*   200^0 r7vRhBu
+*   200^0 afB7of4
+*   200^0 xwUmMCo
+{ VNSOBER=yes }
+#Sober-d
+:0BD
+*  -800^0
+*   200^0 qK6ooaS
+*   200^0 TrcHNWd
+*   200^0 AFNAB/Z
+*   200^0 mqZpBom
+*   200^0 AqIBICD
+{ VNSOBER=yes }
+#Sober-f
+:0BD
+*  -800^0
+*   200^0 mo2WiZx
+*   200^0 k9cncC0
+*   200^0 7kcfGwP
+*   200^0 IhWgQZq
+*   200^0 Zab/6vY
+{ VNSOBER=yes }
+#Sober-g 20040517gri
+:0BD
+*  -800^0
+*   200^0 nZCZjJ9
+*   200^0 pGm6vQP
+*   200^0 QLddS27
+*   200^0 2Mk6w2Z
+*   200^0 coIXcF8
+{ VNSOBER=yes }
+#Sober-i 20041120gri
+:0BD
+*  -800^0
+*   200^0 u\+DbPAS
+*   200^0 K0brxgC
+*   200^0 JgBNTgB
+*   200^0 tkWMhcB
+*   200^0 zAFlC5Q
+{ VNSOBER=yes }
+#Sober-i 20041203urusai
+:0BD
+*  -800^0
+*   200^0 u\+DbPAS
+*   200^0 K0brxgC
+*   200^0 JgBNTgB
+*   200^0 tkWMhcB
+*   200^0 zAFlC5Q
+{ VNSOBER=yes }
+:0
+* VNSOBER ?? yes
+  {
+  LOG="---=== WORM-SOBER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sober
+  }
+
+    
+#for Mimail
+:0BD
+#Mimail.A (UPX encoded)
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 tfA9Im5
+*   200^0 ndpTyZQ
+*   200^0 XCQoUyM
+*   200^0 2xRcdLC
+{ VNMIMAIL=yes }
+#Mimail.F (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 tfA9Im5
+*   200^0 ZbYLFDb
+*   200^0 MbSsous
+*   200^0 Gtz4JpF
+{ VNMIMAIL=yes }
+#Mimail.G (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 MP\+18D0
+*   200^0 TMm2tgQ
+*   200^0 pTG0rAs
+*   200^0 Izsa3PE
+{ VNMIMAIL=yes }
+#Mimail.C (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 tfA9Iu0
+*   200^0 tpH2VDI
+*   200^0 tKzRdYM
+*   200^0 fj5oaYA
+{ VNMIMAIL=yes }
+#Mimail.I (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 BB6FT2A
+*   200^0 WJ1nMg4
+*   200^0 jOY/web
+*   200^0 biHb608
+{ VNMIMAIL=yes }
+#Mimail.J (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 TwsM4dv
+*   200^0 7FidMF2
+*   200^0 5j/B5sx
+*   200^0 LEjXst5
+{ VNMIMAIL=yes }
+#Mimail.E (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 ZQ//tfA
+*   200^0 ZSqZkm2
+*   200^0 MbTd4EV
+*   200^0 sqPB/VH
+{ VNMIMAIL=yes }
+#Mimail.M (UPX encoded)
+:0BD
+*  -800^0
+*   200^0 sFdQJB4
+*   200^0 sG569A4
+*   200^0 W9kvxgQ
+*   200^0 0MQ1Zru
+*   200^0 7WzLXiK
+{ VNMIMAIL=yes }
+#Mimail.A,G,C,E (decompressed)
+:0BD
+*  -800^0
+*   200^0 BInHV/9
+*   200^0 AIPHLok
+*   200^0 dfyLdfj
+*   200^0 AACDxAx
+*   200^0 (NQ|Jw|Ow|KA)AA/3X
+{ VNMIMAIL=yes }
+#Mimail.I (decompressed)
+:0BD
+*  -800^0
+*   200^0 BInHV/9
+*   200^0 /0Xoi30
+*   200^0 WUAAOX3
+*   200^0 xARqAFC
+*   200^0 PTRZQAA
+{ VNMIMAIL=yes }
+#Mimail.J (decompressed)
+:0BD
+*  -800^0
+*   200^0 BInHV/9
+*   200^0 mQEAAP9
+*   200^0 /Is9NFl
+*   200^0 KAAAg8Q
+*   200^0 /0X8iz0
+{ VNMIMAIL=yes }
+#Mimail.M (decompressed)
+:0BD
+*  -800^0
+*   200^0 BInHV/9
+*   200^0 BI292Pf
+*   200^0 LAAAice
+*   200^0 g8QQ/3X
+*   200^0 /In\+g8Y
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+* -1000^0
+*   100^0 J$?^?C$?^?j$?^?A$?^?A$?^?B$?^?Q$?^?o$?^?Q$?^?A$?^?A$?^?/$?^?K
+*   100^0 3$?^?K$?^?M$?^?A$?^?A$?^?J$?^?S$?^?h$?^?A$?^?A$?^?A$?^?I$?^?o$?^?Q
+*   100^0 D$?^?s$?^?o$?^?w$?^?A$?^?A$?^?o$?^?K$?^?E$?^?A$?^?A$?^?B$?^?y
+*   100^0 A$?^?i$?^?k$?^?A$?^?A$?^?C$?^?0$?^?o$?^?Q$?^?A
+*   100^0 D$?^?k$?^?o$?^?Q$?^?A$?^?A$?^?\+$?^?K$?^?E
+*   100^0 c$?^?o$?^?g$?^?A$?^?A$?^?L$?^?K$?^?I$?^?A$?^?A$?^?D$?^?y$?^?i$?^?A$?^?A$?^?B$?^?U$?^?o$?^?g$?^?A$?^?A$?^?Y$?^?K$?^?I$?^?A$?^?A$?^?H$?^?C$?^?i$?^?A$?^?A$?^?B$?^?8$?^?o$?^?g$?^?A$?^?A$?^?j$?^?K$?^?I$?^?A$?^?A$?^?J$?^?i$?^?i
+*   100^0 R$?^?l$?^?R$?^?m$?^?l$?^?s$?^?Z$?^?Q$?^?B$?^?U$?^?A$?^?E$?^?R$?^?l$?^?b$?^?G$?^?V$?^?0$?^?Z$?^?U$?^?Z$?^?p$?^?b$?^?G$?^?V$?^?B$?^?A
+*   100^0 A$?^?A$?^?A$?^?A$?^?H$?^?E$?^?C$?^?c$?^?3$?^?R$?^?y$?^?Y$?^?2$?^?h$?^?y$?^?A$?^?A$?^?A$?^?A$?^?A$?^?H$?^?g$?^?C$?^?c$?^?3$?^?R
+*   100^0 B$?^?A$?^?A$?^?D$?^?y$?^?g$?^?Q$?^?A$?^?A$?^?8$?^?o$?^?E$?^?A$?^?A$?^?P$?^?K$?^?B$?^?A$?^?A$?^?D$?^?y$?^?g$?^?Q
+*   100^0 C$?^?I$?^?A$?^?A$?^?A$?^?A$?^?w$?^?A$?^?A$?^?A$?^?A$?^?l$?^?g$?^?A
+*   100^0 Q$?^?Z$?^?\+$?^?n$?^?t$?^?Y$?^?P$?^?/$?^?/
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 D\+Rhdqr
+*   200^0 Sdh05LZ
+*   200^0 b8s2s\+C
+*   200^0 dOS2t8k
+*   200^0 quTktjp
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 vR\+VkBg
+*   200^0 r2qPEFD
+*   200^0 my2ESBR
+*   200^0 jxBQBTL
+*   200^0 GB8QUIi
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 DE8GMql
+*   200^0 Ddvfg/J
+*   200^0 CI81GIf
+*   200^0 34PytGJ
+*   200^0 qU\+D8jn
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 r89dHFB
+*   200^0 ly0hmhh
+*   200^0 XRxQoOD
+*   200^0 vc0cUC1
+*   200^0 VSxZgdD
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 PfhMCpj
+*   200^0 Nepoycp
+*   200^0 QrcEr83
+*   200^0 aMnKhdU
+*   200^0 mPjJygh
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 XYptifi
+*   200^0 tooa6Ek
+*   200^0 YzRk3ex
+*   200^0 GuhJ5ac
+*   200^0 \+IroSWg
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 kZR6XjS
+*   200^0 YUYE/57
+*   200^0 dOOow/u
+*   200^0 BP\+eKbk
+*   200^0 NJT/nqQ
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 Q1Q7wuZ
+*   200^0 /ZTEvgI
+*   200^0 NX96A7o
+*   200^0 xL4C\+3l
+*   200^0 5lS\+Anb
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 V05IF/J
+*   200^0 KIDezdc
+*   200^0 RqpuGcn
+*   200^0 3s3X72M
+*   200^0 8k7N12L
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 zyYhlGo
+*   200^0 qxi2pFS
+*   200^0 Lyn2caB
+*   200^0 tqRUdwt
+*   200^0 aiakVPq
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 nEVDXTl
+*   200^0 YkvVxp3
+*   200^0 TeClEsK
+*   200^0 1cadJGg
+*   200^0 OUXGnan
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 hOCmeyH
+*   200^0 RFNwI7v
+*   200^0 qMa9tye
+*   200^0 cCO7PM3
+*   200^0 IeAju7F
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 Y48zK8a
+*   200^0 FLQftus
+*   200^0 PZZa2LL
+*   200^0 H7br26J
+*   200^0 xo\+261Y
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 mcmAiDz
+*   200^0 t05ZBUj
+*   200^0 jjWgngF
+*   200^0 WQVIIeT
+*   200^0 PMkFSKx
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 soNGEhe
+*   200^0 LWUTw9L
+*   200^0 SK\+L1Mf
+*   200^0 E8PSCq4
+*   200^0 F4PD0oc
+{ VNMIMAIL=yes }
+#Mimail.Q
+:0BD
+*  -800^0
+*   200^0 U/Ufdvb
+*   200^0 SYRlmrY
+*   200^0 Ectqop6
+*   200^0 ZZq269h
+*   200^0 9vWatmZ
+{ VNMIMAIL=yes }
+:0
+* VNMIMAIL ?? yes
+  {
+  LOG="---=== WORM-MIMAIL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Mimail
+  }  
+
+  
+#for Blaster (Lovesan)
+:0BD
+*  -800^0
+*   200^0 ClAkHg0
+*   200^0 xvggHV9
+*   200^0 UUT8AZj
+*   200^0 rboHqPQ
+*   200^0 fgAlaS4
+{ VNBLASTER=yes }
+#for Blaster (Lovesan) decompressed
+:0BD
+*  -800^0
+*   200^0 VhAAAD2
+*   200^0 jYXo/f/
+*   200^0 DMeF7Or
+*   200^0 NSQxQAD
+*   200^0 /A\+3hX7
+{ VNBLASTER=yes }
+:0
+* VNBLASTER ?? yes
+  {
+  LOG="---=== WORM-BLASTER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Blaster
+  }
+
+
+#for Nimda
+:0BD
+*  -800^0
+*   200^0 //8r8Go
+*   200^0 te79///
+*   200^0 /wAAAP9
+*   200^0 /1BqAGo
+*   200^0 N[o4]v4O/s
+  {
+  LOG="---=== WORM-NIMDA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Nimda
+  }
+
+
+#for Klez
+:0BD
+* 0EPA6gQ
+{
+#Klez-a
+:0BD
+*  -600^0
+*   200^0 fnwDQOv
+*   200^0 AFlZ6xZ
+*   200^0 oAEAAGo
+*   200^0 zyvIUVB
+{ VNKLEZ=yes }
+#Klez-b
+:0BD
+*  -600^0
+*   200^0 /A\+DJwE
+*   200^0 UOjZLgA
+*   200^0 6DUBAAC
+*   200^0 CAPfO9h
+{ VNKLEZ=yes }
+#Klez-c
+:0BD
+*  -600^0
+*   200^0 GGaD\+SB
+*   200^0 g8QQOV0
+*   200^0 JAAA/0X
+*   200^0 AAIAAID
+{ VNKLEZ=yes }
+#Klez-d
+:0BD
+*  -600^0
+*   200^0 /A\+DJwE
+*   200^0 CI2F2P7
+*   200^0 /P7//2i
+*   200^0 AFPoSjE
+{ VNKLEZ=yes }
+#Klez-e
+:0BD
+*  -600^0
+*   200^0 UmAAADP
+*   200^0 EFm4AAA
+*   200^0 6MorAAC
+*   200^0 QQD/dRB
+{ VNKLEZ=yes }
+#Klez-f
+:0BD
+*  -600^0
+*   200^0 omAAADP
+*   200^0 EFm4AAA
+*   200^0 6O4rAAC
+*   200^0 QQD/dRB
+{ VNKLEZ=yes }
+#Klez-g
+:0BD
+*  -600^0
+*   200^0 omAAADP
+*   200^0 EFm4AAA
+*   200^0 6O4rAAC
+*   200^0 QQD/dRB
+{ VNKLEZ=yes }
+#Klez-h
+:0BD
+*  -600^0
+*   200^0 MmQAADP
+*   200^0 EFm4AAA
+*   200^0 0moYWff
+*   200^0 U1ZXD4S
+{ VNKLEZ=yes }
+#Klez-i
+:0BD
+*  -600^0
+*   200^0 ImQAADP
+*   200^0 EFm4AAA
+*   200^0 0moYWff
+*   200^0 U1ZXD4S
+{ VNKLEZ=yes }
+#Klez-j
+:0BD
+*  -600^0
+*   200^0 omAAADP
+*   200^0 EFm4AAA
+*   200^0 6O4rAAC
+*   200^0 QQD/dRB
+{ VNKLEZ=yes }
+:0
+* VNKLEZ ?? yes
+  {
+  LOG="---=== WORM-KLEZ $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Klez
+  }
+}
+  
+
+#Novarg
+:0BD
+#Novarg unpacked
+*  -800^0
+*   200^0 gAsAAIA
+*   200^0 Qbya4z/
+*   200^0 WKyxNTc
+*   200^0 xz9PyLY
+*   200^0 2Zjo9Vd
+{ VNNOVARG=yes }
+#Novarg upx
+:0BD
+*  -800^0
+*   200^0 0KJ3Tyo
+*   200^0 3/ZH\+Ur
+*   200^0 D/////8
+*   200^0 Tlze1i2
+*   200^0 88KUaUE
+{ VNNOVARG=yes }
+#Novarg Petite packed
+:0BD
+*  -800^0
+*   200^0 dFByb2N
+*   200^0 d/dIwAB
+*   200^0 tvofY9M
+*   200^0 EZJt9N4
+*   200^0 cH\+xjgD
+{ VNNOVARG=yes }
+#Novarg unpacked
+:0BD
+*  -800^0
+*   200^0 wgZpXVd
+*   200^0 Z3JrZwA
+*   200^0 IGdya2c
+*   200^0 WTPbWYk
+*   200^0 cBBKADi
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 1xZYneU
+*   200^0 jA2uWpc
+*   200^0 2QeP4pz
+*   200^0 8W2ey1T
+*   200^0 4mnpjVI
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 B1Cg8UX
+*   200^0 leFkBUR
+*   200^0 h/6B3aL
+*   200^0 wsdsvqR
+*   200^0 oPm6Kvf
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 oPFF//8
+*   200^0 ZAVEU5X
+*   200^0 gd2i//\+
+*   200^0 bL6kQ\+/
+*   200^0 uir38IJ
+{ VNNOVARG=yes }
+#MyDoom.l 20040721
+:0BD
+*  -800^0
+*   200^0 tede6w1
+*   200^0 TnbYILx
+*   200^0 TxiChuY
+*   200^0 \+AP5Lqb
+*   200^0 CBp11cF
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 pcKfZsX
+*   200^0 UR4GEoK
+*   200^0 CnCX24L
+*   200^0 K7D3Zie
+*   200^0 wmb3\+C6
+{ VNNOVARG=yes }
+#MyDoom.gen 20050224gri
+:0BD
+*  -800^0
+*   200^0 JS4ydQA
+*   200^0 uCVQABQ
+*   200^0 IHlvdXI
+*   200^0 c3NhZ2U
+*   200^0 IHJlY2l
+{ VNNOVARG=yes }
+#generic signature just to be sure
+:0BD
+*  -800^0
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?2$?^?d$?^?y$?^?g$?^?J$?^?G$?^?l$?^?A$?^?L$?^?b$?^?z$?^?E$?^?z$?^?p$?^?c$?^?h$?^?b$?^?H$?^?g$?^?E$?^?k$?^?d$?^?/$?^?u$?^?v$?^?g$?^?5$?^?f$?^?c$?^?Q$?^?O$?^?W$?^?6$?^?v$?^?\+$?^?V$?^?K$?^?0$?^?J$?^?a$?^?M$?^?o$?^?v
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?i$?^?\+$?^?d$?^?G$?^?q$?^?A$?^?1$?^?1$?^?4$?^?E$?^?6$?^?/$?^?c$?^?6$?^?o$?^?k$?^?Q$?^?X$?^?T$?^?0$?^?c$?^?o$?^?E$?^?/$?^?P$?^?0$?^?J$?^?I$?^?U$?^?U$?^?1$?^?s$?^?f$?^?p$?^?P$?^?L$?^?x$?^?u$?^?Q$?^?F$?^?K$?^?1$?^?D
+*   900^0 /$?^?/$?^?/$?^?/$?^?\+$?^?u$?^?t$?^?8$?^?P$?^?S$?^?5$?^?P$?^?k$?^?R$?^?L$?^?E$?^?p$?^?r$?^?j$?^?7$?^?b$?^?g$?^?D$?^?T$?^?1$?^?w$?^?p$?^?t$?^?8$?^?b$?^?W$?^?p$?^?z$?^?h$?^?K$?^?X$?^?T$?^?C$?^?E$?^?2$?^?e$?^?\+$?^?G$?^?H$?^?X$?^?V$?^?O$?^?P
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?/$?^?d$?^?a$?^?w$?^?C$?^?m$?^?V$?^?B$?^?H$?^?b$?^?r$?^?Y$?^?9$?^?5$?^?c$?^?3$?^?W$?^?H$?^?o$?^?c$?^?v$?^?\+$?^?P$?^?I$?^?r$?^?h$?^?R$?^?7$?^?Y$?^?w$?^?u$?^?0$?^?3$?^?s$?^?m$?^?1$?^?A$?^?0$?^?5$?^?8$?^?K$?^?p$?^?n
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?/$?^?3$?^?W$?^?s$?^?A$?^?p$?^?l$?^?Q$?^?R$?^?2$?^?6$?^?2$?^?P$?^?e$?^?X$?^?N$?^?1$?^?h$?^?6$?^?H$?^?L$?^?/$?^?j$?^?y$?^?K$?^?4$?^?U$?^?e$?^?2$?^?M$?^?L$?^?t$?^?N$?^?7$?^?J$?^?t$?^?Q$?^?N$?^?O$?^?f$?^?C$?^?q$?^?Z
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?J$?^?\+$?^?q$?^?w$?^?e$?^?U$?^?U$?^?U$?^?5$?^?r$?^?u$?^?T$?^?b$?^?k$?^?w$?^?t$?^?E$?^?f$?^?j$?^?i$?^?z$?^?7$?^?\+$?^?y$?^?q$?^?K$?^?G$?^?d$?^?n$?^?J$?^?6$?^?j$?^?q$?^?7$?^?b$?^?E$?^?1$?^?e$?^?k$?^?A$?^?G$?^?j$?^?f
+*   900^0 /$?^?/$?^?/$?^?/$?^?E$?^?8$?^?B$?^?J$?^?d$?^?f$?^?a$?^?D$?^?8$?^?P$?^?8$?^?7$?^?R$?^?C$?^?Q$?^?E$?^?g$?^?9$?^?U$?^?B$?^?O$?^?0$?^?Q$?^?k$?^?C$?^?I$?^?P$?^?V$?^?A$?^?I$?^?k$?^?E$?^?J$?^?O$?^?h$?^?X
+{ VNNOVARG=yes }
+:0
+* VNNOVARG ?? yes
+  {
+  LOG="---=== WORM-NOVARG $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Novarg
+  }
+
+      
+#Moodown
+:0BD
+*  -800^0
+*   200^0 2yFbKVg
+*   200^0 YBsnA\+3
+*   200^0 VFiceqX
+*   200^0 eshgrpI
+*   200^0 XR7syGE
+{ VNMOODOWN=yes }
+#Moodown uncompressed
+:0BD
+*  -800^0
+*   200^0 7IHsDAI
+*   200^0 g/4IV/f
+*   200^0 cghmgX3
+*   200^0 XlvJw4N
+*   200^0 AFZXx0X
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 DRQKlm8
+*   200^0 TTv3Wth
+*   200^0 yMu/KXS
+*   200^0 zRGz90g
+*   200^0 MzTvkTE
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 0A0UCpZ
+*   200^0 \+k0791r
+*   200^0 hMjLvyl
+*   200^0 q80Rs/d
+*   200^0 5DM075E
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 nlUKFLk
+*   200^0 BpLFc5j
+*   200^0 Ld6FjK7
+*   200^0 Dacg\+6G
+*   200^0 \+hxFERp
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 CkzQI2F
+*   200^0 Ko7KySg
+*   200^0 VSMSscE
+*   200^0 fBAGDco
+*   200^0 6PFl5S2
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 FLkN0A0
+*   200^0 c5jM\+k0
+*   200^0 jK7QhMj
+*   200^0 \+6GMq80
+*   200^0 ERpJ5DM
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 uQ3QDRQ
+*   200^0 mMz6TTv
+*   200^0 rtCEyMu
+*   200^0 oYyrzRG
+*   200^0 GknkMzT
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 giOeVQo
+*   200^0 lL0GksV
+*   200^0 vDgt3oW
+*   200^0 wUkNpyD
+*   200^0 jYP6HEU
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 oMl9u5V
+*   200^0 JXJ\+Dop
+*   200^0 XywgXHw
+*   200^0 BwxCcet
+*   200^0 nMoYFDJ
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 ajX/1yI
+*   200^0 iXAicu4
+*   200^0 sAQL1oP
+*   200^0 Bz2QVEm
+*   200^0 OLA0IBf
+{ VNMOODOWN=yes }
+#Netsky.d
+:0BD
+*  -800^0
+*   200^0 kxAVw4E
+*   200^0 jyHppNc
+*   200^0 TER/Nyz
+*   200^0 qECfj\+4
+*   200^0 rOEy\+xn
+{ VNMOODOWN=yes }
+#Netsky.d
+:0BD
+*  -800^0
+*   200^0 iwQk/Yv
+*   200^0 wtKGp6z
+*   200^0 vi5sXtq
+*   200^0 eV1Xkor
+*   200^0 5bLDS9r
+{ VNMOODOWN=yes }
+#I-Worm.Netsky.d 20040512gri
+:0BD
+*  -800^0
+*   200^0 AAALAAC
+*   200^0 kxAVw4E
+*   200^0 5$?^?F$?^?2$?^?F$?^?A$?^?O$?^?S
+*   200^0 W$?^?2$?^?X$?^?f$?^?J$?^?s$?^?U
+*   200^0 D$?^?F$?^?h$?^?X$?^?s$?^?K$?^?S
+{ VNMOODOWN=yes }
+#Netsky.j
+:0BD
+*  -800^0
+*   200^0 f0WP3bU
+*   200^0 awW/yBV
+*   200^0 BXSVCNQ
+*   200^0 9BqNuGa
+*   200^0 qflP54t
+{ VNMOODOWN=yes }
+#Netsky.m
+:0BD
+*  -800^0
+*   200^0 jPe7OSC
+*   200^0 DyDkVPu
+*   200^0 aUaWI\+z
+*   200^0 Uo04LH8
+*   200^0 uPAKsTc
+{ VNMOODOWN=yes }
+#Netsky.p
+:0BD
+*  -800^0
+*   200^0 txwDGBG
+*   200^0 sbzwN34
+*   200^0 hLsIW7x
+*   200^0 Dt9ZvYK
+*   200^0 benBLNN
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 benBLNN
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 hKLw/v9
+*   200^0 9S/Ji25
+*   200^0 02A582H
+*   200^0 AWHPacb
+*   200^0 25XelF2
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 xvpn0QJ
+*   200^0 Xa60IWe
+*   200^0 3I7cj5U
+*   200^0 KP3GXoG
+*   200^0 6hyZZ0f
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 f39/f3f
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 a$?^?W$?^?5$?^?0$?^?Z$?^?k$?^?E
+*   200^0 l$?^?8$?^?G$?^?j$?^?Z$?^?n$?^?h
+*   200^0 Q$?^?2$?^?J$?^?i$?^?U$?^?1$?^?o
+*   200^0 f$?^?3$?^?9$?^?/$?^?f$?^?3$?^?f
+*   200^0 3$?^?v$?^?r$?^?G$?^?M$?^?s$?^?Q
+*   200^0 H$?^?i$?^?X$?^?/$?^?T$?^?S$?^?F
+*   200^0 K$?^?Z$?^?J$?^?z$?^?T$?^?n$?^?C
+*   200^0 f$?^?3$?^?9$?^?/$?^?f$?^?3$?^?f
+*   200^0 3$?^?v$?^?r$?^?G$?^?M$?^?s$?^?Q
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 ogAAOKI
+*   200^0 0bagiBw
+*   200^0 mmBIoKz
+*   200^0 Xag4k/y
+*   200^0 /NPCCu1
+{ VNMOODOWN=yes }
+#Netsky.t
+:0BD
+*  -800^0
+*   200^0 Z6Pjb4U
+*   200^0 YxSu0ln
+*   200^0 GF7uDDj
+*   200^0 WG99aEl
+*   200^0 PGgSVq3
+{ VNMOODOWN=yes }
+#Netsky.t
+:0BD
+*  -800^0
+*   200^0 /K2wZwO
+*   200^0 rtJZwOa
+*   200^0 Y3Sm7gw
+*   200^0 jkXw4C8
+*   200^0 DxtzUGQ
+{ VNMOODOWN=yes }
+#Netsky.f
+:0BD
+*  -800^0
+*   200^0 o5AmyZH
+*   200^0 XsD\+UFG
+*   200^0 LEoRLFY
+*   200^0 fv0WwAo
+*   200^0 HHaFkB3
+{ VNMOODOWN=yes }
+#Netsky.Y
+:0BD
+*  -800^0
+*   200^0 TaOQJsm
+*   200^0 gRE8CnT
+*   200^0 kgPIHyi
+*   200^0 0AHEDHY
+*   200^0 EIHCX7I
+{ VNMOODOWN=yes }
+#Netsky.X
+:0BD
+*  -800^0
+*   200^0 p2yr7NI
+*   200^0 dfJPtnR
+*   200^0 BJBUfM1
+*   200^0 YjsD89C
+*   200^0 MbZ\+TW5
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 UMQiaNP
+*   200^0 8TPzDAj
+*   200^0 mJBxAY1
+*   200^0 i3UJJ8m
+*   200^0 OzI040u
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 YSPoUHI
+*   200^0 MxoYGCM
+*   200^0 sARsEcO
+*   200^0 HZSd7p8
+*   200^0 zBzs0Ho
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 txwDGBG
+*   200^0 sbzwN34
+*   200^0 hLsIW7x
+*   200^0 Dt9ZvYK
+*   200^0 QkkCxKA
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 J1DEImj
+*   200^0 E/Ez8ww
+*   200^0 mJiQcQG
+*   200^0 Eot1CSf
+*   200^0 GDsyNON
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 cidQxCJ
+*   200^0 IxPxM/M
+*   200^0 w5iYkHE
+*   200^0 nxKLdQk
+*   200^0 ehg7MjT
+{ VNMOODOWN=yes }
+#Netsky.x
+:0BD
+*  -800^0
+*   200^0 D/c2OLc
+*   200^0 IHiPh6O
+*   200^0 M5mLo\+6
+*   200^0 ye\+22ga
+*   200^0 rg8X7ov
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 ImjT0os
+*   200^0 8wwIwev
+*   200^0 cQGNZg/
+*   200^0 CSfJi9d
+*   200^0 NONLpQG
+{ VNMOODOWN=yes }
+#Netsky.ac
+:0BD
+*  -800^0
+*   200^0 XbBND40
+*   200^0 df2XViE
+*   200^0 AQB0HIs
+*   200^0 3sfEGBA
+*   200^0 3G78aYt
+{ VNMOODOWN=yes }
+#Netsky.p 20040519gri
+:0BD
+*  -800^0
+*   200^0 txwDGBG
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 benBLNN
+{ VNMOODOWN=yes }
+#Netsky.p 20040523gri
+:0BD
+*  -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Ur52qxn
+*   200^0 At7VbFa
+{ VNMOODOWN=yes }
+#Netsky.ac 20040523gri
+:0BD
+*  -800^0
+*   200^0 dgE7x3R
+*   200^0 A8gCO8F
+*   200^0 YgcQxxf
+*   200^0 9oEAA/A
+*   200^0 I1\+0xTv
+{ VNMOODOWN=yes }
+#Netsky.o 20040531alej
+:0BD
+* -800^0
+* 200^0 EQ291ka
+* 200^0 SLpyItX
+* 200^0 XNYsz9M
+* 200^0 63lKU/2
+* 200^0 ZIX97x1
+{ VNMOODOWN=yes }
+#Netsky.q 20040603gri
+:0BD
+* -800^0
+*   200^0 aW50ZkE
+*   200^0 l8GjZnh
+*   200^0 a4t0Ur1
+*   200^0 qMX72EG
+*   200^0 SLrscbp
+{ VNMOODOWN=yes }
+#Netsky.n 20040603gri
+:0BD
+* -800^0
+*   200^0 EQ291ka
+*   200^0 SLpyItX
+*   200^0 XNYsz9M
+*   200^0 63lKU/2
+*   200^0 ZIX97x1
+{ VNMOODOWN=yes }
+#NetSky.p 20040611alej
+:0BD
+* -800^0
+* 200^0 Ty9rUUE
+* 200^0 gUzIIeY
+* 200^0 6sQZIgA
+* 200^0 fMU/LXG
+* 200^0 aLrJVdU
+{ VNMOODOWN=yes }
+#NetSky.p 20040618gri
+:0BD
+* -800^0
+*   200^0 MEAAdDB
+*   200^0 Ty9rUUE
+*   200^0 gUzIIeY
+*   200^0 6sQZIgA
+*   200^0 fMU/LXG
+{ VNMOODOWN=yes }
+#NetSky.q 20040629mannungo 
+:0BD
+* -800^0
+* 200^0 QWRkcmV
+* 200^0 X4G3M5d
+* 200^0 jjTIi12
+* 200^0 Z/\+xmRH
+* 200^0 benBLNN
+{ VNMOODOWN=yes }
+#NetSky.r 20040809alej
+:0BD
+* -800^0
+*   200^0 QWRkcmV
+*   200^0 r1n8Ja1
+*   200^0 HJZePge
+*   200^0 l2hVU2d
+*   200^0 WleTAJ9
+{ VNMOODOWN=yes }
+#NetSky.c 20040809alej
+:0BD
+* -800^0
+*   200^0 AAALAAC
+*   200^0 CkzQI2F
+*   200^0 OgUqQzE
+*   200^0 XhBQVmo
+*   200^0 g9z\+sv8
+{ VNMOODOWN=yes }
+#NetSky.p 20040924gri
+:0BD
+* -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 benBLNN
+{ VNMOODOWN=yes }
+#NetSky.AD 20041030alej
+:0BD
+* -800^0
+*   200^0 CJ0X9HI
+*   200^0 3f////\+
+*   200^0 rNkV0a2
+*   200^0 xtLikdZ
+*   200^0 JNr/sjh
+{ VNMOODOWN=yes }
+#NetSky.q 20041118alej
+:0BD
+* -800^0
+*   200^0 aW50ZkE
+*   200^0 HaJQvNq
+*   200^0 QXo9VhN
+*   200^0 a4t0Ur1
+*   200^0 l8GjZnh
+{ VNMOODOWN=yes }
+:0
+* VNMOODOWN ?? yes
+  {
+  LOG="---=== WORM-MOODOWN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Moodown
+  }
+
+
+#for Bridex
+#Bridex.a
+:0BD
+*  -800^0
+*   200^0 ZgclAGa
+*   200^0 QADi2EA
+*   200^0 J0EAAyd
+*   200^0 /yWsEEA
+*   200^0 AJn/AAD
+  {
+  LOG="---=== WORM-BRIDEX $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bridex
+  }
+  
+  
+#for Avron aka Lirva
+:0BD
+#Avron-b
+*  -800^0
+*   200^0 IHBhY2t
+*   200^0 Yiudflj
+*   200^0 UEKOkBE
+*   200^0 BQolLDs
+*   200^0 OIxrCMs
+{ VNLIRVA=yes }
+#Avron-c
+:0BD
+*  -800^0
+*   200^0 IHBhY2t
+*   200^0 Yiudflj
+*   200^0 LHR6U3d
+*   200^0 726CDaY
+*   200^0 bGoqNFm
+{ VNLIRVA=yes }
+#Avron-e
+:0BD
+*  -800^0
+*   200^0 zMzMzMz
+*   200^0 fbi5EgA
+*   200^0 RcZFxUb
+*   200^0 /wAAAMH
+*   200^0 /1D/FTA
+{ VNLIRVA=yes }
+:0
+* VNLIRVA ?? yes
+  {
+  LOG="---=== WORM-LIRVA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Lirva
+  }  
+  
+  
+#for Lentin aka Yaha
+#Lentin.G (Yaha.E)
+:0BD
+*  -800^0
+*   200^0 Li4uLi4
+*   200^0 NWAdUqk
+*   200^0 7EnICe9
+*   200^0 0DyYxQl
+*   200^0 6agF0Ok
+{ VNYAHA=yes }
+#Lentin.I (Yaha.K)
+:0BD
+*  -800^0
+*   200^0 N\+SwUge
+*   200^0 hFCMT8t
+*   200^0 Duk7Aoh
+*   200^0 fC24DGH
+*   200^0 VExyKUw
+{ VNYAHA=yes }
+:0
+* VNYAHA ?? yes
+  {
+  LOG="---=== WORM-YAHA-LENTIN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Yaha
+  }
+
+
+#for Hybris aka SnowWhite virus - Hybris is polymorphic so hard to catch...
+#Hybris-b
+:0BD
+*  -800^0
+*   200^0 AIv0gcT
+*   200^0 JOgCAAC
+*   200^0 mVfiyoh
+*   200^0 ////cvL
+*   200^0 YIlaZIl
+{ VNHYBRIS=yes }
+#Hybris-c
+:0BD
+*  -800^0
+*   200^0 0QuxYhX
+*   200^0 pyFClXl
+*   200^0 bE4jym1
+*   200^0 37pPyjL
+*   200^0 0GnOIjn
+{ VNHYBRIS=yes }
+#Hybris-d
+:0BD
+*  -800^0
+*   200^0 ka60PZ2
+*   200^0 jTq/9Vv
+*   200^0 bdVMcR\+
+*   200^0 Y1PunKd
+*   200^0 be2y\+V2
+{ VNHYBRIS=yes }
+#Hybris-gen
+:0BD
+*  -800^0
+*   200^0 VCWIw2A
+*   200^0 E/42yeG
+*   200^0 QFsQ6PI
+*   200^0 2iZ0YB5
+*   200^0 MGSGfyE
+{ VNHYBRIS=yes }
+#even more Hybris
+:0BD
+*  -800^0
+*   200^0 Ui\+XpV4
+*   200^0 9ftA2MO
+*   200^0 Tz0O8gH
+*   200^0 5DVWXih
+*   200^0 Lm6VYR8
+{ VNHYBRIS=yes }
+#even more Hybris
+:0BD
+*  -800^0
+*   200^0 axYfsHc
+*   200^0 ABUnYM7
+*   200^0 10cn2Yk
+*   200^0 y71gdw/
+*   200^0 R1UdbDg
+{ VNHYBRIS=yes }
+:0
+* VNHYBRIS ?? yes
+  {
+  LOG="---=== WORM-HYBRIS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Hybris
+  }
+
+
+#for BadTransII
+:0BD
+*  -800^0
+*   200^0 bXcD6Ga
+*   200^0 Yz1rtU0
+*   200^0 VHRSPOb
+*   200^0 \+aZQuxC
+*   200^0 O/h0c4s
+  {
+  LOG="---=== WORM-BADTRANSII $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-BadTransII
+  }
+
+
+#for Hawawi.g
+:0BD
+*  -800^0
+*   200^0 L3YAYnf
+*   200^0 Zkgu/Al
+*   200^0 dY/34nx
+*   200^0 xEzSu/9
+*   200^0 7bgBAAA
+{ VNHAWAWI=yes }
+#for Hawawi.g (decompressed)
+:0BD
+*  -800^0
+*   200^0 AP8lIBB
+*   200^0 AAA0JkA
+*   200^0 oaxTQAA
+*   200^0 \+/o1MP/
+*   200^0 AGM0/13
+{ VNHAWAWI=yes }
+:0
+* VNHAWAWI ?? yes
+  {
+  LOG="---=== WORM-HAWAWI $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Hawawi
+  }
+  
+    
+#for P2P.Darby
+:0BD
+*  -800^0
+*   200^0 F6Zp5jn
+*   200^0 kGDH9mH
+*   200^0 MsgrHhH
+*   200^0 jOsqjbJ
+*   200^0 rrMljqb
+{ VNDARBY=yes }
+#Darby.gen
+:0BD
+*  -800^0
+*   200^0 imO87nk
+*   200^0 5fN02Gk
+*   200^0 kn69MZO
+*   200^0 bAFpn1W
+*   200^0 AVlShCj
+{ VNDARBY=yes }
+:0
+* VNDARBY ?? yes
+  {
+  LOG="---=== WORM-DARBY $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Darby
+  }
+
+  
+#for I-Worm.Bagle
+:0BD
+*  -800^0
+*   200^0 xPxWV1O
+*   200^0 i0AMC8B
+*   200^0 6DAVAAD
+*   200^0 /1IMi3X
+*   200^0 8OhlDwA
+{ VNBAGLE=yes }
+#Bagle.B 
+:0BD
+*  -800^0
+*   200^0 jz1dAvg
+*   200^0 BQ6Bxjt
+*   200^0 3t8FA9x
+*   200^0 HruKHZv
+*   200^0 GdW87l4
+{ VNBAGLE=yes }
+#Bagle.F
+:0BD
+*  -800^0
+*   200^0 7wB7y\+c
+*   200^0 6AEAAAD
+*   200^0 4Las77i
+*   200^0 CI1OkcN
+*   200^0 OwBXkK8
+{ VNBAGLE=yes }
+#Bagle.E
+:0BD
+*  -800^0
+*   200^0 \+AgKqqp
+*   200^0 0nUFihZ
+*   200^0 XmD0XkB
+*   200^0 aUNfJTZ
+*   200^0 dhOlB54
+{ VNBAGLE=yes }
+#Bagle.S
+:0BD
+*  -800^0
+*   200^0 dgOABut
+*   200^0 QA\+EgiY
+*   200^0 Q3lorBv
+*   200^0 DpQVMg1
+*   200^0 QTwRWj4
+{ VNBAGLE=yes }
+#Bagle.T
+:0BD
+*  -800^0
+*   200^0 dgOABut
+*   200^0 QA\+EgiY
+*   200^0 kHlorBv
+*   200^0 IJThUDJ
+*   200^0 nhFaHxw
+{ VNBAGLE=yes }
+#Bagle.AG 20040720gri
+:0BD
+*  -800^0
+*   200^0 ADPCaCU
+*   200^0 6AEAAAD
+*   200^0 PHt/Fqj
+*   200^0 \+g/8YrK
+*   200^0 ldYmesi
+{ VNBAGLE=yes }
+#Bagle.AB 20040721gri
+:0BD
+*  -800^0
+*   200^0 GffQagB
+*   200^0 EAAAEAA
+*   200^0 TVlZgCb
+*   200^0 ZGuPw4w
+*   200^0 AtxrnXH
+{ VNBAGLE=yes }
+#Bagle.AR 20040929gri
+:0BD
+*  -800^0
+*   200^0 Y2plY3R
+*   200^0 lSslQAB
+*   200^0 F7a4B1e
+*   200^0 SirtZq3
+*   200^0 WVt48Kn
+{ VNBAGLE=yes }
+#Bagle.AS 20040929mannungo
+:0BD
+*  -800^0
+* 200^0 Y2plY3R
+* 200^0 WgAAAQA
+* 200^0 lSslQAB
+* 200^0 F7a4B1e
+* 200^0 SirtZq3
+{ VNBAGLE=yes }
+#Bagle.cpl 20041030gri
+:0BD
+*  -800^0
+*   200^0 ZGZkZmR
+*   200^0 Ssgzjj\+
+*   200^0 NJTqN17
+*   200^0 Qxxl2zl
+*   200^0 dTOl6Sf
+{ VNBAGLE=yes }
+#Bagle.cpl 20041102gri
+:0BD
+*  -800^0
+*   200^0 k2Ck4oH
+*   200^0 \+G1kNCi
+*   200^0 h8Qf8Et
+*   200^0 6mbKM5L
+*   200^0 fqvNFiQ
+{ VNBAGLE=yes }
+#Bagle.cpl 20050204gri
+:0BD
+*  -800^0
+*   200^0 ZGZkZmR
+*   200^0 ZXIzMi5
+*   200^0 QzZVOTZ
+*   200^0 \+0hZIpO
+*   200^0 ZUs1F5g
+{ VNBAGLE=yes }
+#Bagle.cpl 20050204gri
+:0BD
+*  -800^0
+*   200^0 ZGZkZmR
+*   200^0 ZXIzMi5
+*   200^0 BYoWRhL
+*   200^0 ImHWUS5
+*   200^0 9RxjKD7
+{ VNBAGLE=yes }
+#Bagle.cpl 20050210gri
+:0BD
+*  -800^0
+*   200^0 ZGZkZmR
+*   200^0 ZXIzMi5
+*   200^0 OTZVD1V
+*   200^0 FoAHYyk
+*   200^0 0vn6\+i3
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+  
+    
+#for Backdoor.PowerSpider.a
+:0BD
+*  -800^0
+*   200^0 CAF0B1b
+*   200^0 GrUAAAF
+*   200^0 uDTMQAD
+*   200^0 ochWQgC
+*   200^0 aGD1QAB
+  {
+  LOG="---=== WORM-POWERSPIDER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Powerspider
+  }    
+  
+  
+#for Backdoor.NetSnake.g
+:0BD
+*  -800^0
+*   200^0 xQeL7d1
+*   200^0 N2g11q2
+*   200^0 HwYe7jV
+*   200^0 VlEruAN
+*   200^0 Idnxgc3
+  {
+  LOG="---=== WORM-NETSNAKE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-NetSnake
+  }    
+  
+  
+#for Tanatos aka BugBear
+#Bugbear-a
+:0BD
+*  -800^0
+*   200^0 7e/5O/C
+*   200^0 UDcmGDo
+*   200^0 MogGcs9
+*   200^0 hXIFBoO
+*   200^0 rw5Qdfi
+#Bugbear-b-generic by NiKant - I think its a killer but lets see..
+*   900^0 C$?^?C$?^?n$?^?Y$?^?h$?^?q$?^?0$?^?w$?^?f$?^?H$?^?k$?^?M$?^?3$?^?x$?^?\+$?^?0$?^?H$?^?A$?^?B$?^?U$?^?R$?^?A$?^?Q$?^?A$?^?A$?^?k$?^?A$?^?I$?^?A$?^?J$?^?g$?^?s$?^?A$?^?J$?^?L
+  {
+  LOG="---=== WORM-BUGBEAR-TANATOS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bugbear
+  }
+
+  
+#for Elkern
+#Elkern-a
+:0BD
+*  -800^0
+*   200^0 0EPA6gQ
+*   200^0 fnwDQOv
+*   200^0 AFlZ6xZ
+*   200^0 oAEAAGo
+*   200^0 zyvIUVB
+{ VNELKERN=yes }
+#Elkern-c
+:0BD
+*  -800^0
+*   200^0 AIPEDOm
+*   200^0 FUAAAxV
+*   200^0 lKBAAOg
+*   200^0 DKGsoEA
+*   200^0 zMzMzMz
+{ VNELKERN=yes }
+:0
+* VNELKERN ?? yes
+  {
+  LOG="---=== WORM-ELKERN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Elkern
+  }
+
+
+#for Navidad
+#Navidad-a
+:0BD
+*  -800^0
+*   200^0 FVBQQAC
+*   200^0 lCQUAgA
+*   200^0 1mgAfwA
+*   200^0 Z1D/FfR
+*   200^0 WVloIGB
+{ VNNAVIDAD=yes }
+#Navidad-b
+:0BD
+*  -800^0
+*   200^0 VC1EClJ
+*   200^0 OYCFHqg
+*   200^0 Cz96o\+Y
+*   200^0 LwcbYK8
+*   200^0 hWVy/cc
+{ VNNAVIDAD=yes }
+:0
+* VNNAVIDAD ?? yes
+  {
+  LOG="---=== WORM-NAVIDAD $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Navidad
+  }
+
+
+#for MyParty
+:0BD
+*  -800^0
+*   200^0 dD5WEnb
+*   200^0 JTkZBdH
+*   200^0 1xUMi00
+*   200^0 FyKQAFF
+*   200^0 f31f\+15
+  {
+  LOG="---=== WORM-MYPARTY $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MyParty
+  }
+
+
+#for Magistr (tough, has 2 polymorphic engines)
+:0BD
+*  -800^0
+*   200^0 \+SPFQMP
+*   200^0 w2oAagD
+*   200^0 oFRAAIk
+*   200^0 dftAOBh
+*   200^0 g3yPBAB
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 zMzMzMz
+*   200^0 wYv3i/q
+*   200^0 V/8V1AF
+*   200^0 fCQQhNJ
+*   200^0 AIll9Il
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 jUwkDFF
+*   200^0 xBSFwHU
+*   200^0 i/eL\+8H
+*   200^0 HAEAAIs
+*   200^0 SAOLxak
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 KkAAagB
+*   200^0 7BgCAAB
+*   200^0 jYXw/v/
+*   200^0 aWxlQQD
+*   200^0 cgBvAGQ
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 bGljYXR
+*   200^0 bAAAVmh
+*   200^0 IGAAAeh
+*   200^0 AYTAdeO
+*   200^0 9P7//4X
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 AFZHAAC
+*   200^0 YXAgZXJ
+*   200^0 dDWAPaF
+*   200^0 AenPAAA
+*   200^0 AFboSvj
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 AQD2OwE
+*   200^0 bmkAV0F
+*   200^0 bnQAAG5
+*   200^0 RkQtMDB
+*   200^0 ezA1NTg
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 QUdFTlQ
+*   200^0 YQBnAGU
+*   200^0 4kJu1TA
+*   200^0 ahS\+wyE
+*   200^0 LhRs\+nP
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 /vOragN
+*   200^0 \+YvBi/e
+*   200^0 AABQV/8
+*   200^0 6I4sAAC
+*   200^0 JJAMAAA
+{ VNMAGISTR=yes }
+#
+:0BD
+*  -800^0
+*   200^0 XlnDi0Q
+*   200^0 RAoBjVQ
+*   200^0 AAAAiQ/
+*   200^0 QAiJFSR
+*   200^0 AGgYIEA
+{ VNMAGISTR=yes }
+:0
+* VNMAGISTR ?? yes
+  {
+  LOG="---=== WORM-MAGISTR $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Magistr
+  }
+
+#for LovGate
+#LovGate-f
+:0BD
+*  -800^0
+*   200^0 AiYi3pn
+*   200^0 tNQCwCg
+*   200^0 Dxsjt0c
+*   200^0 WA9\+zD1
+*   200^0 AUieTgG
+{ VNLOVGATE=yes }
+#LovGate-i
+:0BD
+*  -800^0
+*   200^0 2gvcCpS
+*   200^0 FzcK1a\+
+*   200^0 5ymsPtx
+*   200^0 nwPq/e\+
+*   200^0 QYJeZUo
+{ VNLOVGATE=yes }
+#LovGate-r 20040615afx114
+:0BD
+*  -800^0
+*   200^0 epJ0yeC
+*   200^0 7Tz7He8
+*   200^0 O2texiv
+*   200^0 HJLpXYg
+*   200^0 uD8TCPo
+{ VNLOVGATE=yes }
+#LovGate-r 20040622afx114
+:0BD
+*  -800^0
+*   200^0 nehKmMT
+*   200^0 kFZpQrG
+*   200^0 z0SCW3U
+*   200^0 Zs8tJ1T
+*   200^0 6cbnZk8
+{ VNLOVGATE=yes }
+:0
+* VNLOVGATE ?? yes
+  {
+  LOG="---=== WORM-LOVGATE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LovGate
+  }  
+  
+
+#for Frethem
+:0BD
+*  -800^0
+*   200^0 OxLRTfB
+*   200^0 aHZdo72
+*   200^0 KPwdNsG
+*   200^0 /OzCsbg
+*   200^0 zRhz7Px
+  {
+  LOG="---=== WORM-FRETHEM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Frethem
+  }
+
+  
+#for LegendMir
+:0BD
+*  -800^0
+*   200^0 dQyhOHf
+*   200^0 \+bxQKHY
+*   200^0 QC/YCLK
+*   200^0 A8fdl97
+*   200^0 4ZdMDyJ
+  {
+  LOG="---=== WORM-LEGENDMIR $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LegendMir
+  }
+    
+
+#for Gibe
+:0BD
+*  -800^0
+*   200^0 EEAA/yV
+*   200^0 uSIRQAD
+*   200^0 ChFAABA
+*   200^0 ABYAAAB
+*   200^0 Z1NldFZ
+  {
+  LOG="---=== WORM-GIBE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Gibe
+  }
+
+
+#for Hadra
+:0BD
+*  -800^0
+*   200^0 Enlyyt4
+*   200^0 vxTI370
+*   200^0 YzPwft/
+*   200^0 AAsOe\+9
+*   200^0 vwy4SIB
+  {
+  LOG="---=== WORM-HADRA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Hadra
+  }
+
+
+#for Generic
+:0BD
+*  -800^0
+*   200^0 QAAdskA
+*   200^0 AP8lCBB
+*   200^0 EAAAAQA
+*   200^0 ///////
+*   200^0 AAERGHd
+  {
+  LOG="---=== WORM-GENERIC $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Generic
+  }
+
+
+#for Scrambler
+#Scrambler-a
+:0BD
+*  -800^0
+*   200^0 AIPECIt
+*   200^0 iUX8g33
+*   200^0 /v//UP8
+*   200^0 jY24/v/
+*   200^0 AOgrNwA
+{ VNSCRAMBLER=yes }
+#Scrambler-b
+:0BD
+*  -800^0
+*   200^0 3vBbu95
+*   200^0 mbz7CNF
+*   200^0 pfYkclT
+*   200^0 YnlhI1Q
+*   200^0 BpdPoRp
+{ VNSCRAMBLER=yes }
+:0
+* VNSCRAMBLER ?? yes
+  {
+  LOG="---=== WORM-SCRAMBLER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Scrambler
+  }
+
+
+#for Apost
+:0BD
+*  -800^0
+*   200^0 ZnBPD2Y
+*   200^0 AABWQjU
+*   200^0 ZgBFAHg
+*   200^0 AGUAYwB
+*   200^0 dmJhSHJ
+  {
+  LOG="---=== WORM-APOST $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Apost
+  }
+  
+      
+#for CodeGreen.a
+:0BD
+*  -800^0
+*   200^0 V4k3g8c
+*   200^0 AGoA/5U
+*   200^0 WYP4/3Q
+*   200^0 AABzb2N
+*   200^0 OTAldTk
+  {
+  LOG="---=== WORM-CODEGREEN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-CodeGreen
+  }
+
+
+#for LastWord
+:0BD
+*  -800^0
+*   200^0 ZqzCAWZ
+*   200^0 bHQAAJY
+*   200^0 CuMiAAA
+*   200^0 zACZmf8
+*   200^0 AAAACVX
+  {
+  LOG="---=== WORM-LASTWORD $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LastWord
+  }    
+  
+  
+#for GOPWorm.153
+:0BD
+*  -800^0
+*   200^0 pxvNrb0
+*   200^0 mA9QXdN
+*   200^0 bUUw4oQ
+*   200^0 K8qezQE
+*   200^0 AcIuJ1u
+  {
+  LOG="---=== WORM-GOPWORM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-GOPWorm
+  }    
+  
+
+#for TrojanDownloader.Win32.Ultraset
+:0BD
+*  -800^0
+*   200^0 agGLyFq
+*   200^0 Q0AA/xV
+*   200^0 cgsAAIh
+*   200^0 wAsAAIl
+*   200^0 DAaDxAz
+  {
+  LOG="---=== WORM-ULTRASET $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Ultraset
+  }
+
+
+#for NetThief
+:0BD
+*  -800^0
+*   200^0 9UgwEAZ
+*   200^0 i4\+Laz8
+*   200^0 zX4He6/
+*   200^0 beBX1o\+
+*   200^0 8gokJzv
+  {
+  LOG="---=== WORM-NETTHIEF $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-NetThief
+  }  
+  
+  
+#Worm.P2P.VB.ai
+#compressed
+:0BD
+*  -800^0
+*   200^0 SMqZ5\+i
+*   200^0 s1w2y6R
+*   200^0 IM1yQCH
+*   200^0 h4Dodon
+*   200^0 nhBcBrC
+{ VNP2PVBai=yes }
+#compressed
+:0BD
+*  -800^0
+*   200^0 AOz7BgD
+*   200^0 QgAAYEI
+*   200^0 wUIAbcF
+*   200^0 DPtCAHf
+*   200^0 AGp1QwD
+{ VNP2PVBai=yes }
+:0
+* VNP2PVBai ?? yes
+  {
+  LOG="---=== WORM-P2P.VB.ai $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-P2PVBai
+  }
+
+
+#for Maldal
+#Maldal-c
+:0BD
+*  -800^0
+*   200^0 pVfy9NU
+*   200^0 CAAMDAw
+*   200^0 /5kA///
+*   200^0 AAAABwA
+*   200^0 AACZAAA
+{ VNMALDAL=yes }
+#Maldal-k
+:0BD
+*  -800^0
+*   200^0 CH9wDw9
+*   200^0 KDI03fa
+*   200^0 rCAjaKR
+*   200^0 8pKXQHw
+*   200^0 ZICSAaz
+{ VNMALDAL=yes }
+#Maldal-k-uncompressed
+:0BD
+*  -800^0
+*   200^0 iIiIiIg
+*   200^0 AAAACP/
+*   200^0 AIAAAIA
+*   200^0 3wISFgA
+*   200^0 ZSBNaWR
+{ VNMALDAL=yes }
+:0
+* VNMALDAL ?? yes
+  {
+  LOG="---=== WORM-MALDAL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Maldal
+  }  
+
+  
+#for Roron
+#51
+:0BD
+*  -800^0
+*   200^0 voSB4Sm
+*   200^0 fpwIPzg
+*   200^0 kIXOnm5
+*   200^0 6aBIeEX
+*   200^0 UTBTx6I
+{ VNRORON=yes }
+#51-uncompressed
+:0BD
+*  -800^0
+*   200^0 FGoBUuj
+*   200^0 AIPECIX
+*   200^0 99Er\+Yv
+*   200^0 aDBxQQB
+*   200^0 JgEAjYQ
+{ VNRORON=yes }
+:0
+* VNRORON ?? yes
+  {
+  LOG="---=== WORM-RORON $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Roron
+  }
+  
+# zafi.b(erkez.b) 20040613gri
+:0BD
+*  -800^0
+*   200^0 KMQLjBg
+*   200^0 SqMoWGB
+*   200^0 nFKgjN0
+*   200^0 KVMHXVO
+*   200^0 pBadkhJ
+{ VNZAFI=yes }
+:0
+* VNZAFI ?? yes
+  {
+  LOG="---=== WORM-ZAFI $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Zafi
+  }
+
+
+#Plexus.a 20040707mannungo (Explet)
+:0BD
+* -800^0
+* 200^0 BlKAYMg
+* 200^0 E7ArDi3
+* 200^0 akj9IHh
+* 200^0 Ki7L1zp
+* 200^0 gA\+Ww1W
+{ VNPLEXUS=yes }
+:0
+* VNPLEXUS ?? yes
+  {
+  LOG="---=== WORM-PLEXUS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Plexus
+  }
+        
+#Download.Trojan 20040802mannungo
+:0BD
+* -800^0
+*   200^0 W4HEEAg
+*   200^0 /wEAAKr
+*   200^0 2BkAAO4
+*   200^0 H4YWnsS
+*   200^0 U9YXK9X
+{ VNDTROJAN=yes }
+:0
+* VNDTROJAN ?? yes
+  {
+  LOG="---=== WORM-DTrojan $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-DTrojan
+  }
+
+# Moodown.M (try) 20040810gri
+:0BD
+* > 40000
+* < 44000
+* filename=".*@.*\.com"
+{ VNMOODOWNM=yes }
+#
+# Moodown.M 20040921gri
+:0BD
+*  -800^0
+*   200^0 pcKfZsX
+*   200^0 UR4GEoK
+*   200^0 CnCX24L
+*   200^0 K7D3Zie
+*   200^0 6yWLVPq
+{ VNMOODOWNM=yes }
+:0
+* VNMOODOWNM ?? yes
+  {
+  LOG="---=== WORM-MOODOWNM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MoodownM
+  }
+
+# Blackmal.c 20041118alej
+:0BD
+*  -800^0
+*   200^0 M5LTNN1
+*   200^0 /UnmPEZ
+*   200^0 uHC/zXI
+*   200^0 MF3aqK0
+*   200^0 lNAYfWy
+{ VNBLACKMAL=yes }
+# Blackmal.c 20041118alej
+:0BD
+*  -800^0
+*   200^0 iQGBW8o
+*   200^0 EzSl2cI
+*   200^0 zA\+MmGN
+*   200^0 L9msMoj
+*   200^0 2HWdC\+w
+{ VNBLACKMAL=yes }
+:0
+* VNBLACKMAL?? yes
+  {
+  LOG="---=== WORM-BLACKMAL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Blackmal
+  }
+
+# 20040924alej
+# Not yet identified -> Submitted
+:0BD
+*  -800^0
+*   200^0 AVOJriw
+*   200^0 RfwFxwa
+*   200^0 HIXAdT6
+*   200^0 g038/41
+*   200^0 jU2M6AL
+{ VNUNIDENTIFIED=yes }
+
+# 20040929alej
+# Not yet identified -> Submitted
+:0BD
+*  -800^0
+*   200^0 2yFbKVg
+*   200^0 YBsnA\+3
+*   200^0 VFiceqX
+*   200^0 Ncm5UGF
+*   200^0 OXQrJPQ
+{ VNUNIDENTIFIED=yes }
+:0
+* VNUNIDENTIFIED ?? yes
+  {
+  LOG="---=== WORM-VNUNIDENTIFIED $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Unidentified
+  }
+
+# Lovgate.x (variable) 20040929gri
+:0BD
+* > 196000
+* < 202000
+* filename="(.*|document|doc|file|message|readme)\.(zip|pif|scr|exe|bat)"
+{ VNLOVGATE=yes }
+:0
+* VNLOVGATE ?? yes
+  {
+  LOG="---=== WORM-VNLOVGATE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LovGate
+  }
+
+# Mota.b 20050322gri
+:0BD
+* -800^0
+*   200^0 y/9F8f9
+*   200^0 dnyaA7S
+*   200^0 PK6/Anf
+*   200^0 KlvzsgA
+*   200^0 xAaMqlR
+{ VNMOTA=yes }
+:0
+* VNMOTA ?? yes
+{
+LOG="---=== WORM-MOTA $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-Mota
+}
+
+}
+###### END-OF-TVqQAAM-FAMILY ######
+
+
+#for Sobig.F-bounces
+:0BD
+*  -700^0
+*   400^0 ^X-MailScanner: Found to be clean
+*   400^0 boundary="_NextPart_000_
+*   300^0 ^TVqQAAM
+*   300^0 virus
+*   300^0 sobig
+  {
+  LOG="---=== WORM-SOBIG-BOUNCE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sobig
+  }
+
+    
+###### START-OF-TVpQAAI-FAMILY ######
+:0BD
+* ^TVpQAAI
+{
+#for SirCam
+:0BD
+*  -800^0
+*   200^0 jUTBBIs
+*   200^0 fCQIdgS
+*   200^0 o4jkQQC
+*   200^0 \+///iyw
+*   200^0 ZIkhgD1
+  {
+  LOG="---=== WORM-SIRCAM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-SirCam
+  }
+
+
+#for Torvil
+#Torvil-d
+:0BD
+*  -800^0
+*   200^0 vEHrqPw
+*   200^0 xC3aYZq
+*   200^0 X2ALv2p
+*   200^0 RESiQyw
+*   200^0 2vhsRIa
+  {
+  LOG="---=== WORM-TORVIL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Torvil
+  }
+  
+    
+#for Elkern
+#Elkern-b
+:0BD
+*  -800^0
+*   200^0 P\+VR\+9c
+*   200^0 6b25uWg
+*   200^0 uSmvKqe
+*   400^0 qHWNqPQ
+  {
+  LOG="---=== WORM-ELKERN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Elkern
+  }
+
+
+#for Magistr (xmm.. upgrades..)
+:0BD
+*  -800^0
+*   200^0 Luj0///
+*   200^0 oVgSQgD
+*   200^0 /1AIg8Q
+*   200^0 agBT6MD
+*   200^0 X13DAAA
+  {
+  LOG="---=== WORM-MAGISTR $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Magistr
+  }
+
+  
+#for Dumaru-a
+:0BD
+*  -800^0
+*   200^0 \+Wju6sA
+*   200^0 gEzZBBs
+*   200^0 L7XUF5A
+*   200^0 vB4dxDv
+*   200^0 TAEEAOw
+{ VNDUMARU=yes }
+#for Dumaru-c
+:0BD
+*  -800^0
+*   200^0 XQiJA\+5
+*   200^0 gEwWKb7
+*   200^0 FAQLyXW
+*   200^0 DyB/CA\+
+*   200^0 JLgD6CH
+{ VNDUMARU=yes }
+#for Dumaru-g
+:0BD
+*  -800^0
+*   200^0 iQPuYGb
+*   200^0 KiuETQw
+*   200^0 ot1gMg1
+*   200^0 tQcrD8H
+*   200^0 QbQkuAO
+{ VNDUMARU=yes }
+:0
+* VNDUMARU ?? yes
+  {
+  LOG="---=== WORM-DUMARU $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Dumaru
+  }
+
+    
+#for PWS-LegMir
+:0BD
+*  -800^0
+*   200^0 ChLjx\+I
+*   200^0 i/SLBXj
+*   200^0 GqlF2CA
+*   200^0 hQMdg7j
+*   200^0 8McHMRi
+{ VNLEGMIR=yes }
+#decompressed
+:0BD
+*  -800^0
+*   200^0 i8Pot//
+*   200^0 ACv7V1P
+*   200^0 aMDlQAD
+*   200^0 oRjmQAC
+*   200^0 6yaLy4X
+{ VNLEGMIR=yes }
+:0
+* VNLEGMIR ?? yes
+  {
+  LOG="---=== WORM-LEGMIR $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LegMir
+  }
+
+  
+#for MTX
+:0BD
+*  -800^0
+*   200^0 FDJAAP8
+*   200^0 dAEAADP
+*   200^0 Aw\+ESAE
+*   200^0 YW1lPSI
+*   200^0 ZXJkYXk
+  {
+  LOG="---=== WORM-MTX $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MTX
+  }
+
+
+#for Blebla or SysClock (not aka)
+:0BD
+*  -800^0
+#both
+*   200^0 A7ABXlv
+*   200^0 AACB5gD
+#Blebla
+*   200^0 PeBAAAB
+#SysClock
+*   200^0 PSBBAAB
+#both
+*   200^0 iXAIgf4
+*   200^0 A8H4Aos
+  {
+  LOG="---=== WORM-BLEBLA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Blebla
+  }
+
+  
+#for Happy
+:0BD
+*  -800^0
+*   200^0 AIs97w5
+*   200^0 BaIOQgB
+*   200^0 AIBu/gF
+*   200^0 ///////
+*   200^0 BpuNlhc
+  {
+  LOG="---=== WORM-HAPPY $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Happy
+  }
+
+
+#for Opasoft-a,d
+:0BD
+*  -800^0
+*   200^0 AGoQa(HV|IR)
+*   200^0 uP////9
+*   200^0 5bj////
+*   200^0 7gBQZsd
+#Opasoft-a
+*   200^0 9D1/AAA
+#Opasoft-d
+*   200^0 UOjQLwA
+  {
+  LOG="---=== WORM-OPASOFT $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Opasoft
+  }
+
+
+#for PrettyPark
+:0BD
+*  -800^0
+*   200^0 lBZdKuu
+*   200^0 FRjW9x\+
+*   200^0 NdbUAVL
+*   200^0 yAD/0G4
+*   200^0 msWiAPA
+{ VNPRETTYPARK=yes }
+#some uncompressed variant
+:0BD
+*  -800^0
+*   200^0 A8oD7Oj
+*   200^0 wRJ0UIt
+*   200^0 x/gOg84
+*   200^0 CZ5ICGr
+*   200^0 PEiIB8Y
+{ VNPRETTYPARK=yes }
+:0
+* VNPRETTYPARK ?? yes
+  {
+  LOG="---=== WORM-PRETTYPARK $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-PrettyPark
+  }
+
+
+#for IISWorm
+:0BD
+*  -800^0
+*   200^0 6CNaAAB
+*   200^0 RQz88q5
+*   200^0 AHUBSGS
+*   200^0 3UUAAGS
+*   200^0 Q0ZQ6Hf
+  {
+  LOG="---=== WORM-IISWORM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-IISWorm
+  }
+  
+
+#for Sharpei.a
+:0BD
+*  -800^0
+*   200^0 iAAAAIv
+*   200^0 dCBtYWt
+*   200^0 cnNpb24
+*   200^0 ACAAawA
+*   200^0 dGUAU2V
+  {
+  LOG="---=== WORM-SHARPEI $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sharpei
+  }  
+    
+  
+#for Heyya.b
+:0BD
+*  -800^0
+*   200^0 vjKIRAB
+*   200^0 xofi2UA
+*   200^0 6hZAAOg
+*   200^0 MwAAamR
+*   200^0 dWVuemF
+  {
+  LOG="---=== WORM-HEYYA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Heyya
+  }    
+
+    
+#for Ganda
+:0BD
+*  -800^0
+*   200^0 oEAAjT1
+*   200^0 ECcAAGj
+*   200^0 AP8145R
+*   200^0 SMHgBYP
+*   200^0 AOibBAA
+  {
+  LOG="---=== WORM-GANDA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Ganda
+  }
+
+
+#for Icecubes
+:0BD
+*  -800^0
+#Icecubes-a
+*   200^0 AFChCzx
+*   200^0 MItNKIl
+*   200^0 AOiI///
+*   200^0 A0YMLW0
+*   200^0 //\+D\+AA
+  {
+  LOG="---=== WORM-ICECUBES $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Icecubes
+  }  
+
+  
+#for Energy
+:0BD
+*  -800^0
+#Energy-a
+*   200^0 LCF\+amA
+*   200^0 4Z5EEkX
+*   200^0 Xs\+bVnx
+*   200^0 /80esdu
+*   200^0 w4ySLg9
+  {
+  LOG="---=== WORM-ENERGY $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Energy
+  }
+   
+#MyTob 20050501gri
+:0BD
+*  -800^0
+*   200^0 IE8LSLO
+*   200^0 Xbs3zOb
+*   200^0 tsn4eAU
+*   200^0 BlZ346m
+*   200^0 rCZAtg4
+  {
+  LOG="---=== WORM-MYTOB $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Mytob
+  }
+
+#not yet identified -> submitted
+:0BD
+*  -800^0
+*   200^0 ugEqZDC
+*   200^0 vrVDNLI
+*   200^0 MAtTQ5u
+*   200^0 bFPHCP8
+*   200^0 ueQuUzL
+{ VNUNIDENTIFIED=yes }
+:0
+* VNUNIDENTIFIED ?? yes
+  {
+  LOG="---=== WORM-VNUNIDENTIFIED $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Unidentified
+  }    
+         
+}
+###### END-OF-TVpQAAI-FAMILY ######
+  
+
+###### START-OF-TVpsAAE-FAMILY ######
+:0BD
+* ^TVpsAAE
+{
+#for FunnyPics
+:0BD
+*  -800^0
+*   200^0 aWxsQmF
+*   200^0 /3X06L0
+*   200^0 PAF0CIP
+*   200^0 cFIAAHp
+*   200^0 Q29tbWF
+  {
+  LOG="---=== WORM-FUNNYPICS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-FunnyPics
+  }
+
+  
+#for Trood
+:0BD
+*  -800^0
+*   200^0 6Yr\+//9
+*   200^0 AFBZXuj
+*   200^0 QACLDVg
+*   200^0 AABJLVd
+*   200^0 QAD/Jeh
+  {
+  LOG="---=== WORM-TROOD $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Trood
+  }  
+  
+  
+}
+###### END-OF-TVpsAAE-FAMILY ######
+
+
+###### START-OF-SVRTRgM-FAMILY ######
+:0BD
+* ^SVRTRgM
+{
+#for Brit
+#Brit
+:0BD
+*  -800^0
+*   400^0 JyaXRuZX
+*   200^0 L1RyYW5
+*   200^0 YcR4Zy8
+*   200^0 YZe9JUh
+{ VNBRIT=yes }
+#Brit-d
+:0BD
+*  -800^0
+*   400^0 JyaXRuZX
+*   200^0 UV86KO6
+*   200^0 vizHnV8
+*   200^0 NRd\+6wN
+{ VNBRIT=yes }
+#Brit-h
+:0BD
+*  -800^0
+*   200^0 yWfUfsz
+*   200^0 Wob4L\+Y
+*   200^0 Sf/SWMh
+*   200^0 yRGhgd3
+*   200^0 xlLW/PZ
+{ VNBRIT=yes }
+#Brit-c
+:0BD
+*  -800^0
+*   400^0 NIQUtJUk
+*   200^0 F5fz68l
+*   200^0 oEiP4kk
+*   200^0 rPJ9vjy
+{ VNBRIT=yes }
+#Brit-b
+:0BD
+*  -800^0
+*   400^0 NBSUZBTkV
+*   200^0 Sxn5Ang
+*   200^0 TCZ/0VX
+*   200^0 WCV3cE+
+{ VNBRIT=yes }
+:0
+* VNBRIT ?? yes
+  {
+  LOG="---=== WORM-BRIT $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Brit
+  }
+
+ 
+}
+###### END-OF-SVRTRgM-FAMILY ######
+
+
+###### START-OF-TVoAAAE-FAMILY ######
+:0BD
+* ^TVoAAAE
+{
+#Bagle.I
+:0BD
+*  -800^0
+*   200^0 cBArwl7
+*   200^0 T6qQLX1
+*   200^0 kEHYDvg
+*   200^0 QPs9eI/
+*   200^0 TcNTYw0
+{ VNBAGLE=yes }
+#decompressed
+:0BD
+*  -800^0
+*   200^0 dQiLfQy
+*   200^0 wsnCCAB
+*   200^0 Zo9Flmb
+*   200^0 RdJQ6Kj
+*   200^0 i8NbycN
+{ VNBAGLE=yes }
+#Bagle.J
+:0BD
+*  -800^0
+*   200^0 cBArwl7
+*   200^0 T9nSl6W
+*   200^0 wL2asE4
+*   200^0 cRIp536
+*   200^0 PIE9oBn
+{ VNBAGLE=yes }
+#Bagle.N
+:0BD
+*  -800^0
+*   200^0 97s7t7W
+*   200^0 RiBkFyn
+*   200^0 GaQor/M
+*   200^0 Ch92ZAu
+*   200^0 FI3zFEM
+{ VNBAGLE=yes }
+#Bagle.Z
+:0BD
+*  -800^0
+*   200^0 jvSqkJQ
+*   200^0 MR0Hjgo
+*   200^0 dvxEIww
+*   200^0 JvsESvu
+*   200^0 GZLKYyR
+{ VNBAGLE=yes }
+#Bagle.W (NAV 20040523gri)
+:0BD
+*  -800^0
+*   200^0 i8NeW8n
+*   200^0 BQwAkAA
+*   200^0 qZVb634
+*   200^0 P1YOhXe
+*   200^0 w8tCI/l
+{ VNBAGLE=yes }
+#Bagle.W (NAV 20040523gri)
+:0BD
+*  -800^0
+*   200^0 9YJrATA
+*   200^0 BBaoRQO
+*   200^0 dFuIA4W
+*   200^0 zARy9P9
+*   200^0 broNA2n
+{ VNBAGLE=yes }
+#Bagle.X (NAV 20040524gri)
+:0BD
+*  -800^0
+*   200^0 EGoA6Hc
+*   200^0 BQwAUAA
+*   200^0 juOyEnT
+*   200^0 oJLncLo
+*   200^0 Ehknnzb
+{ VNBAGLE=yes }
+#Bagle.AF 20040716mannungo 
+:0BD
+* -800^0
+* 200^0 f8OX/vv
+* 200^0 8j8fiYN
+* 200^0 DLlhe1h
+* 200^0 jnjThIJ
+* 200^0 bBDuQ/9
+{ VNBAGLE=yes }
+#Bagle.AG 20040720gri
+:0BD
+* -800^0
+*   200^0 aYPEBFp
+*   200^0 8c2i\+mf
+*   200^0 CoUYVwE
+*   200^0 x/Q9hEH
+*   200^0 oYLcjW3
+{ VNBAGLE=yes }
+#Bagle.AC 20040723gri
+:0BD
+* -800^0
+*   200^0 aYPEBFp
+*   200^0 t1nMcC7
+*   200^0 aFIrcUl
+*   200^0 Xss9QH6
+*   200^0 yJQyP2e
+{ VNBAGLE=yes }
+#Bagle.AS 20040929mannungo
+:0BD
+* -800^0
+* 200^0 jZUrJUA
+* 200^0 Vxe2uAd
+* 200^0 iUoq7Wa
+* 200^0 wVlbePC
+* 200^0 Sv5lgFo
+{ VNBAGLE=yes }
+#Bagle.AV 20041030gri
+:0BD
+* -800^0
+*   200^0 pWGzY1J
+*   200^0 6Y/3cRy
+*   200^0 tF/xcgg
+*   200^0 Khbirz/
+*   200^0 rUnWUDd
+{ VNBAGLE=yes }
+#Bagle.AW 20041030gri
+:0BD
+* -800^0
+*   200^0 EdcV\+LJ
+*   200^0 19eZuVT
+*   200^0 e\+m1O55
+*   200^0 vmdZeTc
+*   200^0 HBQuVpo
+{ VNBAGLE=yes }
+#Bagle.AY 20050204gri
+:0BD
+* -800^0
+*   200^0 AlDowAE
+*   200^0 3qrAFY6
+*   200^0 rgm5wyW
+*   200^0 40TTVky
+*   200^0 UqyQfIs
+{ VNBAGLE=yes }
+#Bagle.AY 20050204gri
+:0BD
+* -800^0
+*   200^0 wSrF9tA
+*   200^0 res8N/h
+*   200^0 ZgPJcdU
+*   200^0 AEPwMlm
+*   200^0 WJabvC2
+{ VNBAGLE=yes }
+#Bagle.AZ 20050204gri
+:0BD
+* -800^0
+*   200^0 ALngPQA
+*   200^0 Ni3IjiX
+*   200^0 wSvNE2E
+*   200^0 5H4Fido
+*   200^0 vsxbjTe
+{ VNBAGLE=yes }
+#Bagle.BA 20050204gri
+:0BD
+* -800^0
+*   200^0 AlDowAE
+*   200^0 3qrAFY6
+*   200^0 rgm5wyW
+*   200^0 40TTVky
+*   200^0 UqyQfIs
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }
+ 
+#TrojanDropper.Multijoin 20040810alej
+:0BD
+* -800^0
+*   200^0 AOhhAQA
+*   200^0 2ltjAyU
+*   200^0 4/7zoqt
+*   200^0 kbw4Rag
+*   200^0 Jiq01aL
+{ VNTROJANDROP=yes }
+:0
+* VNTROJANDROP ?? yes
+  {
+  LOG="---=== WORM-TROJANDROPPER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-TrojanDropper
+  }
+
+
+
+}  
+###### END-OF-TVoAAAE-FAMILY ######
+  
+###### START-OF-ZGltIGZ-FAMILY ######
+:0BD
+* ^ZGltIGZ
+{
+#for I-Worm.Bagle.z 20040520gri
+:0BD
+*  -800^0
+*   200^0 LDE2LDA
+*   200^0 MiwxMTM
+*   200^0 MywyMzE
+*   200^0 LDY3LDI
+*   200^0 MywyNDk
+{ VNBAGLE=yes }
+#for Beagle.W 20040610afx114
+:0BD
+*  -800^0
+*   200^0 NiwwLDA
+*   200^0 LDc4LDY
+*   200^0 LDE5MCw
+*   200^0 OCwxODc
+*   200^0 OCw2NSw
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+}
+###### END-OF-ZGltIGZ-FAMILY ######
+
+###### START-OF-TVoAAAA-FAMILY ######
+# fragmented family name
+:0BD
+* ^TVoAAAA
+{
+#for Zafi.D (Erkez.D) 20041214gri
+:0BD
+*   200^0 F1Ez0iq
+*   200^0 GEEPvx/
+*   200^0 vhRQhKB
+*   200^0 1GWBO79
+*   200^0 PC\+JF4W
+{ VNZAFI=yes }
+:0
+* VNZAFI?? yes
+  {
+  LOG="---=== WORM-ZAFI $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Zafi
+  }
+}
+###### END-OF-TVoAAAA-FAMILY ######
+
+#NetSky.d
+:0BD
+* -1000^0
+*   200^0 ^TVoAACQ
+*   200^0 kxAVw4E
+*   200^0 jyHppNc
+*   200^0 TER/Nyz
+*   200^0 qECfj\+4
+*   200^0 rOEy\+xn
+{ VNMOODOWN=yes }
+#NetSky.p 20040828gri
+:0BD
+* -1000^0
+*   200^0 ^TVoAAD8
+*   200^0 MEAAdDB
+*   200^0 Ty9rUUE
+*   200^0 gUzIIeY
+*   200^0 6sQZIgA
+*   200^0 fMU/LXG
+{ VNMOODOWN=yes }
+:0
+* VNMOODOWN ?? yes
+  {
+  LOG="---=== WORM-MOODOWN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Moodown
+  }
+    
+  
+#for Tanatos aka BugBear (data files and leftovers)
+:0BD
+* -1000^0
+*   200^0 ^qNaGJAD
+*   200^0 \+4JY8\+P
+*   200^0 6\+UYghj
+*   200^0 68n1Ghj
+*   200^0 YqjWZmB
+*   200^0 ghTr7RQ
+  {
+  LOG="---=== WORM-BUGBEAR-TANATOS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bugbear
+  }
+  
+  
+#for Mawanella
+:0BD
+* -1000^0
+*   500^0 ^T24gRXJ
+*   250^0 bnQKICB
+*   250^0 ICAgICA
+*   200^0 ZyAmICJ
+*   500^0 [mM]awanella
+*   600^0 dirsystem&"\\Mawanella.vbs"
+  {
+  LOG="---=== WORM-MAWANELLA $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Mawanella
+  }
+
+  
+#for Aliz
+:0BD
+* -1000^0
+*   300^0 ^TVoAAAI
+*   300^0 Z48GGVZ
+*   300^0 kZ8x\+Ak
+*   300^0 QCCZAWJ
+  {
+  LOG="---=== WORM-ALIZ $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Aliz
+  }
+    
+  
+#for EICAR-AV-TEST file (www.eicar.com)
+:0BD
+* -1000^0
+*  1100^0 ^WDVPIVAlQEFQWzRcUFpYNTQoUF4pN0NDKTd9J
+*  1100^0 ^X5O\!P\%@AP\[4\\PZX54\(P\^\)7CC\)7\}\$
+  {
+  LOG="---=== EICAR TEST NOT A VIRUS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-EICAR-AV-TEST
+  }
+
+
+#for anything with MS-executable attachment that contains iframe
+:0B
+* -1000^0
+*   500^0 ()<iframe
+*   600^0 iframe>
+  {
+  LOG="---=== IFRAME-EXPLOIT $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: IFRAME"
+  
+  :0:
+  $VIRDIR/virus-Exploit-IFrame
+  }
+
+
+# Moodown.M (try) 20040807gri
+:0BD
+* ^UEsDBAo
+* > 40000
+* < 45000
+* filename="(.*\.com|message|instruction|document|text|readme|transcript)\.zip"
+{ VNMOODOWN=yes }
+:0
+* VNMOODOWN ?? yes
+  {
+  LOG="---=== WORM-MOODOWNM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MoodownM
+  }
+
+#for anything left with MS-executable
+:0
+  {
+  LOG="---=== COULD-BE-WORM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: MS-EXEC"
+  
+  :0fhw
+  * YAVRWARNEXE ?? ON  
+  | formail -i "Subject: WARNING-MS-EXEC-$SUB"
+
+  :0:
+  * YAVRQUARANTEXE ?? ON
+  $VIRDIR/virus-could-be
+  }
+
+}
+#####################################END-OF-SIGNATURE-BASED
+
+
+###########################################################
+# for e-worms signature-based-2
+###########################################################
+:0HB
+* < 150000
+* ^Content-Type[	 ]*:.*(application|audio|multipart|mixed|alternative|partial)
+* name[	 ]*[*]?[	 ]*=.*\.[	 ]*(zip|rar|bat|pif|cmd|vb[as]|scr|lnk|com|exe|chm|\{[-0-9a-f]+\})(\.....?)?"?[	 ]*$
+* ^Content-Transfer-Encoding[	 ]*:.*(base64|quoted-printable|7bit)
+{
+
+#for NetSky.r
+:0BD
+* -1000^0
+*   200^0 a$?^?W$?^?5$?^?0$?^?Z$?^?k$?^?E
+*   200^0 l$?^?8$?^?G$?^?j$?^?Z$?^?n$?^?h
+*   200^0 Q$?^?2$?^?J$?^?i$?^?U$?^?1$?^?o
+*   200^0 f$?^?3$?^?9$?^?/$?^?f$?^?3$?^?f
+*   200^0 3$?^?v$?^?r$?^?G$?^?M$?^?s$?^?Q
+*   200^0 O$?^?s$?^?G$?^?R$?^?F$?^?c$?^?H
+{ VNMOODOWN=yes }
+:0
+* VNMOODOWN ?? yes
+  {
+  LOG="---=== WORM-MOODOWN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Moodown
+  }
+
+# Moodown.L (try) 20040825gri
+:0BD
+* ^U( )?EsDBAo
+* > 90000
+* < 95000
+* filename="(.*\.com|text|readme|transcript)\.zip"
+{ VNMOODOWNL=yes }
+:0
+* VNMOODOWNL ?? yes
+  {
+  LOG="---=== WORM-MOODOWNL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MoodownL
+  }
+
+# Moodown.M (try) 20040828gri
+:0BD
+* ^UEsDBAo
+* > 40000
+* < 45000
+* filename="(.*\.com|message|instruction|document|text|readme|transcript)\.zip"
+{ VNMOODOWNM=yes }
+:0
+* VNMOODOWNM ?? yes
+  {
+  LOG="---=== WORM-MOODOWNM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-MoodownM
+  }
+
+}
+###################################END-OF-SIGNATURE-BASED-2
+
+# HTML application .hta only
+:0HB
+* < 200000
+* ^Content-Type[	 ]*:.*(application)
+* name[	 ]*[*]?[	 ]*=.*\.[	 ]*(hta)(\.....?)?"?[	 ]*$
+* ^Content-Transfer-Encoding[	 ]*:.*(base64)
+{
+###### START-OF-PEhUTUw-FAMILY ######
+:0BD
+* ^PEhUTUw
+{
+#for I-Worm.Bagle.z 20040512gri
+:0BD
+*  -800^0
+*   200^0 LDAsMCw
+*   200^0 NjEsMTk
+*   200^0 NDYsMTg
+*   200^0 LDIyLDI
+*   200^0 LDEwOSw
+{ VNBAGLE=yes }
+#for Bagle.W NAV 20040523gri
+:0BD
+*  -800^0
+*   200^0 MCwwLDY
+*   200^0 LDAsMCw
+*   200^0 MTczLDc
+*   200^0 MTgzLDI
+*   200^0 MDUsMTE
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+}
+###### END-OF-PEhUTUw-FAMILY ######
+}
+
+
+# - viral signatures are especially selected, DO NOT CHANGE.
+# - if you intent to use them please give appropriate credits to people that worked for those.
+
+
+###########################################################
+# for e-worms signature-based (compressed files only)
+###########################################################
+:0HB
+* ^Content-Type[	 ]*:.*(application|audio|multipart|mixed|alternative|partial|x-zip-compressed)
+* name[	 ]*.?[	 ]*=.*\.[	 ]*(zip|rar)(\.....?)?"?[	 ]*$
+* ^Content-Transfer-Encoding[	 ]*:.*(base64|quoted-printable|7bit)
+{
+
+###### START-OF-UEsDBAo-FAMILY ######
+:0BD
+* ^UEsDBAo
+{
+
+#for Mimail
+#Mimail.A
+:0BD
+*  -800^0
+*   200^0 DYlD/It
+*   200^0 ImigfkV
+*   200^0 Bls0lhq
+*   200^0 pNmBThr
+*   200^0 JhZCsNz
+{ VNMIMAIL=yes }
+#Mimail.C
+:0BD
+*  -800^0
+*   200^0 t\+veDgy
+*   200^0 /2u5sw3
+*   200^0 zfTsPcV
+*   200^0 TpwlV8i
+*   200^0 7LJjzHw
+{ VNMIMAIL=yes }
+#Mimail.E
+:0BD
+*  -800^0
+*   200^0 Krfr3g4
+*   200^0 hfDH/2u
+*   200^0 StzN9KS
+*   200^0 oqYVMiS
+*   200^0 nVADbAw
+{ VNMIMAIL=yes }
+#Mimail.F
+:0BD
+*  -800^0
+*   200^0 Krfr3g4
+*   200^0 /2tsw77
+*   200^0 bGZ7LOw
+*   200^0 oqZOnEu
+*   200^0 nAwYfDR
+{ VNMIMAIL=yes }
+#Mimail.G
+:0BD
+*  -800^0
+*   200^0 Krfr3g4
+*   200^0 8Mf/a7n
+*   200^0 zfTS2cz
+*   200^0 ZWamTpy
+*   200^0 P2DP6xh
+{ VNMIMAIL=yes }
+#Mimail.dam 
+:0BD
+*  -800^0
+*   500^0 c$?^?m$?^?V$?^?h$?^?Z$?^?G$?^?5$?^?v$?^?d$?^?y$?^?5$?^?k$?^?b$?^?2$?^?M$?^?u$?^?c$?^?2$?^?N$?^?y$?^?U$?^?E$?^?s$?^?B$?^?A$?^?h$?^?Q$?^?A$?^?C$?^?g
+*   500^0 H$?^?J$?^?l$?^?Y$?^?W$?^?R$?^?u$?^?b$?^?3$?^?c$?^?u$?^?Z$?^?G$?^?9$?^?j$?^?L$?^?n$?^?N$?^?j$?^?c$?^?l$?^?B$?^?L$?^?B$?^?Q$?^?Y
+{ VNMIMAIL=yes }
+:0
+* VNMIMAIL ?? yes
+  {        
+  LOG="---=== WORM-MIMAIL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Mimail
+  }  
+
+  
+#for Novarg.zip
+#file.zip
+:0BD
+*  -800^0
+*   200^0 5VHAMqc
+*   200^0 iMKn1T\+
+*   200^0 kbq3P7m
+*   200^0 87Gv\+ba
+*   200^0 /G7XQ7I
+{ VNNOVARG=yes }
+#document.zip
+:0BD
+*  -800^0
+*   200^0 U7MafOV
+*   200^0 CQLWLoj
+*   200^0 XM3X35G
+*   200^0 raBmyvO
+*   200^0 CP//W/x
+{ VNNOVARG=yes }
+#message.zip
+:0BD
+*  -800^0
+*   200^0 sxp85VH
+*   200^0 AtYuiMK
+*   200^0 zdffkbq
+*   200^0 oGbK87G
+*   200^0 //9b/G7
+{ VNNOVARG=yes }
+#readme.zip
+:0BD
+*  -800^0
+*   200^0 GnzlUcA
+*   200^0 1i6Iwqf
+*   200^0 19\+Rurc
+*   200^0 Zsrzsa/
+*   200^0 /1v8btd
+{ VNNOVARG=yes }
+#doc.zip
+:0BD
+*  -800^0
+*   200^0 UcAypx\+
+*   200^0 wqfVP4p
+*   200^0 urc/uZp
+*   200^0 sa/5tpQ
+*   200^0 btdDsiS
+{ VNNOVARG=yes }
+#body.zip
+:0BD
+*  -800^0
+*   200^0 NHmh3Bp
+*   200^0 XmBJcvX
+*   200^0 //4dwgw
+*   200^0 f1HJaHm
+*   200^0 JluTzgx
+{ VNNOVARG=yes }
+#doc.zip
+:0BD
+*  -800^0
+*   200^0 aVqmSkq
+*   200^0 gxQA14C
+*   200^0 RNu1qDg
+*   200^0 9gC2PWw
+*   200^0 AVxmJQG
+{ VNNOVARG=yes }
+#body.zip
+:0BD
+*  -800^0
+*   200^0 fgInOAe
+*   200^0 fVIyfgC
+*   200^0 PwCqwm7
+*   200^0 nOZ\+kwK
+*   200^0 lr0AFQa
+{ VNNOVARG=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 cwAAgAA
+*   200^0 pABJUX4
+*   200^0 a/P6HX1
+*   200^0 r7kEGj8
+*   200^0 8m73Cpz
+{ VNNOVARG=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 Spp\+aUK
+*   200^0 gJrXXRK
+*   200^0 OACeMCa
+*   200^0 bDmjZKS
+*   200^0 AbhW4ZL
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 1xZYneU
+*   200^0 jA2uWpc
+*   200^0 2QeP4pz
+*   200^0 8W2ey1T
+*   200^0 4mnpjVI
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 B1Cg8UX
+*   200^0 leFkBUR
+*   200^0 h/6B3aL
+*   200^0 wsdsvqR
+*   200^0 oPm6Kvf
+{ VNNOVARG=yes }
+#MyDoom.e
+:0BD
+*  -800^0
+*   200^0 oPFF//8
+*   200^0 ZAVEU5X
+*   200^0 gd2i//\+
+*   200^0 bL6kQ\+/
+*   200^0 uir38IJ
+{ VNNOVARG=yes }
+#MyDoom.g
+:0BD
+*  -800^0
+*   200^0 771msNA
+*   200^0 CG1jBlZ
+*   200^0 EWd6bnZ
+*   200^0 RkI0XFc
+*   200^0 96dZDcN
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 S3VibWn
+*   200^0 tu5hbNB
+*   200^0 zR7O81K
+*   200^0 VldYWVo
+*   200^0 2YCNRfx
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 3goRFg5
+*   200^0 ZWbno7U
+*   200^0 ByAoTrM
+*   200^0 gDFozhF
+*   200^0 bnZQBkg
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 l2bnLkB
+*   200^0 Z0qED/e
+*   200^0 ERxy0ym
+*   200^0 Yq0ZaJh
+*   200^0 1o59WHc
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 aGUuYh/
+*   200^0 2Oxpc2U
+*   200^0 mxRUREZ
+*   200^0 MDEyMzQ
+*   200^0 hcB0Uv4
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 4W9nI2d
+*   200^0 8ld4Rx5
+*   200^0 GzdTzXu
+*   200^0 L/N4Rzs
+*   200^0 ETx6fg2
+{ VNNOVARG=yes }
+#MyDoom.m 20040726gri
+:0BD
+*  -800^0
+*   200^0 ZucuQGR
+*   200^0 SoQP97F
+*   200^0 HHLTKZQ
+*   200^0 rRlomGq
+*   200^0 jn1YdwV
+{ VNNOVARG=yes }
+#MyDoom.o 20040818terry
+:0BD
+*  -800^0
+*   200^0 CwVgZB1
+*   200^0 yIXqKE1
+*   200^0 ldz8G1t
+*   200^0 HWFpB3t
+*   200^0 bJsHeAB
+{ VNNOVARG=yes }
+#MyDoom.AX 20050222gri
+:0BD
+*  -800^0
+*   200^0 VtAXUvO
+*   200^0 EAyLEcH
+*   200^0 ERhgAxV
+*   200^0 v/gEWwD
+*   200^0 fxT2MOb
+{ VNNOVARG=yes }
+#MyDoom.gen 20050227gri
+:0BD
+*  -800^0
+*   200^0 VHVlAE1
+*   200^0 bWVudHx
+*   200^0 aW5nIHJ
+*   200^0 IE5PVCB
+*   200^0 U29mdHd
+{ VNNOVARG=yes }
+#MyDoom.BL 20050510gri
+:0BD
+*  -800^0
+*   200^0 AACQkJC
+*   200^0 FA\+3Req
+*   200^0 RcSNRcz
+*   200^0 pASLRbg
+*   200^0 6eP\+//\+
+{ VNNOVARG=yes }
+#MyDoom.BO 20050513gri
+:0BD
+*  -800^0
+*   200^0 9i72CUu
+*   200^0 nmiH2vq
+*   200^0 4BzYQVd
+*   200^0 mQQvTMV
+*   200^0 ZhWYvIw
+{ VNNOVARG=yes }
+#generic signature just to be sure
+:0BD
+*  -800^0
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?2$?^?d$?^?y$?^?g$?^?J$?^?G$?^?l$?^?A$?^?L$?^?b$?^?z$?^?E$?^?z$?^?p$?^?c$?^?h$?^?b$?^?H$?^?g$?^?E$?^?k$?^?d$?^?/$?^?u$?^?v$?^?g$?^?5$?^?f$?^?c$?^?Q$?^?O$?^?W$?^?6$?^?v$?^?\+$?^?V$?^?K$?^?0$?^?J$?^?a$?^?M$?^?o$?^?v
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?i$?^?\+$?^?d$?^?G$?^?q$?^?A$?^?1$?^?1$?^?4$?^?E$?^?6$?^?/$?^?c$?^?6$?^?o$?^?k$?^?Q$?^?X$?^?T$?^?0$?^?c$?^?o$?^?E$?^?/$?^?P$?^?0$?^?J$?^?I$?^?U$?^?U$?^?1$?^?s$?^?f$?^?p$?^?P$?^?L$?^?x$?^?u$?^?Q$?^?F$?^?K$?^?1$?^?D
+*   900^0 /$?^?/$?^?/$?^?/$?^?\+$?^?u$?^?t$?^?8$?^?P$?^?S$?^?5$?^?P$?^?k$?^?R$?^?L$?^?E$?^?p$?^?r$?^?j$?^?7$?^?b$?^?g$?^?D$?^?T$?^?1$?^?w$?^?p$?^?t$?^?8$?^?b$?^?W$?^?p$?^?z$?^?h$?^?K$?^?X$?^?T$?^?C$?^?E$?^?2$?^?e$?^?\+$?^?G$?^?H$?^?X$?^?V$?^?O$?^?P
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?/$?^?d$?^?a$?^?w$?^?C$?^?m$?^?V$?^?B$?^?H$?^?b$?^?r$?^?Y$?^?9$?^?5$?^?c$?^?3$?^?W$?^?H$?^?o$?^?c$?^?v$?^?\+$?^?P$?^?I$?^?r$?^?h$?^?R$?^?7$?^?Y$?^?w$?^?u$?^?0$?^?3$?^?s$?^?m$?^?1$?^?A$?^?0$?^?5$?^?8$?^?K$?^?p$?^?n
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?/$?^?3$?^?W$?^?s$?^?A$?^?p$?^?l$?^?Q$?^?R$?^?2$?^?6$?^?2$?^?P$?^?e$?^?X$?^?N$?^?1$?^?h$?^?6$?^?H$?^?L$?^?/$?^?j$?^?y$?^?K$?^?4$?^?U$?^?e$?^?2$?^?M$?^?L$?^?t$?^?N$?^?7$?^?J$?^?t$?^?Q$?^?N$?^?O$?^?f$?^?C$?^?q$?^?Z
+*   900^0 /$?^?/$?^?/$?^?/$?^?/$?^?J$?^?\+$?^?q$?^?w$?^?e$?^?U$?^?U$?^?U$?^?5$?^?r$?^?u$?^?T$?^?b$?^?k$?^?w$?^?t$?^?E$?^?f$?^?j$?^?i$?^?z$?^?7$?^?\+$?^?y$?^?q$?^?K$?^?G$?^?d$?^?n$?^?J$?^?6$?^?j$?^?q$?^?7$?^?b$?^?E$?^?1$?^?e$?^?k$?^?A$?^?G$?^?j$?^?f
+*   900^0 /$?^?/$?^?/$?^?/$?^?E$?^?8$?^?B$?^?J$?^?d$?^?f$?^?a$?^?D$?^?8$?^?P$?^?8$?^?7$?^?R$?^?C$?^?Q$?^?E$?^?g$?^?9$?^?U$?^?B$?^?O$?^?0$?^?Q$?^?k$?^?C$?^?I$?^?P$?^?V$?^?A$?^?I$?^?k$?^?E$?^?J$?^?O$?^?h$?^?X
+{ VNNOVARG=yes }
+:0
+* VNNOVARG ?? yes
+  {        
+  LOG="---=== WORM-NOVARG $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Novarg
+  }  
+  
+
+#for Moodown
+:0BD
+*  -800^0
+*   200^0 DQjrBGo
+*   200^0 F5buQ6y
+*   200^0 6IjshKS
+*   200^0 staF6ga
+*   200^0 /YB8Nct
+{ VNMOODOWN=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 lu5DrKA
+*   200^0 iOyEpID
+*   200^0 1oXqBrG
+*   200^0 gHw1y12
+*   200^0 gLuf3uL
+{ VNMOODOWN=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 \+xeW7kO
+*   200^0 jOiI7IS
+*   200^0 kLLWheo
+*   200^0 1P2AfDX
+*   200^0 7NSAu5/
+{ VNMOODOWN=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 rKAUal9
+*   200^0 pIDkyJE
+*   200^0 BrG2wQw
+*   200^0 y12NBHW
+*   200^0 3uLJ4gJ
+{ VNMOODOWN=yes }
+#another zip
+:0BD
+*  -800^0
+*   200^0 6wRqNf/
+*   200^0 7kOsoBR
+*   200^0 7ISkgOT
+*   200^0 heoGsbb
+*   200^0 fDXLXY0
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 DRQKlm8
+*   200^0 TTv3Wth
+*   200^0 yMu/KXS
+*   200^0 zRGz90g
+*   200^0 MzTvkTE
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 0A0UCpZ
+*   200^0 \+k0791r
+*   200^0 hMjLvyl
+*   200^0 q80Rs/d
+*   200^0 5DM075E
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 nlUKFLk
+*   200^0 BpLFc5j
+*   200^0 Ld6FjK7
+*   200^0 Dacg\+6G
+*   200^0 \+hxFERp
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 CkzQI2F
+*   200^0 Ko7KySg
+*   200^0 VSMSscE
+*   200^0 fBAGDco
+*   200^0 6PFl5S2
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 FLkN0A0
+*   200^0 c5jM\+k0
+*   200^0 jK7QhMj
+*   200^0 \+6GMq80
+*   200^0 ERpJ5DM
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 uQ3QDRQ
+*   200^0 mMz6TTv
+*   200^0 rtCEyMu
+*   200^0 oYyrzRG
+*   200^0 GknkMzT
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 giOeVQo
+*   200^0 lL0GksV
+*   200^0 vDgt3oW
+*   200^0 wUkNpyD
+*   200^0 jYP6HEU
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 oMl9u5V
+*   200^0 JXJ\+Dop
+*   200^0 XywgXHw
+*   200^0 BwxCcet
+*   200^0 nMoYFDJ
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 ajX/1yI
+*   200^0 iXAicu4
+*   200^0 sAQL1oP
+*   200^0 Bz2QVEm
+*   200^0 OLA0IBf
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 O8Z0Bma
+*   200^0 n4vY4wh
+*   200^0 Dd5FcAG
+*   200^0 WTvDWbz
+*   200^0 QLZwoxs
+{ VNMOODOWN=yes }
+#Netsky.d
+:0BD
+*  -800^0
+*   200^0 kxAVw4E
+*   200^0 jyHppNc
+*   200^0 TER/Nyz
+*   200^0 qECfj\+4
+*   200^0 rOEy\+xn
+{ VNMOODOWN=yes }
+#Netsky.d
+:0BD
+*  -800^0
+*   200^0 iwQk/Yv
+*   200^0 wtKGp6z
+*   200^0 vi5sXtq
+*   200^0 eV1Xkor
+*   200^0 5bLDS9r
+{ VNMOODOWN=yes }
+#Netsky.d
+:0BD
+*  -800^0
+*   200^0 iwQk/Yv
+*   200^0 wtKGp6z
+*   200^0 vi5sXtq
+*   200^0 eV1Xkor
+*   200^0 5bLDS9r
+{ VNMOODOWN=yes }
+#Netsky.j
+:0BD
+*  -800^0
+*   200^0 f0WP3bU
+*   200^0 awW/yBV
+*   200^0 BXSVCNQ
+*   200^0 9BqNuGa
+*   200^0 qflP54t
+{ VNMOODOWN=yes }
+#Netsky.p (NAV 200405gri)
+:0BD
+*  -800^0
+*   200^0 /v9XVf9
+*   200^0 i25/hCz
+*   200^0 82HFQrA
+*   200^0 86tmq1d
+*   200^0 Rw9\+6CE
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 benBLNN
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 hKLw/v9
+*   200^0 9S/Ji25
+*   200^0 02A582H
+*   200^0 AWHPacb
+*   200^0 25XelF2
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 xvpn0QJ
+*   200^0 Xa60IWe
+*   200^0 3I7cj5U
+*   200^0 KP3GXoG
+*   200^0 6hyZZ0f
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 QWRkcmV
+*   200^0 X4G3M5d
+*   200^0 jjTIi12
+*   200^0 Z/\+xmRH
+*   200^0 f39/f3f
+{ VNMOODOWN=yes }
+#Netsky.q
+:0BD
+*  -800^0
+*   200^0 /1dV/1M
+*   200^0 bn\+ELN7
+*   200^0 YcVCsDI
+*   200^0 xvpn0QJ
+*   200^0 Xa60IWe
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 a$?^?W$?^?5$?^?0$?^?Z$?^?k$?^?E
+*   200^0 l$?^?8$?^?G$?^?j$?^?Z$?^?n$?^?h
+*   200^0 Q$?^?2$?^?J$?^?i$?^?U$?^?1$?^?o
+*   200^0 f$?^?3$?^?9$?^?/$?^?f$?^?3$?^?f
+*   200^0 3$?^?v$?^?r$?^?G$?^?M$?^?s$?^?Q
+*   200^0 H$?^?i$?^?X$?^?/$?^?T$?^?S$?^?F
+*   200^0 K$?^?Z$?^?J$?^?z$?^?T$?^?n$?^?C
+*   200^0 f$?^?3$?^?9$?^?/$?^?f$?^?3$?^?f
+*   200^0 3$?^?v$?^?r$?^?G$?^?M$?^?s$?^?Q
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 ogAAOKI
+*   200^0 0bagiBw
+*   200^0 mmBIoKz
+*   200^0 Xag4k/y
+*   200^0 /NPCCu1
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 iBwiDWF
+*   200^0 oKz1BN\+
+*   200^0 //////\+
+*   200^0 k/yfntw
+*   200^0 Cu1oVYL
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 6wRqNf/
+*   200^0 \+JKJcCJ
+*   200^0 4gSwBAv
+*   200^0 QF4HPZB
+*   200^0 uwQ4sDQ
+{ VNMOODOWN=yes }
+#Netsky.c
+:0BD
+*  -800^0
+*   200^0 ZotACOs
+*   200^0 CEtLefi
+*   200^0 AYPiXOI
+*   200^0 vNAuF0B
+*   200^0 GzDrS7s
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 ogAAAAA
+*   200^0 HCINYWE
+*   200^0 rPUE37p
+*   200^0 /////4A
+*   200^0 /J\+e3D7
+{ VNMOODOWN=yes }
+#Netsky.gen
+:0BD
+*  -800^0
+*   200^0 4ItRz3o
+*   200^0 R175C/c
+*   200^0 pU9XKaF
+*   200^0 NVGc8Hg
+*   200^0 X7JosSm
+{ VNMOODOWN=yes }
+#Netsky.b
+:0BD
+*  -800^0
+*   200^0 BmZtb\+3
+*   200^0 aLBcQQD
+*   200^0 R44cOeS
+*   200^0 WTZjsNK
+*   200^0 bBDZYL/
+{ VNMOODOWN=yes }
+#Netsky.Y
+:0BD
+*  -800^0
+*   200^0 TaOQJsm
+*   200^0 gRE8CnT
+*   200^0 kgPIHyi
+*   200^0 0AHEDHY
+*   200^0 EIHCX7I
+{ VNMOODOWN=yes }
+#Netsky.X
+:0BD
+*  -800^0
+*   200^0 p2yr7NI
+*   200^0 dfJPtnR
+*   200^0 BJBUfM1
+*   200^0 YjsD89C
+*   200^0 MbZ\+TW5
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 UMQiaNP
+*   200^0 8TPzDAj
+*   200^0 mJBxAY1
+*   200^0 i3UJJ8m
+*   200^0 OzI040u
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 YSPoUHI
+*   200^0 MxoYGCM
+*   200^0 sARsEcO
+*   200^0 HZSd7p8
+*   200^0 zBzs0Ho
+{ VNMOODOWN=yes }
+#Netsky.r
+:0BD
+*  -800^0
+*   200^0 txwDGBG
+*   200^0 sbzwN34
+*   200^0 hLsIW7x
+*   200^0 Dt9ZvYK
+*   200^0 QkkCxKA
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 J1DEImj
+*   200^0 E/Ez8ww
+*   200^0 mJiQcQG
+*   200^0 Eot1CSf
+*   200^0 GDsyNON
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 cidQxCJ
+*   200^0 IxPxM/M
+*   200^0 w5iYkHE
+*   200^0 nxKLdQk
+*   200^0 ehg7MjT
+{ VNMOODOWN=yes }
+#Netsky.x
+:0BD
+*  -800^0
+*   200^0 D/c2OLc
+*   200^0 IHiPh6O
+*   200^0 M5mLo\+6
+*   200^0 ye\+22ga
+*   200^0 rg8X7ov
+{ VNMOODOWN=yes }
+#Netsky.aa
+:0BD
+*  -800^0
+*   200^0 ImjT0os
+*   200^0 8wwIwev
+*   200^0 cQGNZg/
+*   200^0 CSfJi9d
+*   200^0 NONLpQG
+{ VNMOODOWN=yes }
+#Netsky.ac
+:0BD
+*  -800^0
+*   200^0 XbBND40
+*   200^0 df2XViE
+*   200^0 AQB0HIs
+*   200^0 3sfEGBA
+*   200^0 3G78aYt
+{ VNMOODOWN=yes }
+#Netsky.z (20040519gri)
+:0BD
+*  -800^0
+*   200^0 UMQiaNP
+*   200^0 8TPzDAj
+*   200^0 mJBxAY1
+*   200^0 i3UJJ8m
+*   200^0 LyT8Wb4
+{ VNMOODOWN=yes }
+#Netsky.z (20040525gri)
+:0BD
+*  -800^0
+*   200^0 AAAAACA
+*   200^0 ImjT0os
+*   200^0 8wwIwev
+*   200^0 TXB0Knf
+*   200^0 M1r7Ix0
+{ VNMOODOWN=yes }
+#Netsky.p.dam (20040529gri)
+:0BD
+*  -800^0
+*   200^0 hKLw/v9
+*   200^0 9S/Ji25
+*   200^0 02A582H
+*   200^0 CrJKE5y
+*   200^0 bQJ3FjB
+{ VNMOODOWN=yes }
+#Netsky.z 20040603gri
+:0BD
+*  -800^0
+*   200^0 UMQiaNP
+*   200^0 8TPzDAj
+*   200^0 FVyQ9VC
+*   200^0 j3VRzuR
+*   200^0 T4x/LAN
+{ VNMOODOWN=yes }
+#Netsky.z 20040603gri
+:0BD
+*  -800^0
+*   200^0 UMQiaNP
+*   200^0 8TPzDAj
+*   200^0 KOwYUww
+*   200^0 AHkGxuC
+*   200^0 j3VRzuR
+{ VNMOODOWN=yes }
+#Netsky.p.dam 20040608gri
+:0BD
+*  -800^0
+*   200^0 /1dV/1M
+*   200^0 bn\+ELN7
+*   200^0 YcVCsDI
+*   200^0 7tT6E22
+*   200^0 dhVwrEM
+{ VNMOODOWN=yes }
+#NetSky.q 20040611alej
+:0BD
+* -800^0
+* 200^0 AEdldFR
+* 200^0 RERPcAA
+* 200^0 1WlfWwi
+* 200^0 BI3aPmQ
+* 200^0 Zu6\+f49
+{ VNMOODOWN=yes }
+#NetSky.q 20040611alej
+:0BD
+* -800^0
+* 200^0 hKLw/v9
+* 200^0 9S/Ji25
+* 200^0 sTW6hkK
+* 200^0 vmA0kok
+* 200^0 uAKasKB
+{ VNMOODOWN=yes }
+#NetSky.p 20040621alej
+:0BD
+* -800^0
+*   200^0 cnlBAAB
+*   200^0 AAH0RER
+*   200^0 f4Qs3tV
+*   200^0 xUKwMgS
+*   200^0 \+mfRAmb
+{ VNMOODOWN=yes }
+#Netsky.q 20040626mannungo 
+:0BD
+* -800^0
+* 200^0 /v9XVf9
+* 200^0 i25/hCz
+* 200^0 82HFQrA
+* 200^0 acb6Z9E
+* 200^0 lF2utCF
+{ VNMOODOWN=yes }
+#Netsky.q 20040629alej
+:0BD
+* -800^0
+*   200^0 cnlBAAB
+*   200^0 AAH0RER
+*   200^0 f4Qs3tV
+*   200^0 xUKwMgS
+*   200^0 \+mfRAmb
+{ VNMOODOWN=yes }
+#Netsky.z 20040809alej
+:0BD
+* -800^0
+*   200^0 cidQxCJ
+*   200^0 IxPxM/M
+*   200^0 TyJ\+LPA
+*   200^0 HsROwGQ
+*   200^0 wYWM\+zI
+{ VNMOODOWN=yes }
+#Netsky.z 20040810gri
+:0BD
+* -800^0
+*   200^0 J1DEImj
+*   200^0 E/Ez8ww
+*   200^0 mJiQcQG
+*   200^0 ICAgICA
+*   200^0 PxVckPV
+{ VNMOODOWN=yes }
+#Netsky.p 20040817gri
+:0BD
+* -800^0
+*   200^0 3tVpX1s
+*   200^0 MgSN2j58
+*   200^0 Ambuvn\+
+*   200^0 Z7sWJkT
+*   200^0 lTEnEMU
+{ VNMOODOWN=yes }
+#Netsky.p 20040824alej
+:0BD
+* -800^0
+*   200^0 3tVpX1s
+*   200^0 MgSN2j5
+*   200^0 Ambuvn\+
+*   200^0 Z7sWJkT
+*   200^0 lTEnEMU
+{ VNMOODOWN=yes }
+#Netsky.p 20040825gri
+:0BD
+* -800^0
+*   200^0 /1dV/1M
+*   200^0 I3ufgoq
+*   200^0 QTdLZ54
+*   200^0 kaRVBrw
+*   200^0 gk28vFt
+{ VNMOODOWN=yes }
+#Netsky.p 20040831alej
+:0BD
+* -800^0
+*   200^0 3tVpX1s
+*   200^0 MgSN2j5
+*   200^0 Ambuvn\+
+*   200^0 Z7sWJkT
+*   200^0 lTEnEMU
+{ VNMOODOWN=yes }
+#Netsky.ad 20041112gri
+:0BD
+* -800^0
+*   200^0 0RTxWSm
+*   200^0 \+jf\+AiS
+*   200^0 w/JZif8
+*   200^0 BdmKCHC
+*   200^0 U\+ciAFO
+{ VNMOODOWN=yes }
+#Netsky.ad 20041112gri
+:0BD
+* -800^0
+*   200^0 /wEXLVW
+*   200^0 WSmmEqn
+*   200^0 AiS0ZyT
+*   200^0 if8N/jU
+*   200^0 CHCbmGZ
+{ VNMOODOWN=yes }
+#Netsky.ad 20041117gri
+:0BD
+* -800^0
+*   200^0 Fy1Vsj\+
+*   200^0 phKp3H5
+*   200^0 tGck0rA
+*   200^0 Df41K15
+*   200^0 m5hmdWe
+{ VNMOODOWN=yes }
+#Netsky.ad 20041118gri
+:0BD
+* -800^0
+*   200^0 ARctVbI
+*   200^0 KaYSqdx
+*   200^0 JLRnJNK
+*   200^0 /w3\+NSt
+*   200^0 cJuYZnV
+{ VNMOODOWN=yes }
+#Netsky.z 20041203gri
+:0BD
+* -800^0
+*   200^0 TdWbji9
+*   200^0 Uu18W0s
+*   200^0 z5mpsUa
+*   200^0 r7XMdcP
+*   200^0 tY21daU
+{ VNMOODOWN=yes }
+#Netsky.z 20041203gri
+:0BD
+* -800^0
+*   200^0 ji96kUI
+*   200^0 W0sff78
+*   200^0 sUaJcfL
+*   200^0 dcPN8Ch
+*   200^0 daUxPAT
+{ VNMOODOWN=yes }
+:0
+* VNMOODOWN ?? yes
+  {
+  LOG="---=== WORM-MOODOWN $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Moodown
+  }
+
+  
+#for I-Worm.Bagle
+#Bagle.E
+:0BD
+*  -800^0
+*   200^0 \+AgKqqp
+*   200^0 0nUFihZ
+*   200^0 XmD0XkB
+*   200^0 aUNfJTZ
+*   200^0 dhOlB54
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 zY7z1nK
+*   200^0 fNpjBDB
+*   200^0 HEMrppP
+*   200^0 IYMLkRs
+*   200^0 ccJqzOl
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 fiHRsAx
+*   200^0 mqd3SiC
+*   200^0 m8hIBvZ
+*   200^0 bUlG5uh
+*   200^0 8L30tko
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 PRQdwpg
+*   200^0 Bo4cX3q
+*   200^0 7Zr4R3f
+*   200^0 oeXDLID
+*   200^0 g3Bx52y
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 7uLLdrZ
+*   200^0 vbQ4z/I
+*   200^0 3oSZTRw
+*   200^0 znUL56g
+*   200^0 nRtMNts
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 S5/wIO1
+*   200^0 RnC8Czv
+*   200^0 C9n75h8
+*   200^0 Ch/Mjkz
+*   200^0 D1xjJgo
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 Zgl61pA
+*   200^0 oakZlRP
+*   200^0 s1rmz6A
+*   200^0 uLvPKpZ
+*   200^0 GgnAlZk
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 Ct6He/h
+*   200^0 0PeH70e
+*   200^0 yy/aQZj
+*   200^0 jucQQIj
+*   200^0 hyHuYNg
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 m195aIs
+*   200^0 uQKUk03
+*   200^0 \+1HYKwQ
+*   200^0 1QdFx9w
+*   200^0 nmx81FV
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 UirBJXK
+*   200^0 5HyBm3U
+*   200^0 FUzSZL8
+*   200^0 DQjYF1g
+*   200^0 6M2DbpQ
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 Wb7yNvs
+*   200^0 GTWWy\+f
+*   200^0 tlbOvFz
+*   200^0 t0Z//Ct
+*   200^0 UwJo1\+\+
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 BuUWWzF
+*   200^0 fPD9kbz
+*   200^0 kbRa6Qb
+*   200^0 2BZUiOH
+*   200^0 LxT/bXg
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 MJ7pViW
+*   200^0 VXwfT7z
+*   200^0 pibNicQ
+*   200^0 eGK2v1W
+*   200^0 uRbUXBO
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 H5ve9Rt
+*   200^0 XlcZNnb
+*   200^0 82b2HAx
+*   200^0 /QU5Lge
+*   200^0 AB6ihW/
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 fTfdh1K
+*   200^0 dfEpPpK
+*   200^0 \+sVTVrZ
+*   200^0 0/YE2d0
+*   200^0 tVEiLDT
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 7aw0mcV
+*   200^0 1QGPdD8
+*   200^0 eLFlA9d
+*   200^0 VV\+LLeP
+*   200^0 aPR\+O\+V
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 WAnhIpJ
+*   200^0 aEnBuc7
+*   200^0 Jc4QZVX
+*   200^0 HXkLuyX
+*   200^0 9AbuoRG
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 c7GNmx1
+*   200^0 solfLAf
+*   200^0 F3oOlxn
+*   200^0 67Y9uza
+*   200^0 \+udAwCH
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 65DYJca
+*   200^0 RX3BWL7
+*   200^0 ffLIfof
+*   200^0 rRtiJB4
+*   200^0 PKN/Znv
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 1LX2e6p
+*   200^0 1PRoA6q
+*   200^0 gKZ9INU
+*   200^0 ttsEwjW
+*   200^0 Z/yf5rr
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 l9PqHVb
+*   200^0 PXk44UM
+*   200^0 k4U4sC3
+*   200^0 S8xIc75
+*   200^0 FQ6F3rS
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 IT6hIeM
+*   200^0 BFsthYr
+*   200^0 2nO9Ev6
+*   200^0 YbWO/VQ
+*   200^0 DPkJlhF
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 NmgvMvh
+*   200^0 cKKmyPo
+*   200^0 vcXTkgu
+*   200^0 J1hrDxg
+*   200^0 7\+okkok
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 xlY/4IB
+*   200^0 DS7AzeG
+*   200^0 hMXEiiI
+*   200^0 gNSpq41
+*   200^0 QK//lG0
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 kWxk0Ql
+*   200^0 TzSirea
+*   200^0 Oysmf4w
+*   200^0 wellxlZ
+*   200^0 rnXsyMB
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 Tsm0z\+s
+*   200^0 An/EVbL
+*   200^0 owfcltF
+*   200^0 tWFzCpm
+*   200^0 si9/gSn
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 15HjUSM
+*   200^0 jmE5PVW
+*   200^0 d4vmczO
+*   200^0 nglXqfk
+*   200^0 f94Wiwe
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 9pyh3dz
+*   200^0 vQJuixX
+*   200^0 1nSonlV
+*   200^0 y55v7tJ
+*   200^0 FOPQegZ
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 t8VHAUu
+*   200^0 MbDo1ky
+*   200^0 LNCDMG8
+*   200^0 UuzWs9j
+*   200^0 5YjrYWX
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 ZaQpMtV
+*   200^0 flz1xT6
+*   200^0 XZYDN/m
+*   200^0 RvMs017
+*   200^0 lI9E\+a\+
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 DyPLYLd
+*   200^0 j7xPYQG
+*   200^0 MOd79tD
+*   200^0 dFtLFPx
+*   200^0 x8RjIbT
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 ZUYNOim
+*   200^0 BrPp6n1
+*   200^0 RsLy0nD
+*   200^0 nswz\+u5
+*   200^0 cP4axDy
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 NeiWq7U
+*   200^0 y6ZI/TF
+*   200^0 kMj8l8I
+*   200^0 jMI1bpB
+*   200^0 uuxjIbq
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 mSFqQeU
+*   200^0 r5pG4NF
+*   200^0 5nw9SIE
+*   200^0 DtfppML
+*   200^0 VWgsCXC
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 NtBJaTg
+*   200^0 kQ7CUQ2
+*   200^0 NZf1HRe
+*   200^0 nwljrKu
+*   200^0 oDLjsFW
+{ VNBAGLE=yes }
+#Bagle.zip 20040509gri
+:0BD
+*  -800^0
+*   200^0 bWajGzN
+*   200^0 QOf\+QNq
+*   200^0 /KG\+oO3
+*   200^0 96DMUtK
+*   200^0 mP8qd04
+{ VNBAGLE=yes }
+#Bagle.zip 20040524gri
+:0BD
+*  -800^0
+*   200^0 PFVDjDG
+*   200^0 e1oSM2B
+*   200^0 geavGzh
+*   200^0 c0WbG0L
+*   200^0 idT494V
+{ VNBAGLE=yes }
+#Bagle.zip 20040525gri
+:0BD
+*  -800^0
+*   200^0 IBSVkda
+*   200^0 dR3Yqu6
+*   200^0 zDoVEgZ
+*   200^0 fZRNpOi
+*   200^0 uKQs0Eo
+{ VNBAGLE=yes }
+#Bagle.zip 20040528gri
+:0BD
+*  -800^0
+*   200^0 a1qGGIb
+*   200^0 aWxG8PY
+*   200^0 1U8fNDa
+*   200^0 bfb6r3S
+*   200^0 qdLKYn4
+{ VNBAGLE=yes }
+#Bagle.zip 20040601gri
+:0BD
+*  -800^0
+*   200^0 uLl6L9p
+*   200^0 fp3/BLz
+*   200^0 Fj4p/d\+
+*   200^0 oNJKuSo
+*   200^0 4fffF52
+{ VNBAGLE=yes }
+#Bagle.zip 20040618gri
+:0BD
+*  -800^0
+*   200^0 tpsYJB2
+*   200^0 vctIKhD
+*   200^0 TUmQcTB
+*   200^0 IbQ6XNw
+*   200^0 gJw6Gja
+{ VNBAGLE=yes }
+#Bagle.zip 20040628mannungo
+:0BD
+*  -800^0
+*   200^0 GQ/r/YI
+*   200^0 PeBxz9u
+*   200^0 4fpxm3v
+*   200^0 ZWOGUQK
+*   200^0 zOdDKjb
+{ VNBAGLE=yes }
+#Bagle.zip 20040629gri
+:0BD
+*  -800^0
+*   200^0 u9zp\+LG
+*   200^0 v44VPG4
+*   200^0 mdcAgEE
+*   200^0 2qpy72G
+*   200^0 ttzCVDE
+{ VNBAGLE=yes }
+#Bagle.zip 20040629mannungo 
+:0BD
+* -800^0
+* 200^0 lWA0HZa
+* 200^0 qRjSLJU
+* 200^0 bIa3KBw
+* 200^0 AfG1swW
+* 200^0 fJTNRed
+{ VNBAGLE=yes }
+#Bagle.zip 20040629mannungo 
+:0BD
+* -800^0
+* 200^0 \+JHd27K
+* 200^0 yAHn2vL
+* 200^0 oyVNw3n
+* 200^0 sfLKfZt
+* 200^0 KMd4EOh
+{ VNBAGLE=yes }
+#Bagle.zip 20040629mannungo 
+:0BD
+* -800^0
+* 200^0 Yp4esBN
+* 200^0 MSq6Gy5
+* 200^0 mopw0Nn
+* 200^0 O2GfW8H
+* 200^0 Wkg2dHD
+{ VNBAGLE=yes }
+#Bagle.zip 20040629mannungo 
+:0BD
+* -800^0
+* 200^0 kwTJPqw
+* 200^0 FLIpqZg
+* 200^0 x2nLyP7
+* 200^0 ZMCQuYh
+* 200^0 9py9tQM
+{ VNBAGLE=yes }
+#Bagle.zip 20040707mannungo 
+:0BD
+* -800^0
+* 200^0 x8H2pe2
+* 200^0 5/hyOa7
+* 200^0 z3CKg3h
+* 200^0 yHtA/kC
+* 200^0 jEH1Oht
+{ VNBAGLE=yes }
+#Bagle.zip 20040707mannungo 
+:0BD
+* -800^0
+* 200^0 f6OGZNH
+* 200^0 NUnDcJZ
+* 200^0 7DqxgWI
+* 200^0 mC7mNsc
+* 200^0 sBLBAhG
+{ VNBAGLE=yes }
+#Bagle.zip 20040707mannungo 
+:0BD
+* -800^0
+* 200^0 jrJQzy8
+* 200^0 UyKoHDN
+* 200^0 hTqc7AS
+* 200^0 LEh0EHC
+* 200^0 I\+h04Yv
+{ VNBAGLE=yes }
+#Bagle.zip 20040707mannungo 
+:0BD
+* -800^0
+* 200^0 EGDjdJI
+* 200^0 D23AOeW
+* 200^0 sPbOVha
+* 200^0 6OmARAI
+* 200^0 M07cDdc
+{ VNBAGLE=yes }
+#Bagle.zip 20040707mannungo 
+:0BD
+* -800^0
+* 200^0 ICAgYld
+* 200^0 SUYgICA
+* 200^0 ICAgICA
+* 200^0 TEwNCiA
+* 200^0 YWVycl9
+{ VNBAGLE=yes }
+#Bagle.zip 20040708gri
+:0BD
+* -800^0
+*   200^0 p6vwAXY
+*   200^0 hCOJuim
+*   200^0 /VMm7Fm
+*   200^0 AQIjAlI
+*   200^0 E3gIm4j
+{ VNBAGLE=yes }
+#Bagle.zip 20040718gri
+:0BD
+* -800^0
+*   200^0 ms9nyPQ
+*   200^0 X0wZWRj
+*   200^0 eiu64/4
+*   200^0 r6\+/gsd
+*   200^0 kDd01jv
+{ VNBAGLE=yes }
+#Bagle.zip 20040719gri
+:0BD
+* -800^0
+*   200^0 /XaUl31
+*   200^0 g8\+Mv6W
+*   200^0 7dtN7sx
+*   200^0 n2Nsto9
+*   200^0 LbkaO2C
+{ VNBAGLE=yes }
+#Bagle.zip 20040723gri
+:0BD
+* -800^0
+*   200^0 pqsqUGy
+*   200^0 GLHzqvg
+*   200^0 aBwZoe8
+*   200^0 Iuk9\+Zq
+*   200^0 sUchfgO
+{ VNBAGLE=yes }
+#Bagle.zip 20040725gri
+:0BD
+* -800^0
+*   200^0 J8/iz7O
+*   200^0 L8LHp6p
+*   200^0 XX\+Lwrr
+*   200^0 TARB5PL
+*   200^0 QUjS2Fc
+{ VNBAGLE=yes }
+#Bagle.zip 20040730gri
+:0BD
+* -800^0
+*   200^0 HEmoXsv
+*   200^0 vAfx1iD
+*   200^0 JSPYNna
+*   200^0 5dTlG6g
+*   200^0 LOscxS\+
+{ VNBAGLE=yes }
+#Bagle.zip 20040802gri
+:0BD
+* -800^0
+*   200^0 4bGPMtU
+*   200^0 6QBY1uV
+*   200^0 P\+61471
+*   200^0 lNNulvx
+*   200^0 22liNSy
+{ VNBAGLE=yes }
+#Bagle.zip 20040810gri
+:0BD
+* -800^0
+*   200^0 5MFtdVl
+*   200^0 hzVmofI
+*   200^0 HbKKDuV
+*   200^0 mShx/oH
+*   200^0 nMr4KPv
+{ VNBAGLE=yes }
+#Bagle.zip 20040818gri
+:0BD
+* -800^0
+*   200^0 Icxc31h
+*   200^0 tIj1Ffl
+*   200^0 1LL69kK
+*   200^0 JLVmNUs
+*   200^0 A7vScxI
+{ VNBAGLE=yes }
+#Bagle.zip 20040831gri
+:0BD
+* -800^0
+*   200^0 AjIQFb1
+*   200^0 8daoQrJ
+*   200^0 Mol/4nT
+*   200^0 Zkj9CwB
+*   200^0 5KKQ8ra
+{ VNBAGLE=yes }
+#Bagle.zip 20040915gri
+:0BD
+* -800^0
+*   200^0 LwIucHW
+*   200^0 BAO\+9GK
+*   200^0 qbPfozz
+*   200^0 DLqmb1t
+*   200^0 QXWvIIJ
+{ VNBAGLE=yes }
+#Bagle.zip 20040915gri
+:0BD
+* -800^0
+*   200^0 Pygjnp3
+*   200^0 yy5fqII
+*   200^0 wHJC8Rz
+*   200^0 SjZyIz3
+*   200^0 Jfbfxvu
+{ VNBAGLE=yes }
+#Bagle.zip 20041002gri
+:0BD
+* -800^0
+*   200^0 Sy5g55M
+*   200^0 MjrnayB
+*   200^0 ZSQ5XKZ
+*   200^0 v57Da74
+*   200^0 N0ckBux
+{ VNBAGLE=yes }
+#Bagle.zip 20041009gri
+:0BD
+* -800^0
+*   200^0 1c7Dl4J
+*   200^0 jdvycmm
+*   200^0 \+1M/ywt
+*   200^0 aaCcDPb
+*   200^0 LuwIURh
+{ VNBAGLE=yes }
+#Bagle.zip 20041009gri
+:0BD
+* -800^0
+*   200^0 Cw3BFDR
+*   200^0 ol4xetf
+*   200^0 Y3YyxeC
+*   200^0 3Ow5uqW
+*   200^0 9fFmPWd
+{ VNBAGLE=yes }
+#Bagle.zip 20041010gri
+:0BD
+* -800^0
+*   200^0 wNJY5XS
+*   200^0 0uPwnQG
+*   200^0 PNcehQw
+*   200^0 ufnvFnO
+*   200^0 FMEZVdV
+{ VNBAGLE=yes }
+#Bagle.zip 20041012gri
+:0BD
+* -800^0
+*   200^0 VNfEh\+B
+*   200^0 0gnPrXF
+*   200^0 5scALP4
+*   200^0 vYLmOGz
+*   200^0 EsVlith
+{ VNBAGLE=yes }
+#Bagle.zip 20041012gri
+:0BD
+* -800^0
+*   200^0 X1dHTMY
+*   200^0 xuv\+PF9
+*   200^0 dzSZUMx
+*   200^0 z8AvSb6
+*   200^0 4oEyMD/
+{ VNBAGLE=yes }
+#Bagle.zip 20041018gri
+:0BD
+* -800^0
+*   200^0 TX\+4oG8
+*   200^0 joK7b2g
+*   200^0 Zdc5lDI
+*   200^0 Gc2f3Gi
+*   200^0 F8a5KO2
+{ VNBAGLE=yes }
+#Bagle.zip 20041030gri
+:0BD
+* -800^0
+*   200^0 HguAPxw
+*   200^0 Jp3/eeR
+*   200^0 HGSe6AN
+*   200^0 085xd9t
+*   200^0 gb2ODdw
+{ VNBAGLE=yes }
+#Bagle.zip 20041101gri
+:0BD
+* -800^0
+*   200^0 f3ddk4Y
+*   200^0 vihSsV2
+*   200^0 Hl2vGri
+*   200^0 9WkzKQU
+*   200^0 Tc8EYms
+{ VNBAGLE=yes }
+#Bagle.zip 20041101gri
+:0BD
+* -800^0
+*   200^0 \+FJcl7X
+*   200^0 KMyt9iQ
+*   200^0 aNrzpRJ
+*   200^0 VpsOOg\+
+*   200^0 FJWrdGJ
+{ VNBAGLE=yes }
+#Bagle.zip 20041109gri
+:0BD
+* -800^0
+*   200^0 HJYA1ZB
+*   200^0 687BBkl
+*   200^0 UK4ptUz
+*   200^0 yNDNjsJ
+*   200^0 10GCtA2
+{ VNBAGLE=yes }
+#Bagle.zip 20041112gri
+:0BD
+* -800^0
+*   200^0 t2fLg9k
+*   200^0 3CPahh\+
+*   200^0 AUmVj6l
+*   200^0 3iZ28PO
+*   200^0 uZ9f61e
+{ VNBAGLE=yes }
+#Bagle.zip 20041112gri
+:0BD
+* -800^0
+*   200^0 k6TGdDI
+*   200^0 dGAfmTP
+*   200^0 EMdjtWu
+*   200^0 J4VupQ2
+*   200^0 jPWOts1
+{ VNBAGLE=yes }
+#Bagle.zip 20041116gri
+:0BD
+* -800^0
+*   200^0 LmzHxyE
+*   200^0 wpYEsII
+*   200^0 RXGgQHP
+*   200^0 gt0AEav
+*   200^0 IW4p/xA
+{ VNBAGLE=yes }
+#Bagle.zip 20041116gri
+:0BD
+* -800^0
+*   200^0 XylhJ\+i
+*   200^0 4A4ljLV
+*   200^0 aJJuZAY
+*   200^0 2nQy8GG
+*   200^0 Wbr0LB0
+{ VNBAGLE=yes }
+#Bagle.zip 20041117gri
+:0BD
+* -800^0
+*   200^0 KvNjuyP
+*   200^0 dVS/7Nc
+*   200^0 Zef8s5X
+*   200^0 tHyF1BP
+*   200^0 if65WMj
+{ VNBAGLE=yes }
+#Bagle.zip 20041118gri
+:0BD
+* -800^0
+*   200^0 kih9uZU
+*   200^0 k85m7Ov
+*   200^0 0n7VqtB
+*   200^0 7lnxCSX
+*   200^0 XYNBG1E
+{ VNBAGLE=yes }
+#Bagle.zip 20041119gri
+:0BD
+* -800^0
+*   200^0 E4hwXqY
+*   200^0 X2RzkMZ
+*   200^0 0ltVQvc
+*   200^0 f4ekVY6
+*   200^0 pkU5Sl9
+{ VNBAGLE=yes }
+#Bagle.zip 20041123gri
+:0BD
+* -800^0
+*   200^0 IzdJt\+D
+*   200^0 oxW5vYl
+*   200^0 jer\+9MA
+*   200^0 Mcza3rV
+*   200^0 YPrmE1Q
+{ VNBAGLE=yes }
+#Bagle.zip 20041127gri
+:0BD
+* -800^0
+*   200^0 aOfwTNS
+*   200^0 MB7Rtuc
+*   200^0 GZ3cPCo
+*   200^0 fERGyse
+*   200^0 pxrS6Wj
+{ VNBAGLE=yes }
+#Bagle.zip 20041127gri
+:0BD
+* -800^0
+*   200^0 S\+BSy2X
+*   200^0 sXWovtg
+*   200^0 kE2WEvA
+*   200^0 9rozD\+x
+*   200^0 E8jrIvE
+{ VNBAGLE=yes }
+#Bagle.zip 20041129gri
+:0BD
+* -800^0
+*   200^0 jjjXwJE
+*   200^0 4MlnXUj
+*   200^0 F/I9vR5
+*   200^0 hNPEmNU
+*   200^0 vwNsLEf
+{ VNBAGLE=yes }
+#Bagle.zip 20041203gri
+:0BD
+* -800^0
+*   200^0 MxScUSc
+*   200^0 EjQau1A
+*   200^0 RqbYbjo
+*   200^0 ZRVd\+vF
+*   200^0 rN96gio
+{ VNBAGLE=yes }
+#Bagle.zip 20041207gri
+:0BD
+* -800^0
+*   200^0 rQD/aHy
+*   200^0 Ugsuorg
+*   200^0 yn/hoPs
+*   200^0 brmF9p1
+*   200^0 tB97pnI
+{ VNBAGLE=yes }
+#Bagle.zip 20041210gri
+:0BD
+* -800^0
+*   200^0 JqP1zCy
+*   200^0 7AVej22
+*   200^0 lxJq1Ij
+*   200^0 triPz0p
+*   200^0 cDpU6ob
+{ VNBAGLE=yes }
+#Bagle.zip 20041211gri
+:0BD
+* -800^0
+*   200^0 ZN77UeP
+*   200^0 B7XvI/l
+*   200^0 DVig3YJ
+*   200^0 ZNbS46V
+*   200^0 bF0Vfg5
+{ VNBAGLE=yes }
+#Bagle.zip 20041216gri
+:0BD
+* -800^0
+*   200^0 3NCk\+Q9
+*   200^0 ifCBNdD
+*   200^0 BxjeWRm
+*   200^0 5uzrQ7I
+*   200^0 \+RTiEUT
+{ VNBAGLE=yes }
+#Bagle.zip 20050101gri
+:0BD
+* -800^0
+*   200^0 TGJ0GX3
+*   200^0 jJ28wJK
+*   200^0 JHiYkkK
+*   200^0 oMnaf7i
+*   200^0 HirFypB
+{ VNBAGLE=yes }
+#Bagle.zip 20050103gri
+:0BD
+* -800^0
+*   200^0 MnGuM\+Q
+*   200^0 mx94LVl
+*   200^0 Gl20c\+s
+*   200^0 4gD5VlH
+*   200^0 cLBFQz5
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+
+      
+#for Dumaru-k
+:0BD
+*  -800^0
+*   200^0 yrsA6tO
+*   200^0 8P7\+kXF
+*   200^0 V1lHf2F
+*   200^0 6YkYBCS
+*   200^0 6hGL2bp
+  {
+  LOG="---=== WORM-DUMARU $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Dumaru
+  }
+#Sober-d 
+:0BD
+*  -800^0
+*   200^0 oK5VWqe
+*   200^0 FiqzIwM
+*   200^0 Aw0B2pr
+*   200^0 GWTZdAO
+*   200^0 twwAqgD
+{ VNSOBER=yes }
+#Sober-G 20040518orogers
+:0BD
+*  -800^0
+*   200^0 kJhLjKG
+*   200^0 j5Du2CH
+*   200^0 GTZ/9s4
+*   200^0 xZDl8uQ
+*   200^0 N0jToKX
+{ VNSOBER=yes }
+#Sober-I-zip 200412-6gri
+:0BD
+*  -800^0
+*   200^0 AxQ70zS
+*   200^0 x24HOzT
+*   200^0 G2kbGvG
+*   200^0 HmQ4g2X
+*   200^0 Cemeayq
+{ VNSOBER=yes }
+#Sober-k 20050224mannungo
+:0BD
+*  -800^0
+* 200^0 O/ZgA6z
+* 200^0 c3zG68I
+* 200^0 4Q99kKY
+* 200^0 BjRN13Q
+* 200^0 /8UMkGX
+{ VNSOBER=yes }
+#Sober-o 20050503gri
+:0BD
+*  -800^0
+*   200^0 5Y2DnCb
+*   200^0 skslUgN
+*   200^0 b4iN0jT
+*   200^0 6iysb5f
+*   200^0 8/cD9CE
+{ VNSOBER=yes }
+:0
+* VNSOBER ?? yes
+  {
+  LOG="---=== WORM-SOBER $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sober
+  }
+
+#for Bugbear-E 20040519 orogers
+:0BD
+* -800^0
+* 200^0 Ow\+UZzw
+* 200^0 8knxC/C
+* 200^0 R\+EYwYX
+* 200^0 HSiLauz
+* 200^0 \+hnTvT/
+{ 
+LOG="---=== WORM-BUGBEAR $DATE ===---${NL}" 
+:0fhw
+| formail -A "X-YAVR: VIRUS" 
+
+:0:
+$VIRDIR/virus-Bugbear 
+}
+
+#LovGate-r 20040622afx114
+:0BD
+*  -800^0
+*   200^0 sf7GLIZ
+*   200^0 e747IYM
+*   200^0 58tiI1t
+*   200^0 igiLKrp
+*   200^0 CPxl\+XN
+{ VNLOVGATE=yes }
+#LovGate-r 20040622afx114
+:0BD
+*  -800^0
+*   200^0 /sYshnW
+*   200^0 vjshgyX
+*   200^0 y2IjW00
+*   200^0 CIsqulj
+*   200^0 /GX5c29
+{ VNLOVGATE=yes }
+#LovGate-x 20040929gri
+:0BD
+*  -800^0
+*   200^0 X9DFbzJ
+*   200^0 hzMI8xK
+*   200^0 VGmN1e3
+*   200^0 wU/OgDF
+*   200^0 2DxQJsM
+{ VNLOVGATE=yes }
+#LovGate-x 20040929gri
+:0BD
+*  -800^0
+*   200^0 8SpjX9D
+*   200^0 NL95hzM
+*   200^0 jxEnVGm
+*   200^0 gOUuwU/
+*   200^0 MWjN2Dx
+{ VNLOVGATE=yes }
+#LovGate-r 20050504gri
+:0BD
+*  -800^0
+*   200^0 cnxJsuY
+*   200^0 X8ZbNEQ
+*   200^0 D8ILBXE
+*   200^0 0459Z2r
+*   200^0 IREeVCj
+{ VNLOVGATE=yes }
+#LovGate-r 20050504gri
+:0BD
+*  -800^0
+*   200^0 IXh7rOo
+*   200^0 A9rS5OY
+*   200^0 AoThfxN
+*   200^0 9J1VDLg
+*   200^0 1qAp79B
+{ VNLOVGATE=yes }
+:0
+* VNLOVGATE ?? yes
+{
+LOG="---=== WORM-LOVGATE $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-LovGate
+}  
+
+# Mota 20040802mannungo
+:0BD
+*  -800^0
+* 200^0 HnwQGnw
+* 200^0 PHKyD0x
+* 200^0 4Hn44Q0
+* 200^0 m2F34wI
+* 200^0 al9wqFg
+{ VNMOTA=yes }
+# Mota.b 20040803mannungo 
+:0BD
+* -800^0
+* 200^0 Q3f7dhE
+* 200^0 uvcPrk6
+* 200^0 RaivLBF
+* 200^0 v3YxjS5
+* 200^0 qHD6O2j
+{ VNMOTA=yes }
+# Mota.b 20040817gri
+:0BD
+* -800^0
+*   200^0 DkN3\+3Y
+*   200^0 dLr3D65
+*   200^0 O0Woryw
+*   200^0 F792MY0
+*   200^0 A6hw\+jt
+{ VNMOTA=yes }
+# Mota.b 20040817gri
+:0BD
+* -800^0
+*   200^0 \+3YRFEC
+*   200^0 D65Or/4
+*   200^0 rywRcvt
+*   200^0 MY0uWUO
+*   200^0 \+jto9nD
+{ VNMOTA=yes }
+# Mota.b 20040828gri
+:0BD
+* -800^0
+*   200^0 11AefBA
+*   200^0 T1o8crI
+*   200^0 PIvgefj
+*   200^0 xHGbYXf
+*   200^0 MVlqX3C
+{ VNMOTA=yes }
+# Mota.b 20040926gri
+:0BD
+* -800^0
+*   200^0 M8BegcR
+*   200^0 ZGxsAAA
+*   200^0 qQDJF5/
+*   200^0 F2LG//9
+*   200^0 8f//dDE
+{ VNMOTA=yes }
+# Mota.b 20040929gri
+:0BD
+* -800^0
+*   200^0 AJCQi0Q
+*   200^0 ZUhhbmR
+*   200^0 P6YIL6b
+*   200^0 r3K6C68
+*   200^0 fDvzdHl
+{ VNMOTA=yes }
+# Mota.b 20050222gri
+:0BD
+* -800^0
+*   200^0 /3S675X
+*   200^0 MRex8f/
+*   200^0 2\+cXFs3
+*   200^0 CIzn8EH
+*   200^0 crkBqK8
+{ VNMOTA=yes }
+:0
+* VNMOTA ?? yes
+{
+LOG="---=== WORM-MOTA $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-Mota
+}
+
+# not yet known by me 20040816markw
+:0BD
+* -800^0
+* 200^0 c9t9Y2F
+* 200^0 tfJ5LOh
+* 200^0 bS3soFB
+* 200^0 aIy1rts
+* 200^0 JLPrJYt
+{ VNDUNNO=yes }
+:0
+* VNDUNNO ?? yes
+{
+LOG="---=== WORM-DUNNO $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-Dunno
+}
+
+# Download.Ject.c (NAV) 20040831markw
+:0BD
+* -800^0
+*   200^0 XCakm3i
+*   200^0 \+gftBk7
+*   200^0 L2oRcOZ
+*   200^0 L8SH990
+*   200^0 FJzgozC
+{ VNDJECT=yes }
+:0
+* VNDJECT ?? yes
+{
+LOG="---=== WORM-DJECT $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-DJect
+}
+
+# Lovgate.x (variable) 20040929gri
+:0BD
+* > 196000
+* < 202000
+* filename="(.*|document|doc|file|message|readme)\.(zip|pif|scr|exe|bat)"
+{ VNLOVGATE=yes }
+:0
+* VNLOVGATE ?? yes
+  {
+  LOG="---=== WORM-VNLOVGATE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-LovGate
+  }
+
+#MyTob 20050501gri
+:0BD
+*  -800^0
+*   200^0 ZXkjFwJ
+*   200^0 CxRYwAh
+*   200^0 wyV3Ksd
+*   200^0 r/T1SfZ
+*   200^0 5ddbHK4
+{ VNMYTOB=yes }
+#MyTob 20050501gri
+:0BD
+*  -800^0
+*   200^0 HKpWIQR
+*   200^0 0oP7sRl
+*   200^0 gsjSAoK
+*   200^0 Q15S\+ej
+*   200^0 jEEGqMP
+{ VNMYTOB=yes }
+:0
+* VNMYTOB ?? yes
+{
+LOG="---=== WORM-MYTOB $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-Mytob
+}
+
+  
+###################generic for some worm zip files  
+###################based on an idea of Mike Elliott
+:0BD
+*  -800^0
+*   900^0 I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g$?^?I$?^?C$?^?A$?^?g
+  {
+  LOG="---=== COULD-BE-WORM $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+
+  :0fhw
+  * YAVRWARNEXE ?? ON  
+  | formail -i "Subject: WARNING-MS-EXEC-$SUB"
+
+  :0:
+  * YAVRQUARANTEXE ?? ON
+  $VIRDIR/virus-could-be
+  }  
+###################  
+  
+  
+}
+###### END-OF-UEsDBAo-FAMILY ######
+
+#####################################
+#generic password protected Bagle.J
+:0HBD
+* > 10000
+* < 25000
+* -1000^0
+* 300^0 ^Subject[	 ]*:.*(Notify( )*about( )*using( )*the( )*e-mail( )*account|(E-mail|Email)( )*account( )*(security|disabling|utilization)( )*warning|\
+                          Important( )*notify( )*about( )*your( )*e-mail( )*account|Notify( )*about( )*your( )*e-mail( )*account( )*utilization|\
+                          Warning( )*about( )*your( )*e-mail( )*account)
+#part one
+* 200^0 Your( )*e-mail( )*account( )*will( )*be( )*disabled( )*because( )*of( )*improper( )*using( )*in( )*next
+* 200^0 Our( )*antivirus( )*software( )*has( )*detected( )*a( )*large( )*ammount( )*of( )*viruses( )*outgoing
+* 200^0 Our( )*main( )*mailing( )*server( )*will( )*be( )*temporary( )*unavaible( )*for( )*next( )*two( )*days
+* 200^0 Your( )*e-mail( )*account( )*has( )*been( )*temporary( )*disabled( )*because( )*of( )*unauthorized( )*access
+* 200^0 We( )*warn( )*you( )*about( )*some( )*attacks( )*on( )*your( )*e-mail( )*account
+* 200^0 Some( )*of( )*our( )*clients( )*complained( )*about( )*the( )*spam( )*\(negative( )*e-mail( )*content\)
+#part two
+* 200^0 For( )*more( )*information( )*see( )*the( )*attached( )*file( )*
+* 200^0 Further( )*details( )*can( )*be( )*obtained( )*from( )*attached( )*file
+* 200^0 Advanced( )*details( )*can( )*be( )*found( )*in( )*attached( )*file
+* 200^0 For( )*(further)?( )*details( )*see( )*the( )*attach
+* 200^0 read( )*the( )*attach( )*for( )*further( )*details
+* 200^0 Pay( )*attention( )*on( )*attached( )*file
+#part three
+* 200^0 For( )*security( )*reasons( )*attached( )*file( )*is( )*password( )*protected\.( )*The( )*password( )*is
+* 200^0 For( )*security( )*purposes( )*the( )*attached( )*file( )*is( )*password( )*protected\.( )*Password( )*is
+* 200^0 Attached( )*file( )*protected( )*with( )*the( )*password( )*for( )*security( )*reasons\.( )*Password( )*is
+* 200^0 In( )*order( )*to( )*read( )*the( )*attach( )*you( )*have( )*to( )*use( )*the( )*following( )*password
+#part four
+* 500^0 ^UEsDBAoAAQAAA
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+#####################################  
+
+
+###### START-OF-UEsDBBQ-FAMILY ######
+:0BD
+* ^UEsDBBQ
+{
+
+#for Mimail
+#Mimail.M
+:0BD
+*  -800^0
+*   200^0 Ja2AGLt
+*   200^0 Sr75CbN
+*   200^0 lGonaYF
+*   200^0 \+E5NYlp
+*   200^0 YrNN/mr
+  {        
+  LOG="---=== WORM-MIMAIL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Mimail
+  }  
+
+  
+#for Bagle
+#Bagle.N
+:0BD
+*  -800^0
+*   200^0 dr0YSC1
+*   200^0 Vw4/Vzf
+*   200^0 MYYwmMp
+*   200^0 NyEexHO
+*   200^0 oLBTKrY
+{ VNBAGLE=yes }
+
+#Bagle.AC 20040809mannungo
+:0BD
+* -800^0
+* 200^0 Ofip9QT
+* 200^0 jYbj2or
+* 200^0 rBa6q/f
+* 200^0 qQXPcQd
+* 200^0 YcxF1mJ
+{ VNBAGLE=yes }
+
+#Bagle.AI 20040809markw
+:0BD
+* -800^0
+* 200^0 Ofip9QT
+* 200^0 jYbj2or
+* 200^0 rBa6q/f
+* 200^0 qQXPcQd
+* 200^0 YcxF1mJ
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+  
+    
+#for Dropper.Mimail.b (had it with Torvil.d)
+:0BD
+*  -800^0
+*   200^0 SRmUewf
+*   200^0 QqGUjzm
+*   200^0 b8aomjo
+*   200^0 c/jEWtY
+*   200^0 N3WlMVw
+  {        
+  LOG="---=== WORM-TORVIL $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Torvil
+  }  
+
+# Mota.b 20040806mannungo 
+:0BD
+* -800^0
+* 200^0 KN\+ceCV
+* 200^0 OuFcS68
+* 200^0 0ekK1Vu
+* 200^0 nKVRE8Z
+* 200^0 fPavEER
+{ VNMOTA=yes }
+:0
+* VNMOTA ?? yes
+{
+LOG="---=== WORM-MOTA $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-Mota
+}
+
+# Download.Ject.c (NAV) 20040901gri
+:0BD
+* -800^0
+*   200^0 /edBPH1
+*   200^0 3sH9YyX
+*   200^0 0LCOSUM
+*   200^0 iw2RWRb
+*   200^0 rwd9I5U
+{ VNDJECT=yes }
+:0
+* VNDJECT ?? yes
+{
+LOG="---=== WORM-DJECT $DATE ===---${NL}"
+:0fhw
+| formail -A "X-YAVR: VIRUS"
+
+:0:
+$VIRDIR/virus-DJect
+}
+
+# zafi.d(Erkez.D) 20041214gri
+:0BD
+*  -800^0
+*   200^0 AeuS99C
+*   200^0 gyz5J2g
+*   200^0 RLhQGh8
+*   200^0 paGnBBP
+*   200^0 72YM/VB
+{ VNZAFI=yes }
+# zafi.d(Erkez.D) 20041214mannungo
+:0BD
+*  -800^0
+* 200^0 65L30KN
+* 200^0 LPknaBG
+* 200^0 uFAaHym
+* 200^0 oacEE\+s
+* 200^0 Zgz9UGb 
+{ VNZAFI=yes }
+# zafi.d(Erkez.D) 20041215gri
+:0BD
+*  -800^0
+*   200^0 o0Z0U9G
+*   200^0 EbJUafA
+*   200^0 KaiFBGG
+*   200^0 6xq88MM
+*   200^0 ZvMM/xh
+{ VNZAFI=yes }
+# Zafi.d 20041215mannungo
+:0BD
+*  -800^0
+* 200^0 0KNGdFP
+* 200^0 aBGyVGn
+* 200^0 HymohQR
+* 200^0 E\+savPD
+* 200^0 UGbzDP8
+{ VNZAFI=yes }
+:0
+* VNZAFI ?? yes
+  {
+  LOG="---=== WORM-ZAFI $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Zafi
+  }
+
+  
+}  
+###### END-OF-UEsDBBQ-FAMILY ######
+  
+
+#for Sobig-gen (Sobig-e is sent as a zip file with name your_details.zip)
+:0HB
+* name="your_details.zip"
+{
+:0BD
+* -1000^0
+*   200^0 ^UEsDBBQ
+*   900^0 Z$?^?G$?^?V$?^?0$?^?Y$?^?W$?^?l$?^?s$?^?c$?^?y$?^?5$?^?w$?^?a$?^?W
+  {
+  LOG="---=== WORM-SOBIG $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Sobig
+  }
+}
+
+
+###### START-OF-UmFyIRo-FAMILY ######
+# UmFyIRo is for rar files
+:0BD
+* ^UmFyIRo
+{
+
+#for Bagle
+#Bagle.N
+:0BD
+*  -800^0
+*   200^0 wrvsf/9
+*   200^0 bX9U8NX
+*   200^0 1nbBPXZ
+*   200^0 TKGaBPt
+*   200^0 CTdUBai
+{ VNBAGLE=yes }
+#Bagle.zip
+:0BD
+*  -800^0
+*   200^0 rqDj1Gp
+*   200^0 f6xnzQM
+*   200^0 kplnkX4
+*   200^0 u0CkpBq
+*   200^0 Ut3yObR
+{ VNBAGLE=yes }
+:0
+* VNBAGLE ?? yes
+  {
+  LOG="---=== WORM-BAGLE $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: VIRUS"
+  
+  :0:
+  $VIRDIR/virus-Bagle
+  }    
+  
+}  
+###### END-OF-UmFyIRo-FAMILY ######
+
+  
+          
+}
+###################################END-OF-SIGNATURE-BASED-2
+
+
+# - viral signatures are especially selected, DO NOT CHANGE.
+# - if you intent to use them please give appropriate credits to people that worked for those.
+
+
+###########################################################
+# attachment doc,dot,xls,xla with MACRO code
+# delivers e-mail normally but with a warning at subject
+###########################################################
+:0HB
+* ^Content-Type[	 ]*:.*(application|audio|multipart|mixed|alternative|partial)
+* name[	 ]*[*]?[	 ]*=.*\.[	 ]*(do[tc]|xl[sa]|rtf|\{[-0-9a-f]+\})(\.....?)?"?[	 ]*$
+* ^Content-Transfer-Encoding[	 ]*:.*base64
+{
+:0BD
+* -1000^0
+#Office Documents header
+*   500^0 ^0M8R4KGxGuEAAAAAAAAAAA............ADAP7/CQAG
+*   400^0 A$?^?F$?^?Q$?^?A$?^?a$?^?A$?^?B$?^?p$?^?A$?^?H$?^?M$?^?A$?^?R$?^?A$?^?B$?^?v$?^?A$?^?G$?^?M$?^?A$?^?d$?^?Q$?^?B$?^?t$?^?A$?^?G$?^?U$?^?A$?^?b$?^?g$?^?B$?^?0
+*   400^0 A$?^?V$?^?w$?^?B$?^?v$?^?A$?^?H$?^?I$?^?A$?^?a$?^?w$?^?B$?^?i$?^?A$?^?G$?^?8$?^?A$?^?b$?^?w$?^?B$?^?r$?^?A
+*   400^0 A$?^?F$?^?c$?^?A$?^?b$?^?w$?^?B$?^?y$?^?A$?^?G$?^?s$?^?A$?^?Y$?^?g$?^?B$?^?v$?^?A$?^?G$?^?8$?^?A$?^?a$?^?w$?^?A
+*   550^0 A$?^?X$?^?w$?^?B$?^?W$?^?A$?^?E$?^?I$?^?A$?^?Q$?^?Q$?^?B$?^?f$?^?A$?^?F$?^?A$?^?A$?^?U$?^?g$?^?B$?^?P$?^?A$?^?E$?^?o$?^?A$?^?R$?^?Q$?^?B$?^?D$?^?A$?^?F$?^?Q$?^?A
+*   550^0 A$?^?F$?^?Y$?^?A$?^?Q$?^?g$?^?B$?^?B$?^?A$?^?F$?^?8$?^?A$?^?U$?^?A$?^?B$?^?S$?^?A$?^?E$?^?8$?^?A$?^?S$?^?g$?^?B$?^?F$?^?A$?^?E$?^?M$?^?A$?^?V$?^?A
+*   550^0 A$?^?F$?^?8$?^?A$?^?V$?^?g$?^?B$?^?C$?^?A$?^?E$?^?E$?^?A$?^?X$?^?w$?^?B$?^?Q$?^?A$?^?F$?^?I$?^?A$?^?T$?^?w$?^?B$?^?K$?^?A$?^?E$?^?U$?^?A$?^?Q$?^?w$?^?B$?^?U$?^?A
+  {
+  LOG="---=== CONTAINS-ATTACHMENT-WITH-MACRO-CODE SCORE:$= $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: MACRO"
+  
+  :0fhw
+  * YAVRWARNMAC ?? ON
+  | formail -i "Subject: WARNING-MACRO-$SUB"
+  }
+}
+##########################################END-OF-MACRO-SCAN
+
+
+# - viral signatures are especially selected, DO NOT CHANGE.
+# - if you intent to use them please give appropriate credits to people that worked for those.
+
+
+###########################################################
+# execution of apps using xml objects
+# external execution of apps with iframe
+# delivers e-mail normally but with a warning at subject
+###########################################################
+:0HB
+* ^Content-Type[	 ]*:.*(html|htm|hta)
+* ^Content-Transfer-Encoding[	 ]*:.*(quoted-printable|7bit)
+{
+#for xml
+:0B
+* -1000^0
+*   500^0 ()<object
+*   300^0 codebase
+*   300^0 data
+*   300^0 (file:/)?.*[a-z]?:/
+*   100^0 classid
+*   100^0 clsid:[-0-9a-f]+
+  {
+  LOG="---=== CONTAINS-XML-CODEBASE-OBJECT SCORE:$= $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: XML-CODEBASE"
+  
+  :0fhw
+  | formail -i "Subject: WARNING-XML-CODEBASE-OBJECT-$SUB"
+  }
+
+#for iframe
+:0B
+* -1000^0
+*   500^0 ()<iframe
+*   600^0 iframe>
+  {
+  LOG="---=== CONTAINS-IFRAME $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: IFRAME"
+  
+  :0fhw
+  | formail -i "Subject: WARNING-IFRAME-$SUB"
+  }
+}
+##############################END-OF-IFRAME-AND-XML-OBJECTS
+
+
+
+###########################################################
+# execution of apps with hidden CLSID extension
+# delivers e-mail normally but with a warning at subject
+###########################################################
+:0HB
+* ^Content-Type[	 ]*:.*(text)
+* name[	 ]*.?[	 ]*=.*\.[	 ]*\{[-0-9a-f]+\}(\.....?)?"?[	 ]*$
+{
+ LOG="---=== CONTAINS-CLSID-EXT $DATE ===---${NL}"
+ :0fhw
+ | formail -A "X-YAVR: CLSID-EXTENSION"
+ 
+ :0fhw
+ | formail -i "Subject: WARNING-CLSID-EXTENSION-$SUB"
+}
+###############################################END-OF-CLSID
+
+
+
+###########################################################
+# possible sendmail header exploit trap
+# credits to Fredrik Rodland
+###########################################################
+:0H
+* ^(From|To|CC|Reply-To|Resent-From): .*<>.*<>.*<>.*<>.*<>.*\(.*\)
+{
+ LOG="---=== POSSIBLE-SENDMAIL-HEADER-EXPLOIT $DATE ===---${NL}"
+ :0fhw
+ | formail -A "X-YAVR: SENDMAIL-EXPLOIT"
+
+ :0fhw
+ | formail -i "Subject: WARNING-SENDMAIL-EXPLOIT-$SUB"
+}
+#############################END-OF-SENDMAIL-HEADER-EXPLOIT
+
+
+
+###########################################################
+# Nigeria Scam Filter
+# will catch most of those
+###########################################################
+:0
+* NIGSCAM ?? ON
+{
+:0HB
+* ^Content-Type[	 ]*:.*(text|html|htm)
+* ! name[	 ]*[*]?[	 ]*=.*\.(do[tc]|xl[sa]|bat|vb[as]|scr|com|exe|cmd|pp[sa]|md[abwe]|zip|jpg|gif|tif|png|rar|rtf)"?[	 ]*$
+{
+:0HB
+* -1000^0
+*   300^0 ^Subject[	 ]*:.*(CALL ME(:)?( )*[-0-9]|INHERITANCE|LUCK(Y)?|COL(L)?ABORATION|\
+                               PLEA(SE)?|URGENT( )*(RESPON(D|SE)|REPLY|Overture)?|AS(S)?ISTANCE|BEQUEST|\
+                               PARTNERSHIP|PROPOSAL|TRANSACTION|DIAMOND|CONFIDENTIAL(ITY)?|\
+                               TRUST(EE)?|SOLICITION|(NEED)?( )*(YOU(R)?|UR)?( )*(HELP|AS(S)?ISTANCE)( )*(NEED(ED)?)?|\
+                               BUSINESS( )*OFFER|TRHL( )*Retains( )*Sky( )*Investor( )*Relations|REQUEST( )*FROM( )*MBONGO|\
+                               (MUTUAL|URGENT)( )*(BUSINESS)?( )*ASSISTANCE( )*(NEEDED)?|\
+                               PLEASE( )*ENDEAVOUR( )*TO( )*USED( )*IT( )*FOR( )*THE( )*CHILDREN( )*OF( )*GOD|Lati( )*frank|\
+                               CRY( )*FOR( )*HELP|Hopefully( )*Awaiting( )*Your( )*Reply( )*Now|NEXT( )*OF( )*KIN)
+*   900^1 (TOGOLAISE|Africa|Nigeria|Congo|Zimbabwe)(n)?( )*$?^?(National)?( )*$?^?((Petrol(l)?eum( )*$?^?(Corporation|company))|(Chamber( )*$?^?of( )*$?^?Commerce)|((Development)?( )*$?^?(Bank(s)?|Export)))
+*   900^1 DEPARTMENT( )*$?^?OF( )*$?^?PETROL(L)?EUM( )*$?^?RESOURCES
+*   900^1 (Central|Union|international)?( )*$?^?Bank( )*$?^?of( )*$?^?(Nigeria|ivory( )*$?^?coast|Africa|Lagos|Congo|Zimbabwe)( )*$?^?(Lome( )*$?^?Togo)?
+*   900^1 Banque( )*$?^?Internationale( )*$?^?du( )*$?^?Abidjan
+*   900^1 Revolutionary( )*$?^?People(')?s( )*$?^?Front( )*$?^?(of( )*$?^?the( )*$?^?republic( )*$?^?of)?( )*$?^?Sierra Leone
+*   900^1 ECONOMIC( )*$?^?COM(M)?UNITY( )*$?^?OF( )*$?^?(WEST)?( )*$?^?AFRICA(N)?( )*$?^?STATE(S)?
+*   900^1 Nigeria(n)?( )*$?^?(Federal)?( )*$?^?Ministry( )*$?^?of( )*$?^?Works( )*$?^?and( )*$?^?Housing
+*   900^1 SENDING( )*$?^?BULK( )*$?^?E-MAIL( )*$?^?LEGALLY
+*   900^1 SOURCES( )*$?^?OF( )*$?^?DIAMONDS
+*   900^1 Diamond( )*$?^?Min(n)?ing
+*   900^1 Min(n)?ing( )*$?^?(co(-)?operation|company|Corporation)
+*   900^1 (co(-)?operation|company|Corporation)( )*$?^?OF( )*$?^?(GOLD|COCOA)( )*$?^?(AND|&)( )*$?^?(GOLD|COCOA)
+*   900^1 Africa(n)?( )*$?^?Peace( )*$?^?Keeping( )*$?^?Forces
+*   900^1 Arab( )*$?^?Contractors( )*$?^?Company( )*$?^?of( )*$?^?Egypt
+*   900^1 Unit(a|ed)( )*$?^?Forces( )*$?^?of( )*$?^?Angola
+*   900^1 late( )*$?^?president( )*$?^?of( )*$?^?(Angola|Africa|Nigeria|Congo|Zimbabwe)
+*   900^1 South( )*$?^?Africa(n)?( )*$?^?Ministry( )*$?^?of( )*$?^?Energy( )*$?^?and( )*$?^?Mineral( )*$?^?Resources
+*   900^1 Republic( )*$?^?of( )*$?^?South( )*$?^?Africa(n)?( )*$?^?Contract( )*$?^?Award( )*$?^?and( )*$?^?Monitoring( )*$?^?Commitee
+*   900^1 YOUR( )*$?^?FULL( )*$?^?SURPPORT( )*$?^?AND( )*$?^?C-O-O-P-E-R-A-T-I-O-N
+*   900^1 Chief( )*$?^?of( )*$?^?Military( )*$?^?Tactics( )*$?^?(with|of)( )*$?^?the( )*$?^?Government( )*$?^?of( )*$?^?Senegal
+*   900^1 Federal( )*$?^?Ministry( )*$?^?of( )*$?^?(Housing|Works)( )*$?^?and( )*$?^?(Housing|Works)
+*   900^1 MINISTRY( )*$?^?OF( )*$?^?URBAN( )*$?^?AND( )*$?^?RURAL( )*$?^?DEVELOPMENT
+*   900^1 ANGOLA( )*$?^?UNITA( )*$?^?MOVEMENT
+*   900^1 Director( )*$?^?of( )*$?^?Army( )*$?^?Finance( )*$?^?Accounts
+*   900^1 PERMA( )*$?^?GOLD( )*$?^?MINNIG( )*$?^?COMPANY
+*   900^1 Operations( )*$?^?of( )*$?^?Transworld( )*$?^?securities
+*   900^1 Niger( )*$?^?Delta( )*$?^?Development( )*$?^?Corporation
+*   900^1 AFRICAN( )*$?^?CONTINENTAL( )*$?^?BANK
+*   900^1 TOTAL( )*$?^?LIBERATION( )*$?^?OF( )*$?^?ANGOLA
+*   900^1 (Terminate|ELIMINATE)( )*$?^?YOUR( )*$?^?CREDIT( )*$?^?CARD( )*$?^?DEBT
+*   900^1 TRHL( )*$?^?(-)?( )*$?^?Retains( )*$?^?Sky( )*$?^?Investor( )*$?^?Relations
+*   900^1 South( )*$?^?Africa( )*$?^?Civil( )*$?^?Service( )*$?^?Code( )*$?^?of( )*$?^?Conduct
+*   900^1 FORMER( )*$?^?HEAD( )*$?^?OF( )*$?^?STATE( )*$?^?AND( )*$?^?PRESIDENT( )*$?^?OF( )*$?^?PHILIPPINES
+*   900^1 Shell( )*$?^?Development( )*$?^?Company( )*$?^?(in|of)( )*$?^?Nigeria
+*   900^1 son( )*$?^?of( )*$?^?the( )*$?^?late( )*$?^?Democratic( )*$?^?Republic( )*$?^?of( )*$?^?Congo( )*$?^?President
+*   900^1 EXECUTIVE( )*$?^?DIRECTOR( )*$?^?\(FINANCE\)( )*$?^?OF( )*$?^?THE( )*$?^?NIGER-DELTA( )*$?^?DEVELOPMENT( )*$?^?COMMISSION
+*   900^1 FEDERAL( )*$?^?REPUBLIC( )*$?^?OF( )*$?^?NIGERIA
+*   900^1 THE( )*$?^?APEX( )*$?^?BANK( )*$?^?OF( )*$?^?NIGERIA
+*   900^1 the( )*$?^?former( )*$?^?chief( )*$?^?whip( )*$?^?of( )*$?^?the( )*$?^?ruling( )*$?^?political( )*$?^?party( )*$?^?ANC
+*   900^1 theTotal( )*$?^?Independence( )*$?^?of( )*$?^?Angola
+*   900^1 Deputy( )*$?^?Minister( )*$?^?of( )*$?^?Minerals( )*$?^?and( )*$?^?Energy
+*   900^1 Bank( )*$?^?here( )*$?^?in( )*$?^?Dubai( )*$?^?United( )*$?^?Arab( )*$?^?Emirates
+*   900^1 the( )*$?^?African( )*$?^?Area( )*$?^?Director( )*$?^?of( )*$?^?SIL( )*$?^?International
+*   900^1 awarding( )*$?^?committee( )*$?^?with( )*$?^?Federal( )*$?^?Maritime( )*$?^?Authority
+*   900^1 (of)?( )*$?^?President( )*$?^?Charles( )*$?^?Taylor( )*$?^?(of)?( )*$?^?(Liberia)?
+*   900^1 CHAIRMAN( )*$?^?PETROLEUM( )*$?^?\(SPECIAL\)( )*$?^?TRUST( )*$?^?FUND
+*   900^1 (Accountant|CHAIRMAN)( )*$?^?in( )*$?^?Oil( )*$?^?Refinery( )*$?^?in( )*$?^?Durra
+*   900^1 President( )*$?^?Obasanjo( )*$?^?in( )*$?^?Nigeria
+*   900^1 Glamour( )*$?^?Gold( )*$?^?and( )*$?^?Diamond( )*$?^?Mine( )*$?^?company
+*   900^1 DIAMOND( )*$?^?SAFARIES( )*$?^?COMPANY( )*$?^?LIMITED
+*   900^1 Togo( )*$?^?of( )*$?^?West( )*$?^?Africa
+*   900^1 PLEASE( )*$?^?ENDEAVOUR( )*$?^?TO( )*$?^?USE(D)?( )*$?^?IT( )*$?^?FOR( )*$?^?THE( )*$?^?CHILDREN( )*$?^?OF( )*$?^?GOD
+*   900^1 rebel( )*$?^?leader( )*$?^?in( )*$?^?Angola
+*   900^1 Estrada( )*$?^?the( )*$?^?former( )*$?^?president( )*$?^?of( )*$?^?Philippine
+*   900^1 contact( )*$?^?via( )*$?^?the( )*$?^?Chamber( )*$?^?of( )*$?^?commerce( )*$?^?here( )*$?^?in( )*$?^?Benin
+*   900^1 my( )*$?^?late( )*$?^?Father( )*$?^?kept( )*$?^?for( )*$?^?me( )*$?^?and( )*$?^?my( )*$?^?(late)?( )*$?^?mother( )*$?^?in( )*$?^?a( )*$?^?deposit( )*$?^?house( )*$?^?before( )*$?^?he( )*$?^?was( )*$?^?assasinated( )*$?^?by( )*$?^?unknow( )*$?^?persons
+*   900^1 the( )*$?^?manager,( )*$?^?credit( )*$?^?and( )*$?^?foreign( )*$?^?bills( )*$?^?of( )*$?^?Regent( )*$?^?Bank
+*   600^1 My( )*$?^?father( )*$?^?had( )*$?^?a( )*$?^?bullet( )*$?^?shot( )*$?^?by( )*$?^?the( )*$?^?rebels
+*   600^1 a( )*$?^?merchant( )*$?^?in( )*$?^?Dubai,( )*$?^?in( )*$?^?the( )*$?^?U\.A\.E\.I( )*$?^?have( )*$?^?been( )*$?^?diagnosed( )*$?^?with
+*   500^1 who( )*$?^?worked( )*$?^?with( )*$?^?Senegalise( )*$?^?Embassy( )*$?^?in( )*$?^?South( )*$?^?Africa
+*   500^1 As( )*$?^?you( )*$?^?read( )*$?^?this,( )*$?^?I( )*$?^?don't( )*$?^?want( )*$?^?you( )*$?^?to( )*$?^?feel( )*$?^?sorry( )*$?^?for( )*$?^?me,( )*$?^?because,( )*$?^?I( )*$?^?believe( )*$?^?everyone( )*$?^?will( )*$?^?die( )*$?^?someday
+*   500^1 BE( )*$?^?A(N)?( )*$?^?(INTERNET)?( )*$?^?(MIL|BIL)(L)?IONAIRE
+*   300^1 (manager)?( )*$?^?(of)?( )*$?^?Bill( )*$?^?and( )*$?^?Exchange( )*$?^?(manager)?
+*   300^1 Foreign( )*$?^?Remmittance( )*$?^?Department
+*   300^1 organization( )*$?^?of( )*$?^?africa(n)?( )*$?^?unity
+*   300^1 Ned( )*$?^?credit( )*$?^?Bank( )*$?^?Johannesburg
+*   300^1 National( )*$?^?Electric( )*$?^?Power( )*$?^?Authority
+*   300^1 (all|pan)( |-)?Africa(n)?( )*$?^?games
+*   300^1 This( )*$?^?is( )*$?^?COMPLETE( )*$?^?DEBT( )*$?^?ELIMINATION
+*   300^1 (Nigeria|Lagos|Congo|Zimbabwe|Ngala|Gwoza|Nguru|\<Kano\>|Yankari|Kamuku|Kainjii|Pategi|Ibadan|Oshogbo|\
+          Onitsha|Obudu|Abuja|Sierra( )*$?^?(-)?( )*$?^?Leone|(Jude|JOSEPH)( )*$?^?Estrada|Abacha|DOUGLAS( )*$?^?OKORO|\
+          LAMBERTGUIE|(GILBERT|ROBERT)( )*$?^?GUIE|Donald( )*$?^?Kayode|dkayode|Ugo( )*$?^?Nzego|ABIDJAN|\
+          COTE( )*$?^?D'VOIRE|KUMALO( )*$?^?DILIZA|Folade( )*$?^?Musa|Arthur( )*$?^?Neilson|Gbenga( )*$?^?Daniels|\
+          Musa( )*$?^?Koffi|MANUEL( )*$?^?MIGUEL( )*$?^?GONZALEZ|Samuel( )*$?^?Savimbi|KENNETH( )*$?^?KABILA|\
+          Jean( )*$?^?Alex( )*$?^?Samba|Coker( )*$?^?Bulus|Shaw( )*$?^?Bedie|ABDUL( )*$?^?JOSE|Olu( )*$?^?Thomas|\
+          Anderson( )*$?^?K\.( )*$?^?Eseimoku|SALIM( )*$?^?MANTU|Dan( )*$?^?Malangko|mbongo|bethizuli|JONAS( )*$?^?SAVIMBI\
+          Patti( )*$?^?Freeman|Abdeen( )*$?^?Farakhan|Pius( )*$?^?Mdefi|DODO( )*$?^?ADA|mrdodoada|LUISA( )*$?^?PIMENTEL|\
+          luisaestrada01|JOSEPH( )*$?^?EJERCITO|Samuel( )*$?^?Ojukwu|EMMANUEL( )*$?^?(Kishali)?( )*$?^?KABILA|Rashidi( )*$?^?Kasereke|\
+          mrabdkhan|TIMI( )*$?^?ALAIBE|(Manacha|Tony)( )*$?^?Yengeni|(Joseph|Malheiro)( )*$?^?Savimbi|Antonio( )*$?^?Dembo|\
+          Carlos( )*$?^?Morgado|Rekiya( )*$?^?Koroma|kennethkoroma|0031630817302|Paullina( )*$?^?Williams|paulina_williams|\
+          robert_smith|shabangu_susan|(susan|Ndelebe|Nkosi)( )*$?^?shabangu|shabangususan|THABO( )*$?^?MBEKI|barristerjones|\
+          (Abdul|Kadir)( )*$?^?Gaya|abusadiq_|Jumai( )*$?^?(A\.)?( )*$?^?Sadiq|rtaylorttt|pauljimmy|herunuwarsito|\
+          Heru( )*$?^?Nurwasito|Col( )*$?^?David( )*$?^?Wong|sani_sale_usman|SANI( )*$?^?(SALE)?( )*$?^?USMAN|Salah( )*$?^?(Tarek)?( )*$?^?Ahmed|\
+          Husman( )*$?^?Collins|(AMINA|Musa)( )*$?^?KEITA|LOI( )*$?^?\.C\.( )*$?^?ESTRADA|paulinawilliams@webmail\.co\.za|\
+          Usman( )*$?^?Bello|Lati( )*$?^?frank|Serena( )*$?^?Jones|brwanna|Jonas( )*$?^?Savimbi|(Patrick|Weah)( )*$?^?Addo|\
+          addo4real|estradalo|Louisa( )*$?^?Ejercitor( )*$?^?Estrada|millicent\.will|MILLICENT( )*$?^?(Hannah)?( )*$?^?(Alfred)?( )*$?^?WILLIAMS|\
+          (alex|ROGGERS)( )*$?^?mbali|Solonom( )*$?^?Kabila|soka@zilvia\.net|Tunde( )*$?^?Jimo|tunde_jimo@fsmail\.net|Jang( )*$?^?Doo)
+*   300^1 (URGENT|CONFIDENTIAL)( )*$?^?(AND|&)( )*$?^?(URGENT|CONFIDENTIAL)
+*   300^1 (absolute|utmost|your)( )*$?^?(secrecy|confidentiality)( )*$?^?(and|,)?( )*$?^?(secrecy|confidentiality)?
+*   300^1 assures( )*$?^?you( )*$?^?lots( )*$?^?of( )*$?^?money
+*   300^1 MILLION(S)?( )*$?^?(OF)?( )*$?^?CASH
+*   300^1 worked( )*$?^?with( )*$?^?Kuwait( )*$?^?embassy( )*$?^?in( )*$?^?Ivory( )*$?^?Coast
+*   300^1 HEAD( )*$?^?OF( )*$?^?STATE( )*$?^?OF( )*$?^?IVORY( )*$?^?COAST
+*   300^1 security( )*$?^?company( )*$?^?in( )*$?^?Amsterderm( )*$?^?Holland
+*   300^1 Chairman( )*$?^?of( )*$?^?the( )*$?^?National( )*$?^?Chiropractic( )*$?^?Health( )*$?^?Care( )*$?^?Advisory( )*$?^?Committee
+*   300^1 (former)?( )*$?^?president( )*$?^?of( )*$?^?Philippines
+*   200^1 (Democratic)?( )*$?^?Republic( )*$?^?Of( )*$?^?Congo
+*   200^1 Philippines( )*$?^?Telecommunication( )*$?^?Network( )*$?^?services
+*   200^1 ([MB]illion|thousand|Hundred)( )*$?^?(United( )*$?^?State(s)?|U\.S|US|U S|U\. S\.)?( )*$?^?(US)?dollars
+*   200^1 (Federal)?( )*$?^?(Republic|(Central)?( )*$?^?Bank|Ministry|chamber)( )*$?^?of( )*$?^?(Works|Power|commerce|industry|Steel)?( )*$?^?(and|&)( )*$?^?(Works|Power|commerce|industry|Steel)?
+*   200^1 Engineering( )*$?^?Stores( )*$?^?Department
+*   200^1 chambers( )*$?^?of( )*$?^?commerce( )*$?^?and( )*$?^?industry
+*   200^1 secure( )*$?^?the( )*$?^?fund
+*   200^1 SOLICITING( )*$?^?(FOR)?( )*$?^?YOUR( )*$?^?ASSISTANCE
+*   200^1 (this|the)( )*$?^?transaction
+*   200^1 foreign( )*$?^?account
+*   200^1 (no)?( )*$?^?risk( )*$?^?(is)?( )*$?^?(involved|free)
+*   200^1 Angolan( )*$?^?Government
+*   200^1 Bank( )*$?^?account( )*$?^?(in)?( )*$?^?the( )*$?^?Cayman( )*$?^?Islands
+*   200^1 Former( )*$?^?Finance( )*$?^?Minister
+*   200^1 Republic( )*$?^?of( )*$?^?Gabon
+*   200^1 MAGNUM( )*$?^?TRUST( )*$?^?FINANCE( )*$?^?AND( )*$?^?SECURITY( )*$?^?SERVICES
+*   200^1 TREAT( )*$?^?THIS( )*$?^?PROPOSAL( )*$?^?AS( )*$?^?TOP( )*$?^?SECRET
+*   200^1 to( )*$?^?seek( )*$?^?for( )*$?^?whom( )*$?^?his( )*$?^?name( )*$?^?shall( )*$?^?be( )*$?^?used( )*$?^?as( )*$?^?the( )*$?^?next( )*$?^?of( )*$?^?kin
+*   100^1 (business)?( )*$?^?(highly|strictly)( )*$?^?confidential
+*   100^1 top( )*$?^?secret
+*   100^1 urgent( )*$?^?(respon(d|se)|reply)]
+*   100^1 Please( )*$?^?confirm( )*$?^?the( )*$?^?receipt( )*$?^?of( )*$?^?this( )*$?^?mail( )*$?^?URGENTLY
+  {
+  NKNGS=$=
+  LOG="---=== NIGERIA-SCAM SCORE:$NKNGS $DATE ===---${NL}"
+  
+  :0fhw
+  | formail -A "X-YAVR: NIGERIA"
+  
+  :0fhw
+  * YAVRWARNNIG ?? ON
+  | formail -i "Subject: WARNING-NSCAM-SCORE:$NKNGS-$SUB"
+  
+  :0:
+  * YAVRQUARANTNIG ?? ON
+  $NIGDIR
+  }
+}
+}
+########################################END-OF-NIGERIA-SCAM
+
+
+###########################################################
+# Porn Spam Filter
+# will catch some of those
+###########################################################
+:0
+* PORNSPAM ?? ON
+{
+:0HB
+* ^Content-Type[	 ]*:.*(text|html|htm)
+* ! name[	 ]*[*]?[	 ]*=.*\.(do[tc]|xl[sa]|bat|vb[as]|scr|com|cmd|exe|pp[sa]|md[abwe]|zip|tif|png|rar|rtf)"?[	 ]*$
+{
+:0HB
+* -1000^0
+*   400^0 ^Subject[	 ]*:.*( porn  | cum |penis|viagra|free( )*sex|enlargement( )*pill|BETTER( )*SEX)
+*   900^1 penis( )*$?^?enlargement
+*   900^1 Strengthen( )*$?^?your( )*$?^?erections
+*   900^1 enlargement( )*$?^?pill
+*   900^1 erections( )*$?^?ANY( )*$?^?TIME
+*   900^1 orgasm( )*$?^?after( )*$?^?orgasm
+*   900^1 Super( )*$?^?Virility( )*$?^?pills
+*   900^1 MILF( )*$?^?Rider
+*   900^1 penis( )*$?^?patches
+*   900^1 (V_I_A_G_R_A|v-i-a-g-r-a)
+*   900^1 Generic( )*$?^?viagra
+*   900^1 Bigger( )*$?^?Penis
+*   900^1 Increase( )*$?^?Your( )*$?^?Penis( )*$?^?Width
+*   900^1 paris( )*$?^?hilton( )*$?^?video
+*   900^1 Porn( )*$?^?(Sharing)?( )*$?^?Software
+*   900^1 (fuck|rape)( )*$?^?(this|that)( )*$?^?(pretty|little)?( )*$?^?slut
+*   300^1 ( porn | cum | penis | viagra |schoolgirl(s)?|fuck| cock | orgy |incest| rape | anal |asian( )*$?^?(babe|girl)|\
+          bestiality|gangbang|blowjob|puss(y|ie)|(Best|multiple)( )*$?^?Orgasm|e-r-e-c-t-i-o-n| erection |v1agra)
+  {
+  NKPRNS=$=
+  LOG="---=== PORN SCORE:$NKPRNS $DATE ===---${NL}"
+  :0fhw
+  | formail -A "X-YAVR: PORN"
+  
+  
+  :0fhw
+  * YAVRWARNPRN ?? ON  
+  | formail -i "Subject: WARNING-PORN-SCORE:$NKPRNS-$SUB"
+  
+  :0:
+  * YAVRQUARANTPRN ?? ON  
+  $PORNDIR
+  }
+}
+}
+###########################################END-OF-PORN-SPAM
+
+
+###########################################################
+# Open Relay check from www.spamhaus.org
+# uses sbl lists
+###########################################################
+:0
+* SPAMHAUSYAVR ?? ON
+{
+#### first IP ####
+ :0H
+ * Received:.*\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+
+ { 
+  RECEIVIP=${MATCH} 
+ 
+  :0
+  * ! RECEIVIP ?? 127.0.0.1
+  {
+   :0
+   *   RECEIVIP ?? ()\/[0-9]+
+   {
+     QUAD1=${MATCH}
+     :0
+     *  RECEIVIP ?? [0-9]+\.\/[0-9]+
+     {
+       QUAD2=${MATCH}
+       :0
+       *  RECEIVIP ?? [0-9]+\.[0-9]+\.\/[0-9]+
+       {
+         QUAD3=${MATCH}
+         :0
+         *  RECEIVIP ?? [0-9]+\.[0-9]+\.[0-9]+\.\/[0-9]+
+         {
+           RECEIVIPREV="${MATCH}.${QUAD3}.${QUAD2}.${QUAD1}"
+         }
+       }
+     }
+    
+    :0
+    { REVCHECKIP=`host ${RECEIVIPREV}.sbl.spamhaus.org 2>&1 | grep -v 'Host not found.'` }
+  
+    :0
+    * $ REVCHECKIP ?? 127\.0\.0\.(2|4)
+    {
+     LOG="---=== SPAM by SPAMHAUS $DATE ===---${NL}"
+     :0fhw
+     | formail -A "X-YAVR: SPAMHAUS"
+     :0fhw
+     * YAVRWARNSPH ?? ON
+     | formail -i "Subject: SPAMHAUS-$SUB"
+    }
+   }
+    
+  }
+ }
+  
+#### second IP ####
+ :0H
+ * Received: from.*\[.*\](.*$)+Received:.*\[\/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+
+ { 
+  RECEIVIP2=${MATCH} 
+ 
+  :0
+  * ! RECEIVIP2 ?? 127.0.0.1
+  {
+   :0
+   *   RECEIVIP2 ?? ()\/[0-9]+
+   {
+     QUAD1=${MATCH}
+     :0
+     *  RECEIVIP2 ?? [0-9]+\.\/[0-9]+
+     {
+       QUAD2=${MATCH}
+       :0
+       *  RECEIVIP2 ?? [0-9]+\.[0-9]+\.\/[0-9]+
+       {
+         QUAD3=${MATCH}
+         :0
+         *  RECEIVIP2 ?? [0-9]+\.[0-9]+\.[0-9]+\.\/[0-9]+
+         {
+           RECEIVIP2REV="${MATCH}.${QUAD3}.${QUAD2}.${QUAD1}"
+         }
+       }
+     }
+    
+    :0
+    { REV2CHECKIP=`host ${RECEIVIP2REV}.sbl.spamhaus.org 2>&1 | grep -v 'Host not found.'` }
+  
+    :0
+    * $ REV2CHECKIP ?? 127\.0\.0\.(2|4)
+    {
+     LOG="---=== SPAM by SPAMHAUS $DATE ===---${NL}"    
+     :0fhw
+     | formail -A "X-YAVR: SPAMHAUS"
+     :0fhw
+     * YAVRWARNSPH ?? ON
+     | formail -i "Subject: SPAMHAUS-$SUB"
+    }
+   }
+    
+  }
+ }
+  
+ 
+}
+###########################################END-OF-SPAMHAUS
+
+
+###########################################################
+#EOF-NIKANT

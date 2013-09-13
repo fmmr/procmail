@@ -1,0 +1,74 @@
+#########################################################################
+# 	073	mfinn-ailling-lists	073_maillists_finn.proc		#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
+
+#########################################################################
+# RULE                                                                  #
+# finn-agent                                                            #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(agent@finn.no)
+* ^Subject:.*(Autos.*fra.Finn|FINN.s.*for.deg)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FINN_AGENT $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 3_FINN"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# finn-cv                                                               #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(cvpartner@finn.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FINN_CV $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 3_FINN"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# finn-cv                                                               #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(kundesenter@finn.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FINN_KUNDE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 3_FINN"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# finn-cv                                                               #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(finn@rodland.no|agent@finn.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FINN_MISC $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 3_FINN"
+
+	:0
+	! outlook@rodland.no
+}

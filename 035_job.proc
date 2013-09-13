@@ -1,0 +1,364 @@
+#########################################################################
+# 	035	Job-mails	035_job.proc				#
+#									#
+# Most of these rules could be truncated into a few - most of themn 	#
+# only forwards everything to ahs@rodland.no, some of them to 		#
+# outllok@rodland.no.  However these rules are (still) kept as		#
+# individual rules to be able to reverse this forwarding.  If I were	#
+# to read these mails locally, I had to separate them into different	#
+# folders								#
+#									#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering job${NL}"
+
+#########################################################################
+# RULE 01								#
+# AHS prod mails.  This section should preceed the rules about frafmr	#
+# to catch these mails as well.	All prod-mails should be put in the 	#
+# prod-folder.  In addition prod mails from others should also be put	#
+# in the default mailbox						#
+#########################################################################
+:0
+* ^Subject:.*(prod ?:|prod=3A)
+{
+	LOG = "** RULE: PROD $NL"
+
+	:0 c:
+	$DEFAULT
+
+	:0 c:
+	${MONTH_FOLDER}/prod
+
+	:0:
+	prod
+}
+
+#########################################################################
+# RULE 02								#
+# PTS mails.  This section should preceed the rules about frafmr   	#
+# to catch these mails as well.   Stocklink mails are handled 		#
+# specially.								#
+#########################################################################
+:0
+* ^Subject: PTS \#.*:
+{
+	:0 B
+	* Child of --------: 6 - STOCKLINK
+	{
+		LOG = "** RULE: PTS_STOCKLINK $NL"
+	
+		:0
+		! ahs@rodland.no
+	}
+
+	:0 c:
+	${MONTH_FOLDER}/keystone
+
+
+	:0
+	{
+		LOG = "** RULE: PTS $NL"
+	
+		:0
+		! ahs@rodland.no
+	}
+}
+
+#########################################################################
+# RULE 03								#
+# save a copy in tradestats & put send to ahs				#
+#########################################################################
+:0
+* ^From:.*admin@aston.no
+* ^Subject:.*TRADESTATS
+{
+	LOG = "** RULE: TRADESTATS $NL"
+
+        :0 c:
+	tradestat
+
+        :0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 04								#
+# Dagsrapport from Stocknet						#
+#########################################################################
+:0
+* ^From:.*kundeservice@stocknet.no
+* ^Subject:(.*Dagsrapport:.*|.*Kunder med ute.*)
+{
+	LOG = "** RULE: DAGSRAPPORT $NL"
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 06								#
+# Press-releases etc							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(\
+		@netcom-gsm.no|\
+		@070605.com|\
+		info@alcatel.no|\
+		tore.enger@teco.no|\
+		viaus@wmdata.no|\
+		yara@yara.com|\
+		kathe.arnesen@provisa.no|\
+		@pressfiles.net|\
+		@prosjektkompetanse.no|\
+		prm@ntb.no|\
+		charlotte.blix-nilsen@norman.no|\
+		audun.lodemel@norman.no|\
+		Carl.Forsstrom@text100.se|\
+		Cecilie.Kahrs.Dykesteen@altinex.no|\
+		eilerth@mamut.com|\
+		gabriella.daamark@kiff.no|\
+		gro.wickstrom@siemoffshore.com|\
+		gro.wickstrom@dsnd.com|\
+		henning.hansen@norman.no|\
+		informasjonsenheten@kredittilsynet.no|\
+		Ingrid.Braatejorde@konkurransetilsynet.no|\
+		jan-stale.lauritzen@seafood.no|\
+		Knut.Wettermark@konkurransetilsynet.no|\
+		leder@borsgruppen.com|\
+		MamutUpdate@mamut.com|\
+		mowom@wmdata.no|\
+		nils.hoyvik@analyse.no|\
+		Nora.Odegard@norman.no|\
+		orion@analyse.no|\
+		presse@telenor.com|\
+		pressemeldinger@telenor.no|\
+		pressrelease@hugin.no|\
+		Redaksjonen@Finanskanalen.no|\
+		monica.sundfar@seafood.no|\
+		Roger.Kristiansen@norse-sec.no|\
+		sending@newswire.no|\
+		tomal@wmdata.no|\
+		Sveinung.Skolt@computerland.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: PRESSE_1 $NL"
+
+        :0 fhw
+        | $FORMAIL -A"$MY_PRESS_INFO $NOW"
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 07								#
+# STOCKLINK mails 							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*($STOCKLINK)
+*$ ! ^TO_($ME|aston@|utv@)
+{
+	LOG = "** RULE: STOCKLINK $NL"
+
+	:0
+	! ahs@rodland.no
+}
+
+
+#########################################################################
+# RULE 08								#
+# I want to have a look at feedbacks for kursinfo (I wrote that!)	#
+# but dropp auto-replies which have not yet been dropped		#
+#########################################################################
+:0
+* (^To|^From|^Cc|^Apparently-To|^Reply-To|^Delivered-To):.*(stocknetinfo@stocknet.no)
+*$ ! ^TO_($ME)
+{
+	:0 HB
+	* (\
+	automatic reply|\
+	deliver|\
+	ferie|\
+	I'm on holiday|\
+	Jeg er borte|\
+	Jeg vil v=E6re p=E5 farten|\
+	out of the office|\
+	pappa-permisjon)
+	{
+		LOG = "** RULE: KURSINFO_JUNK $NL"
+
+		:0:
+		$SPAMDIR/junk
+	}
+
+	LOG = "** RULE: KURSINFO_AHS $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/kursinfo
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 09								#
+# admin									#
+#########################################################################
+:0
+*$ ^TO_(admin@aston.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: ADMIN $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/innboks
+
+	:0
+	! ahs@rodland.no
+}
+#########################################################################
+# RULE 10								#
+# Stocknet USA-orders 							#
+#########################################################################
+:0
+*$ ($TO_CC):.*(usaordre@stocknet.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: USA $NL"
+
+	:0
+	! ahs@rodland.no
+}
+
+
+#########################################################################
+# RULE 11								#
+# stocklink-dev & test mail.  I don't want those...			#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(\
+		ahs-test|\
+		Log-Server@stocklink.no|\
+		root@quick.aston.no|\
+		stocklink-dev@aston.no|\
+		stocklink-dev@stocklink.no|\
+		stocklink@quick.aston.no|\
+		stocklink@venus.aston.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: JUNK_6 $NL"
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 14								#
+# Mail regarding OBI/OCDF/OSE/ASTS stored in ose-folder			#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(\
+		@cse\.dk|\
+		@oslobors.no|\
+		Bjorn.Simonsen@oslobors.no|\
+		circular.xetra@deutsche-boerse.com|\
+		far@nfmf.no|\
+		Gry.Saetren@oslobors.no|\
+		@kredittilsynet.no|\
+		Gunn.Slettemo@oslobors.no|\
+		info@ose.no|\
+		Information_fra_Brug.*@vp.dk|\
+		Knut.Jakhelln@oslobors.no|\
+		manjana.kvalheim@oslobors.no|\
+		nyhetsbrev@vps.no|\
+		OCDFKunder@ose.no|\
+		otc@nfmf.no|\
+		Oyvind.Skar@oslobors.no|\
+		Oyvind.Skar@oslobors.no|\
+		pbm@nfmf.no|\
+		sti@vps.no|\
+		sverre.maudal@ose.no|\
+		TestcentreSoftwareVendors@ose.no|\
+		webmaster@ose.no|\
+		webmaster@vp.dk)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: OSE_2 $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/ose
+
+        :0 fhw
+        | $FORMAIL -A"$MY_EXC_INFO $NOW"
+
+	:0
+	! ahs@rodland.no
+}
+
+
+#########################################################################
+# RULE 12								#
+# AHS-DEV mails.							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(\
+		$AHS_DEV|\
+		$STOCKNET)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: AHS2 $NL"
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 15								#
+# BB.aston.no								#
+#########################################################################
+:0
+* ^From:.*bb@aston.no
+{
+	LOG = "** RULE: BB.aston $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/bb
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 16								#
+# vakt									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(vakt@aston.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: VAKT $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/vakt
+
+#	:0 c
+#	! vakt@lars-erik.com
+
+	:0
+	! ahs@rodland.no
+}
+
+#########################################################################
+# RULE 16								#
+# utv & aston								#
+#########################################################################
+:0
+* ^TO_(utv@aston.no|aston@aston.no|ansatt2004@stocknet.no)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: UTV-ASTON $NL"
+
+	:0
+	! ahs@rodland.no
+}

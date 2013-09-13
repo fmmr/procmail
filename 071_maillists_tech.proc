@@ -1,0 +1,796 @@
+#########################################################################
+# 	070	mailling-lists		070_maillists.proc		#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
+
+#########################################################################
+# RULE 05 & 06	 							#
+# SuSe maillists							#
+# announce mails in mailliste - the rest in suse			#
+#########################################################################
+:0
+* ^TO_(suse-linux-e@suse|suse-beta-e@suse)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SUSE_1 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* ^Subject:.*(\[SLE\])
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SUSE_2 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 07 & 08								#
+# PHP maillists								#
+#########################################################################
+:0  
+*$ ($TO_FROM):.*(@lists.php.net)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: PHP_1 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0  
+* ^Subject:.*(\[PHP\])
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: PHP_2 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 10								#
+# JAVAWorld maillinglists						#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(\
+		JavaWorld.*@|\
+		JavaWorld@nwfnews.com)
+{
+	LOG = "** RULE: JAVA_WORLD $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 10								#
+# JAVA maillinglists							#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(\
+		@burst.sparklist.com|\
+		javanet@rodland.no|\
+		@dev.java.net|\
+		@hermes.sun.com|\
+		@sqlexplorer.dev.java.net|\
+		JAVARING-INTEREST|\
+		JDC Editorial Staff|\
+		JDC Tech Tips|\
+		JDCBulletin|\
+		JDCNewsLetter|\
+		JDCTechTips|\
+		jikes@.*\.ibm\.com)
+{
+	LOG = "** RULE: JAVA $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# javabin                                                               #
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(web@java\.no|invit@java\.no)
+{
+	LOG = "** RULE: JAVABIN $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# javaspec                                                              #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@javaspecialists.co.za|@javaspecialists.eu)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_JAVASPEC $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# jetbrains                                                             #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(sales@jetbrains.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_JETBRAINS $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# coursera                                                              #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(coursera.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_COURSERA $NL"
+
+	:0
+	0_COURSERA
+}
+
+#########################################################################
+# RULE 11								#
+# RESIN maillist							#
+#########################################################################
+:0
+* ^TO_(resin-interest.*@caucho.com)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: RESIN $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+#########################################################################
+# RULE 12								#
+# Security maillist							#
+#########################################################################
+:0
+*$ ($TO_CC):.*(security-basics@securityfocus.com)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SECURITY_BASIC $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+*$ ($TO_CC):.*(bugtraq@securityfocus.com)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SECURITY_BUG $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+*$ ($TO_CC):.*(@securityfocus.com)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SECURITY $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 13								#
+# Procmail maillists							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(procmail@.*\.RWTH-Aachen.DE)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: PROCMAIL_LIST $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 14 - 18								#
+# Spambayes								#
+#########################################################################
+:0
+* List-Id:[ 	]Discussion list for Pythonic Bayesian classifier
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SPAMBAYES_LISTID $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* List-Id:[ 	]Development of the Pythonic Bayesian classifier
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SPAMBAYES_DEV_LISTID $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* List-Id:[ 	]<spambayes-bugs.python.org>
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SPAMBAYES_BUGS_LISTID $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* ^Subject:.*(\[spambayes.*\])
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SPAMBAYES_SUB $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* ^From:.*spambayes.*@python\.org
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: SPAMBAYES_FROM $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 19 & 20								#
+# checkstyle
+#########################################################################
+:0
+*$ ($TO_FROM):.*(checkstyle.*@.*sourceforge.net)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: CHECKSTYLE-TO $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+:0
+* ^Subject:.*(\[checkstyle\])
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: CHECKSTYLE-SUB $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 21								#
+# Azureus								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(azureus.*@.*\.sourceforge.net)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: AZUREUS_LIST $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+:0
+*$ ($TO_FROM):.*(play-framework@googlegroups.com)
+*$ ! ^TO_($ME)
+{
+        LOG = "** RULE: PLAY $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 5_PLAY"
+
+        :0
+        ! outlook@rodland.no
+}
+
+
+:0
+*$ ($TO_FROM):.*(no-reply@lighthouseapp.com)
+*$ ($TO_FROM):.*(play@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_PLAY_LIGHTHOUSE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 22								#
+# hudson-users, jenkinsci-users, Twitter4J, CustomizeGoogle		#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@googlegroups.com)
+*$ ! ^TO_($ME)
+{
+        LOG = "** RULE: GOOGLE_GROUPS $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+        :0
+        ! outlook@rodland.no
+}
+
+
+#########################################################################
+# RULE 23 & 24								#
+# Razor maillists							#
+#########################################################################
+:0
+* ^TO_(razor-users@lists.sourceforge.net)
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: RAZORLIST_1 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+:0
+* ^Subject:.*(\[Razor-users\])
+*$ ! ^TO_($ME)
+{
+	LOG = "** RULE: RAZORLIST_2 $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+#########################################################################
+# RULE                                                                  #
+# nslu2                                                                 #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(nslu2-linux-owner@yahoogroups.com|\
+		nslu2-linux@yahoogroups.com|\
+		nslu2-developers-owner@yahoogroups.com|\
+		nslu2-developers@yahoogroups.com|\
+		nslu2-general-owner@yahoogroups.com|\
+		nslu2-general@yahoogroups.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_NSLU2 $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# totcmd                                                                #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@ghisler.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_TOTCMD $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# eclipse                                                                #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@eclipse.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_ECLIPSE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# dummies                                                               #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(dummiesdaily.com|etips.dummies.com|dummies@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_DUMMIES $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# dataforeningen                                                        #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@dataforeningen.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_DATAFORENINGEN $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# jakarta                                                               #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@jakarta.apache.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_JAKARTA $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+:0
+* List-Id: "Jakarta Announcements List"
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_JAKARTA_2 $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# lockergnome                                                           #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(administrivia@lockergnome.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_LOCKERG $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# apple									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(noreply@adc.apple.com|News_Europe@insideapple.apple.com|noreply-iphonedev@apple.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_APPLE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# apple mac1								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(webmaster@mac1.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_MAC1 $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# SOLR-COMMIT								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*((dev|java-dev|solr-commits)@lucene.apache.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_SOLR_COMM $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# SOLR									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(solr-dev@lucene.apache.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_SOLR_DEV $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOLR"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# SOLR									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(solr-user@lucene.apache.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_SOLR_USR $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOLR"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# NEW RELIC
+#########################################################################
+:0
+*$ ($TO_FROM):.*(support@newrelic.com|noreply@newrelic.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: NEW RELIC $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! fmr@openadex.com
+}
+
+#########################################################################
+# RULE                                                                  #
+# SOLR									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(solr.*@lucene.apache.org)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_SOLR $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOLR"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# MISC TO 2_READ							#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(agile@collab.net|\
+		aboutme@about.me)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_MISC_TECH $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE 27								#
+# Various PC-maillist that I have joined volonterely			#
+# Special handling for Knut.Carlsen because he matches one of the 	#
+# to-rules								#
+#########################################################################
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(\
+		@itea.ntnu.no|\
+		@listproc.pcworld.com|\
+		newsletters@lm.pcworld.com|\
+		info@ndc2010.no|\
+		@lighthouseapp.com|\
+		sophosenews@sophos.com|\
+		www@sophos.com|\
+		news-alert@sun.com|\
+		@lattix.com|\
+		@lists.sophos.com|\
+		nikant@freemail.gr|\
+		bugzilla@redhat.com|\
+		devnews@sonyericsson.com|\
+		dell_no@dellemea.*com|\
+		dontreply@aksjespillet.no|\
+		emazing.com|\
+		enews@sonicsoftware.com|\
+		filewatch@dell.com|\
+		CNET_Networks_Member_Services@newsletter.online.com|\
+		codem@codemasters.com|\
+		gamepro@gamepro|\
+		iadinfo@sybase.com|\
+		info_emaill@sybase.com|\
+		itwnews@itworld.com|\
+		ITworld.*@itw.itworld.com|\
+		lockergnome@rodland.no|\
+		mailman-owner@www-124.southbury.usf.ibm.com|\
+		newsletter@gozilla.com|\
+		noreply@sourceforge.net|\
+		announce@parallels-universe.com|\
+		office.outpost.com|\
+		palm-announcements@palm.m0.net|\
+		redhat.*@rodland.no|\
+		redhat@info.redhat.com|\
+		redHat@redhat.chtah.com|\
+		redhat@redhat.com|\
+		rhn-admin@rhn.redhat.com|\
+		setiweb@ssl.berkeley.edu|\
+		sonic-enews@sonicsoftware.com|\
+		support@VANDYKE.COM|\
+		suse-announce.*@suse|\
+		newsletter@asap-utilities.com|\
+		TipWorld|\
+		vmwarenews@vmware|\
+		webgain|\
+		Westwood@fun.ea.com|\
+		user@nutch.apache.org|dev@nutch.apache.org|nutch.*@lucene.apache.org|\
+		Windows_SysAdmin_Tips)
+*$ ! ($TO_FROM):.*(vaarsje|carlsen)
+{
+	LOG = "** RULE: PC_MAILLISTE $NL"
+	
+        :0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH"
+
+	:0
+	! outlook@rodland.no
+}
+

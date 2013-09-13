@@ -1,0 +1,161 @@
+#########################################################################
+# 	010	junk		010_junk.proc				#
+#########################################################################
+
+#LOG="ÅÅ§ÅÅ§ Entering junk${NL}"
+
+#########################################################################
+# RULE 01								#
+# E-mails that have no From, To, or subject-fields (VIRUS)		#
+# brackets [] contain one space & one tab				#
+# at least 2 of the following conditions must be met to junk these	#
+# mails									#
+#########################################################################
+:0
+* -1^0
+*  1^0 ^Subject:([ 	]$|$)
+*  1^0 !^Subject:
+*  1^0 ^To:([ 	]$|$)
+*  1^0 !^To:
+*  1^0 ^From:([ 	]$|$)
+*  1^0 !^From:
+{
+	LOG = "** RULE: JUNK-NO SUBJECT $NL"
+
+	:0:
+	$VIRDIR/virus-could-be
+}
+
+
+#########################################################################
+# RULE 02								#
+# Interscan messages							#
+#########################################################################
+:0 B
+* ****** Message from InterScan E-Mail VirusWall NT ******
+{
+        LOG = "** RULE: JUNK-InterScan $NL"
+
+        :0:
+        $VIRDIR/virus-could-be
+}
+
+#########################################################################
+# RULE 03								#
+# Vacation (and like) mails, not to me					#
+#########################################################################
+#:0 HB
+#*$ ! ^TO_($ME)
+#* (\
+#	(er|v=E6re).*(p=E5|av).*(seminar|m=F8te|reise|kontoret)|\
+#	(out|away).*(from|of).*office|\
+#	Automatisk svar n(=E5|ÅÅÂ)r du er borte*|\
+#	er bortevekk til|\
+#	er hjemme i.*dag|\
+#	er ikke p=E5 kontoret|\
+#	frav=E6rende til|\
+#	I am away from the office and will not be reading|\
+#	I am away.*til|\
+#	I will.*be.*(back|office)|\
+#	ikke.*til.*stede.*|\
+#	Jeg .ar fri|\
+#	jeg er (syk|tilbake)|\
+#	out.*of.*office.*|\
+#	recipient address has been removed|\
+#	tilbake p=E5 (jobb|kontoret))
+#{
+#	LOG = "** RULE: JUNK-VACATION $NL"
+#
+#	:0:
+#	$SPAMDIR/junk
+#}
+
+#########################################################################
+# RULE 03								#
+# Delivery reports (to me) will be put in own folder			#
+#########################################################################
+:0
+* ^From:.*(MAILER-DAEMON|postmaster|MDaemon@|dsnadmin@facebook.com)
+* ! ^From:.*(postmaster@dn.no|postmaster@nhst.no|@postmaster.twitter.com)
+{
+	:0
+	*$ ! ^TO_($ME)
+	{
+		LOG = "** RULE: MAILER-DAEMON NOT-TO-ME $NL"
+		
+		:0:
+		$SPAMDIR/junk
+	}
+
+	:0
+	*$ ^TO_($MY_EMAIL_VERIFY)
+	{
+		LOG = "** RULE: MAILER-DAEMON TO-VERIFY $NL"
+		
+		:0:
+		$SPAMDIR/junk
+	}
+
+	LOG = "** RULE: MAILER-DAEMON TO-ME $NL"
+
+        :0
+        ! mailer@rodland.no
+
+#	$DEFAULT
+}
+
+#########################################################################
+# RULE 05								#
+# Mails to junk.*@rodland.no will be junked				#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(junk.*@rodland.no)
+{
+	LOG = "** RULE: JUNK-to junk@rodland $NL"
+
+	:0:
+	$SPAMDIR/junk
+}
+
+#########################################################################
+# RULE 06								#
+# Bothersome meailaddresses						#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(\
+		0005644986@.*com|\
+		@263.net|\
+		@amazingeoffers.com|\
+		@greatoffers11.com|\
+		@hotgirlads.com|\
+		@hotgirlads\.com|\
+		monrodlandhon@rodland.no|\
+		@isthereanymercy.com|\
+		@lolslideshow.com|\
+		@mycoolbargains.com|\
+		@mytotalemail.com|\
+		@optinbargains4u.com|\
+		@rapiddealfinder.com|\
+		@rapiddealsbyemail\.com|\
+		@actionmister.net|\
+		@slamdunkfan.com|\
+		@specialfunoffers.com|\
+		@superduperoffers.com|\
+		@superemailoffers.com|\
+		@vampiress.zzn.com|\
+		@viagra.*\.com|\
+		@whatisthedealanyhoo.com|\
+		@winningteammarketing.com|\
+		@wittyleonards.net|\
+		(ebargains|eHolidaySpecials|email|FreePresent|adultspecials|BigDeals)@mx...*\.....\.com|\
+		(TailWaggingOffer|TopSecret|youask4it2|superdeals1)@mx...*\.....\.com|\
+		brilliantmarketinginc@.*\.(com|net)|\
+		VIAGRA Æ Official Site|\
+		fredrik.rodland@(aol|canada|inbox|yahoo)\.com|\
+		frodland@(email|aol|europe|lycos|inbox|yahoo)\.com)
+{
+	LOG = "** RULE: JUNK-BLACKLIST $NL"
+
+	:0:
+	$SPAMDIR/junk
+}

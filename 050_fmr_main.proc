@@ -1,0 +1,131 @@
+#########################################################################
+# 	050	various		050_fmr_main.proc			#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_main${NL}"
+
+#########################################################################
+# RULE 01								#
+# all remaining mails _from_ me gets in frafmr except these the ones	#
+# mentioned in the first of these 2 rules				#
+#########################################################################
+:0
+*$ ^From:.*($ME)
+*$ ! ^From:.*(andreas|reidar|martin|cecilie|rmr|agr|mmr|$MONA|MAILER-DAEMON.*)
+*  ! ^Subject:.*(stud:)
+* FRAFMR ?? yes
+{
+	LOG = "** RULE: FRAFMR $NL"
+
+	:0:
+	frafmr
+}
+
+:0
+*$ ^From:.*($ME|mona)
+*$ ^To:.*($ME)
+*  ^Subject:.*(regnskap:)
+{
+	LOG = "** RULE: REGNSKAP/SPENN $NL"
+
+	:0:
+	2_SPENN
+}
+
+#########################################################################
+# RULE 02								#
+# Mail from skandiabanken (actually BBS) should go to folder: bank	#
+#########################################################################
+:0
+* ^From:.*(oper@bbs.no|giromail@bbs.no|skandiabanken|bbs-distribusjon@bbs.no|kundeservice@nordnet.no|noreply@nordnet.no)
+* ! ($TO_FROM):.*(efaktura@rodland.no)
+{
+	LOG = "** RULE: BANK $NL"
+
+	:0 c:
+	2_SPENN
+
+	:0:
+	$DEFAULT
+}
+
+:0
+* ($TO_FROM):.*(noreply@acta.anp.se|acta@rodland.no)
+{
+	LOG = "** RULE: BANK $NL"
+
+	:0:
+	2_SPENN
+}
+
+
+
+#########################################################################
+# RULE 03								#
+# triggers on quotes							#
+# Send a copy to mobilpost if the alarm goes on one of the 		#
+# following companies (listed in the Subject-field)			#
+# if only spec. companies add this line:    * ^Subject:.*(DNO)		#
+# only send message if I'm not logged on				#
+#########################################################################
+:0
+*$ ^From:.*(stocknetinfo@stocknet.no)
+*$ ^TO_($ME)
+{
+	LOG = "** RULE: KURSINFO_MOB $NL"
+
+	:0 c
+	* ! ONLINE ?? () still
+	* ^Subject:.*(omsatt)
+	* SEND_SMS ?? yes
+	* ^TO_(stocknet@rodland.no)
+	! $SMS
+
+	:0 c:
+	* ^TO_(stocknet@rodland.no)
+	! outlook@rodland.no
+
+	:0:
+	${MONTH_FOLDER}/kursinfo
+}
+
+
+#########################################################################
+# RULE 04								#
+# Contract notes							#
+# save a coipy in 'aksje', send SMS, and put in DEAFULT			#
+#########################################################################
+:0
+*$ ^From:.*($STOCKNET)
+*$ ^TO_($ME)
+* ^Subject:.*SLUTTSEDDEL
+{
+	LOG = "** RULE: SLUTTSEDDEL $NL"
+
+	:0 c
+	* SEND_SMS ?? yes
+	! $SMS
+
+	:0 c:
+	aksje
+
+	:0:
+	$DEFAULT
+}
+
+#########################################################################
+# RULE 05								#
+# Alert messages from the wlan router at maisen				#
+#########################################################################
+:0
+*$ ^TO_($ME)
+* ^Subject:.*Alert Message!!!
+{
+	LOG = "** RULE: ALERT $NL"
+
+        :0fhw
+	| formail -I "$MY_MAILLIST: 1_CRON"
+
+	:0
+	! outlook@rodland.no
+}

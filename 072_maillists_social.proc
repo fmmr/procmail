@@ -1,0 +1,303 @@
+
+#########################################################################
+# 	072	social-mailling-lists					#
+#########################################################################
+
+#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_social_maillist${NL}"
+
+
+#########################################################################
+# RULE                                                                  #
+# facebook                                                              #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@facebookmail.com|@facebookappmail.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FACEBOOK $NL"
+
+	:0
+	* ^Subject:.*(Facebook account update|new login system|Facebook Update Tool)
+	$SPAMDIR/junk
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# underskog                                                             #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@underskog.no|underskog@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_UNDERSKOG $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# LinkedIn								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@linkedin.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_LINKEDIN $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# XING									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(mailrobot@xing.com|xing@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_XING $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# last.fm								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(@mailer.last.fm|lastfm@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_LASTFM $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# spock									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(donotreply@spock.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_SPOCK $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# spock									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(myspace@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_MYSPACE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# twitter								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(noreply@twitter.com|@twimailer.com|notify@twitter.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_TWITTER $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# lifestream								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(noreply@lifestream.fm)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_LIFESTREAM $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# kongregate								#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(feedback@kongregate.com|kongregate@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_KONGREGATE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# origo									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(varslinger@origo.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_ORIGO $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+#########################################################################
+# RULE                                                                  #
+# origo									#
+#########################################################################
+:0
+*$ ($TO_FROM):.*(postmaster.twitter.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_TWITTER $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+##############
+# Brightkite
+##############
+:0
+*$ ($TO_FROM):.*(no-reply@brightkite.com|brightkite@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_BRIGHTKITE $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+##############
+# Yammer
+##############
+:0
+*$ ($TO_FROM):.*(yammer@yammer.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_YAMMER $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+##############
+# Klout
+##############
+:0
+*$ ($TO_FROM):.*(do-not-reply@klout.com|klout@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_KLOUT $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+##############
+# Flickr
+##############
+:0
+*$ ($TO_FROM):.*(mail@flickr.com|yahoo@rodland.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_FLICKR_YAHOO $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+##############
+# GoWalla
+##############
+:0
+*$ ($TO_FROM):.*(noreply@gowalla.com|\
+		latest@gowalla.com|\
+		support@getglue.com|\
+		updates@flixster.com|\
+		no-reply@runkeeper.com|\
+		digest@getglue.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: MAILLISTE_MISC_SOCIAL $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 4_SOCIAL"
+
+	:0
+	! outlook@rodland.no
+}
+
