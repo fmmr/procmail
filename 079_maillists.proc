@@ -18,6 +18,10 @@
 		dabshop@dabshop.no|\
 		Hafslund_Net.*@postsnet.com|\
 		info@innesvingen.no|\
+		stormberg@questbackcommunicator.com|\
+		@hifiklubben.no|\
+		newsletter@email.lumosity.com|\
+		newsletter@voddler.com|\
 		@allimant.org|\
 		confirm@egullet.org|\
 		info@newsgator.com|\
@@ -204,13 +208,15 @@
 *$ ($TO_FROM):.*(verktoyforumet@gmail.com|\
 		noreply@baatplassen.no|\
 		ikkesvar@stormberg.net|\
-		stormberg@questbackcommunicator.com|\
-		newsletter@email.lumosity.com|\
-		newsletter@voddler.com|\
 		@lucidimagination.com|\
 		noreply@newrelic.com|\
-		@hifiklubben.no|\
+		action@ifttt.com|\
 		@reply.github.com|\
+		news@mail.hobbyking.com|\
+		hafslund@nettsvar.no|\
+		emailing@parrot-news.com|\
+		javazone@java.no|\
+		news@e.dx.com|\
 		newsletter@email.threadless.com|\
 		email@email.ononesoftware.com|\
 		info@500px.com|\
