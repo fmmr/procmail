@@ -137,7 +137,6 @@
 		mranheim@progress.com|\
 		nettjobb@nettavisen.no|\
 		newsflash@.*macromedia.com|\
-		newsletter@email.lumosity.com|\
 		newsletter@voddler.com|\
 		Newsstand@iona.com|\
 		noreply@freshmeat.net|\
@@ -218,6 +217,7 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		ikkesvar@stormberg.net|\
+		newsletter@email.lumosity.com|\
 		stormberg@questbackcommunicator.com|\
 		.*info.*@bea.com)
 
