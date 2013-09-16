@@ -201,6 +201,7 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		www@debet.solbors.no|\
+		noreply@jula.se|\
 		.*total.*ml.free.fr)
 {
 	LOG = "** RULE: MISC READ $NL"

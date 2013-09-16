@@ -536,7 +536,7 @@
 	LOG = "** RULE: MAILLISTE_DATAFORENINGEN $NL"
 
 	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
+	| formail -I "$MY_MAILLIST: 6_TECH"
 
 	:0
 	! outlook@rodland.no
