@@ -42,11 +42,8 @@
 {
 	LOG = "** RULE: BANK $NL"
 
-	:0 c:
-	2_SPENN
-
 	:0:
-	$DEFAULT
+	2_SPENN
 }
 
 :0

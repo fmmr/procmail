@@ -134,7 +134,7 @@
 # twitter								#
 #########################################################################
 :0
-*$ ($TO_FROM):.*(noreply@twitter.com|@twimailer.com|notify@twitter.com)
+*$ ($TO_FROM):.*(noreply@twitter.com|@twimailer.com|notify@twitter.com|info@twitter.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: MAILLISTE_TWITTER $NL"

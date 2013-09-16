@@ -9,10 +9,72 @@
 # 2_READ (marked as read)
 # 7_MISC
 
-# Want to read tyhese, put them in outlook inbox
+# Want to read these, put them in outlook inbox
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@lucidimagination.com|\
+		@fun.ea.com|\
+		@lists.php.net|\
+		@vandyke.com|\
+		@willhaben.at|\
+		aogb@moller.no|\
+		beoinfo@bang-olufsen.dk|\
+		click@photojojo.com|\
+		club@pinnaclesys.com|\
+		cpn-editors@canon.cccampaigns.net|\
+		dm@elektroimportoren.no|\
+		emreply@progress.com|\
+		firma@skarpekniver.com|\
+		gamepro.com@.*\.netpower.no|\
+		hilmershus@dbpartner.no|\
+		info@confex.no|\
+		info@eyeone.com|\
+		info@runkeeper.com|\
+		info@whcc.com|\
+		infoeu@niksoftware.com|\
+		info_norway@investtech.com|\
+		Investor Insights|\
+		kontakt@nor.sas.com|\
+		ks@fineart.no|\
+		kundeservice@fineart.no|\
+		liquid@multimediaexpress.no|\
+		Luvbight-owner@yahoogroups.com|\
+		Luvbight@yahoogroups.com|\
+		macheist@rodland.no|\
+		modmyi.com@gmail.com|\
+		news@nvidia.com|\
+		news@offers.bigfoot.com|\
+		newsletter@mailer.altova.com|\
+		newsletter@newsletters.play.com|\
+		newsletter@play.com|\
+		no-reply@dustinhome.no|\
+		no-reply@elprice.no|\
+		no-reply@gametreeonline.com|\
+		noreply@.*\.vmware\.com|\
+		noreply@eurofoto.no|\
+		noreply@fotovideo.no|\
+		noreply@golfstorepro.com|\
+		noreply@worldcommunitygrid.org|\
+		notify2@myheritage.com|\
+		no_reply@elprice.no|\
+		no_reply@sense.com|\
+		nyhetsbrev@dustinhome.no|\
+		nyhetsbrev@japanphoto.no|\
+		Platial_Inc@mail.vresp.com|\
+		post@roedtangen.no|\
+		pressemeldinger@telenor.no|\
+		skinews@skiinfo.com|\
+		smssupport@vianett.com|\
+		smssupport@vianett.no|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		utskick@dustinhome.no|\
+		Visualware@reply.m.*\.net|\
+		webmaster@mac1.no|\
+		weekly@pinterest.com|\
+		Windows_in_the_Enterprise@itw.itworld.com|\
+		wired@rodland.no|\
+		xbox@email.xbox.com|\
+		yatack.no|\
 		@reply.github.com|\
 		action@ifttt.com|\
 		email@email.ononesoftware.com|\
@@ -27,42 +89,6 @@
 		noreply@baatplassen.no|\
 		noreply@newrelic.com|\
 		noreply@tv2.no|\
-		verktoyforumet@gmail.com)
-{
-	LOG = "** RULE: MAILLISTE_BAK $NL"
-
-	:0 c:
-	${MONTH_FOLDER}/mailliste
-
-	:0
-	! outlook@rodland.no
-}
-
-# Want to read tyhese, put them in outlook inbox
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(hafslund@nettsvar.no|\
-		ikkesvar@stormberg.net|\
-			@quora.com)
-{
-	LOG = "** RULE: MAILLISTE_BAK $NL"
-
-	:0 c:
-	${MONTH_FOLDER}/mailliste
-
-	:0fhw
-	| formail -I "$READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-
-# Might want to read these, put them in outlook 2_READ
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(@.*\.vmware\.com|\
-		@allimant.org|\
 		@bruker.sol.no|\
 		@cdsfulfillment.com|\
 		@haux.com|\
@@ -136,10 +162,44 @@
 		sonos@sonos.com|\
 		stocklink@rodland.no|\
 		stocklinkinfo2@stocklink.no|\
-		stormberg@questbackcommunicator.com|\
 		utleie@rodland.no|\
 		wired@email.wired.com|\
 		Wired@wiredmagazine.us|\
+		verktoyforumet@gmail.com)
+{
+	LOG = "** RULE: MAILLISTE_BAK $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/mailliste
+
+	:0
+	! outlook@rodland.no
+}
+
+# Want to read these, put them in outlook inbox, but mark them as read
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(hafslund@nettsvar.no|\
+		@quora.com)
+{
+	LOG = "** RULE: MAILLISTE_BAK $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/mailliste
+
+	:0fhw
+	| formail -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+# Might want to read these, put them in outlook 2_READ
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(@.*\.vmware\.com|\
+		@allimant.org|\
 		www@debet.solbors.no|\
 		.*total.*ml.free.fr)
 {
@@ -155,70 +215,9 @@
 # Might Might want to read these, put them in outlook 2_READ and mark them as read
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(@bounce.email.play.com|\
-		@email.play.com|\
-		@fun.ea.com|\
-		@lists.php.net|\
-		@vandyke.com|\
-		@willhaben.at|\
-		aogb@moller.no|\
-		beoinfo@bang-olufsen.dk|\
-		click@photojojo.com|\
-		club@pinnaclesys.com|\
-		cpn-editors@canon.cccampaigns.net|\
-		dm@elektroimportoren.no|\
-		emreply@progress.com|\
-		firma@skarpekniver.com|\
-		gamepro.com@.*\.netpower.no|\
-		hilmershus@dbpartner.no|\
-		info@confex.no|\
-		info@eyeone.com|\
-		info@runkeeper.com|\
-		info@whcc.com|\
-		infoeu@niksoftware.com|\
-		info_norway@investtech.com|\
-		Investor Insights|\
-		kontakt@nor.sas.com|\
-		ks@fineart.no|\
-		kundeservice@fineart.no|\
-		liquid@multimediaexpress.no|\
-		Luvbight-owner@yahoogroups.com|\
-		Luvbight@yahoogroups.com|\
-		macheist@rodland.no|\
-		modmyi.com@gmail.com|\
-		news@nvidia.com|\
-		news@offers.bigfoot.com|\
-		newsletter@mailer.altova.com|\
-		newsletter@newsletters.play.com|\
-		newsletter@play.com|\
-		no-reply@dustinhome.no|\
-		no-reply@elprice.no|\
-		no-reply@gametreeonline.com|\
-		noreply@.*\.vmware\.com|\
-		noreply@eurofoto.no|\
-		noreply@fotovideo.no|\
-		noreply@golfstorepro.com|\
-		noreply@worldcommunitygrid.org|\
-		notify2@myheritage.com|\
-		no_reply@elprice.no|\
-		no_reply@sense.com|\
-		nyhetsbrev@dustinhome.no|\
-		nyhetsbrev@japanphoto.no|\
-		Platial_Inc@mail.vresp.com|\
-		post@roedtangen.no|\
-		pressemeldinger@telenor.no|\
-		skinews@skiinfo.com|\
-		smssupport@vianett.com|\
-		smssupport@vianett.no|\
-		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
-		utskick@dustinhome.no|\
-		Visualware@reply.m.*\.net|\
-		webmaster@mac1.no|\
-		weekly@pinterest.com|\
-		Windows_in_the_Enterprise@itw.itworld.com|\
-		wired@rodland.no|\
-		xbox@email.xbox.com|\
-		yatack.no|\
+*$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
+		ikkesvar@stormberg.net|\
+		stormberg@questbackcommunicator.com|\
 		.*info.*@bea.com)
 
 {
@@ -234,6 +233,8 @@
 # put the rest og maillists in 7_MISC and mark them as read
 :0
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
+		@bounce.email.play.com|\
+		@email.play.com|\
 		kundeservice@yatack.tk)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
