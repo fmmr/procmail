@@ -59,7 +59,6 @@
 		no_reply@elprice.no|\
 		no_reply@sense.com|\
 		nyhetsbrev@dustinhome.no|\
-		nyhetsbrev@japanphoto.no|\
 		Platial_Inc@mail.vresp.com|\
 		post@roedtangen.no|\
 		pressemeldinger@telenor.no|\
@@ -179,6 +178,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(hafslund@nettsvar.no|\
+		lessons@hackdesign.org|\
 		@quora.com)
 {
 	LOG = "** RULE: MAILLISTE_BAK $NL"
@@ -200,6 +200,7 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		www@debet.solbors.no|\
+		nyhetsbrev@japanphoto.no|\
 		noreply@jula.se|\
 		.*total.*ml.free.fr)
 {
