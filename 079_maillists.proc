@@ -17,6 +17,7 @@
 		@lists.php.net|\
 		@vandyke.com|\
 		@willhaben.at|\
+		ikkesvar@kolonihagen.anp.se|\
 		aogb@moller.no|\
 		beoinfo@bang-olufsen.dk|\
 		click@photojojo.com|\
@@ -48,7 +49,6 @@
 		newsletter@mailer.altova.com|\
 		newsletter@newsletters.play.com|\
 		newsletter@play.com|\
-		no-reply@dustinhome.no|\
 		no-reply@elprice.no|\
 		no-reply@gametreeonline.com|\
 		noreply@.*\.vmware\.com|\
@@ -59,7 +59,6 @@
 		notify2@myheritage.com|\
 		no_reply@elprice.no|\
 		no_reply@sense.com|\
-		nyhetsbrev@dustinhome.no|\
 		Platial_Inc@mail.vresp.com|\
 		post@roedtangen.no|\
 		pressemeldinger@telenor.no|\
@@ -92,7 +91,6 @@
 		@bruker.sol.no|\
 		@cdsfulfillment.com|\
 		@haux.com|\
-		@hifiklubben.no|\
 		@idedata.no|\
 		@poikosoft.com|\
 		@waterproof.fr|\
@@ -137,7 +135,6 @@
 		mranheim@progress.com|\
 		nettjobb@nettavisen.no|\
 		newsflash@.*macromedia.com|\
-		newsletter@voddler.com|\
 		Newsstand@iona.com|\
 		noreply@freshmeat.net|\
 		noreply@googlegroups.com|\
@@ -179,8 +176,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(hafslund@nettsvar.no|\
-		lessons@hackdesign.org|\
-		@quora.com)
+		lessons@hackdesign.org)
 {
 	LOG = "** RULE: MAILLISTE_BAK $NL"
 
@@ -200,8 +196,12 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
+		noreply@casetagram.com|\
 		www@debet.solbors.no|\
+		meetups@500px.com|\
 		nyhetsbrev@japanphoto.no|\
+		digest-noreply@quora.com|\
+		newsletter@voddler.com|\
 		noreply@jula.se|\
 		.*total.*ml.free.fr)
 {
@@ -218,8 +218,12 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
+		mkt@manning.com|\
 		ikkesvar@stormberg.net|\
+		oslo1@hifiklubben.no|\
 		newsletter@email.lumosity.com|\
+		no-reply@dustinhome.no|\
+		nyhetsbrev@dustinhome.no|\
 		stormberg@questbackcommunicator.com|\
 		.*info.*@bea.com)
 
@@ -237,6 +241,7 @@
 :0
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
+		no_reply@colorline.no|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
