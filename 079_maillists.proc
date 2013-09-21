@@ -4,7 +4,6 @@
 
 # PRI
 # outlook inbox
-# outlook inbox (marked as read)
 # 2_READ
 # 2_READ (marked as read)
 # 7_MISC
@@ -13,178 +12,15 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@lucidimagination.com|\
-		@fun.ea.com|\
-		@lists.php.net|\
-		@vandyke.com|\
-		@willhaben.at|\
-		ikkesvar@kolonihagen.anp.se|\
-		aogb@moller.no|\
-		beoinfo@bang-olufsen.dk|\
-		click@photojojo.com|\
-		club@pinnaclesys.com|\
-		cpn-editors@canon.cccampaigns.net|\
-		kursinfo@japanphoto.no|\
-		dm@elektroimportoren.no|\
-		emreply@progress.com|\
-		firma@skarpekniver.com|\
-		gamepro.com@.*\.netpower.no|\
-		hilmershus@dbpartner.no|\
-		info@confex.no|\
-		info@eyeone.com|\
-		info@runkeeper.com|\
-		info@whcc.com|\
-		infoeu@niksoftware.com|\
-		info_norway@investtech.com|\
-		Investor Insights|\
-		kontakt@nor.sas.com|\
-		ks@fineart.no|\
-		kundeservice@fineart.no|\
-		liquid@multimediaexpress.no|\
-		Luvbight-owner@yahoogroups.com|\
-		Luvbight@yahoogroups.com|\
-		macheist@rodland.no|\
-		modmyi.com@gmail.com|\
-		news@nvidia.com|\
-		news@offers.bigfoot.com|\
-		newsletter@mailer.altova.com|\
-		newsletter@newsletters.play.com|\
-		newsletter@play.com|\
-		no-reply@elprice.no|\
-		no-reply@gametreeonline.com|\
-		noreply@.*\.vmware\.com|\
-		noreply@eurofoto.no|\
-		noreply@fotovideo.no|\
-		noreply@golfstorepro.com|\
-		noreply@worldcommunitygrid.org|\
-		notify2@myheritage.com|\
-		no_reply@elprice.no|\
-		no_reply@sense.com|\
-		Platial_Inc@mail.vresp.com|\
-		post@roedtangen.no|\
-		pressemeldinger@telenor.no|\
-		skinews@skiinfo.com|\
-		smssupport@vianett.com|\
-		smssupport@vianett.no|\
-		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
-		utskick@dustinhome.no|\
-		Visualware@reply.m.*\.net|\
-		webmaster@mac1.no|\
-		weekly@pinterest.com|\
-		Windows_in_the_Enterprise@itw.itworld.com|\
-		wired@rodland.no|\
-		xbox@email.xbox.com|\
-		yatack.no|\
-		@reply.github.com|\
-		action@ifttt.com|\
-		email@email.ononesoftware.com|\
-		emailing@parrot-news.com|\
-		enews@email.ononesoftware.com|\
-		info@500px.com|\
-		javazone@java.no|\
-		news@e.dx.com|\
-		news@mail.hobbyking.com|\
-		newsletter@email.threadless.com|\
-		no-reply@news.spotifymail.com|\
-		noreply@baatplassen.no|\
-		noreply@newrelic.com|\
-		noreply@tv2.no|\
-		@bruker.sol.no|\
-		@cdsfulfillment.com|\
-		@haux.com|\
-		@idedata.no|\
-		@poikosoft.com|\
-		@waterproof.fr|\
-		admin@suprnova.iddrive.com|\
-		adsense-no@google.com|\
-		aktive@nuug.no|\
-		altibox@altibox.no|\
-		animoto@rodland.no|\
-		annonsering@nuug.no|\
-		asaputilities-owner@yahoogroups.com|\
-		confirm@egullet.org|\
-		dabshop@dabshop.no|\
-		develooper.com|\
-		dont-reply@foto.no|\
-		dontreply@altibox.no|\
-		eBay-US@reply.ebay.com|\
-		ebay@rodland.no|\
-		enjoy@enjoy.no|\
-		eyefi@rodland.no|\
-		gadgetlab@wired.amgcirc.com|\
-		gadgetlab@wired.dcswx.com|\
-		gadgetlab@wiredmagazine.us|\
-		gpspassion@free.fr|\
-		groupreports@groups.msn.com|\
-		Hafslund_Net.*@postsnet.com|\
-		icesas@jobshop.no|\
-		info@haux.com|\
-		info@innesvingen.no|\
-		info@newsgator.com|\
-		info@nor.sas.com|\
-		info@stepstone.no|\
-		jobbmail@aetat.no|\
-		jobline.no|\
-		key3media_events@xmr3.com|\
-		klara.opdahl@darcy.no|\
-		kundeservice@avanse.no|\
-		kundeservice@comoyo.com|\
-		kundeservice@skagenfondene.no|\
-		lastthursday@ds1.domainspa.com|\
-		marketing@eyeficard.com|\
-		medlemmer@nuug.no|\
-		mranheim@progress.com|\
-		nettjobb@nettavisen.no|\
-		newsflash@.*macromedia.com|\
-		Newsstand@iona.com|\
-		noreply@freshmeat.net|\
-		noreply@googlegroups.com|\
-		noreply@newsletter.eurofoto.no|\
-		notifications@groups.msn.com|\
-		no_gem_reply@dell.com|\
-		nyhetsbrev@vps.no|\
-		oklara@online.no|\
-		oslo-bounces@nmwl.no|\
-		oslo-info-bounces@nmwl.no|\
-		oslo-info-request@nmwl.no|\
-		oslo@bolia.com|\
-		perdanie@online.no|\
-		postmaster@dn.no|\
-		postmaster@nhst.no|\
-		richter@ultraconsulting.com|\
-		shordeaux@waterproof.fr|\
-		sol-nyhetsbrev@asap-asp.net|\
-		Sonos Forums|\
-		Sonos@googlegroups.com|\
-		sonos@sonos.com|\
-		stocklink@rodland.no|\
-		stocklinkinfo2@stocklink.no|\
 		utleie@rodland.no|\
+		verktoyforumet@gmail.com|\
 		wired@email.wired.com|\
-		Wired@wiredmagazine.us|\
-		verktoyforumet@gmail.com)
+		Wired@wiredmagazine.us)
 {
 	LOG = "** RULE: MAILLISTE_BAK $NL"
 
 	:0 c:
 	${MONTH_FOLDER}/mailliste
-
-	:0
-	! outlook@rodland.no
-}
-
-# Want to read these, put them in outlook inbox, but mark them as read
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(hafslund@nettsvar.no|\
-		lessons@hackdesign.org)
-{
-	LOG = "** RULE: MAILLISTE_BAK $NL"
-
-	:0 c:
-	${MONTH_FOLDER}/mailliste
-
-	:0fhw
-	| formail -I "$READ"
 
 	:0
 	! outlook@rodland.no
@@ -196,13 +32,160 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
-		noreply@casetagram.com|\
-		www@debet.solbors.no|\
-		meetups@500px.com|\
-		nyhetsbrev@japanphoto.no|\
+		@bruker.sol.no|\
+		@cdsfulfillment.com|\
+		@fun.ea.com|\
+		@haux.com|\
+		@idedata.no|\
+		@lists.php.net|\
+		@poikosoft.com|\
+		@reply.github.com|\
+		@vandyke.com|\
+		@waterproof.fr|\
+		@willhaben.at|\
+		action@ifttt.com|\
+		admin@suprnova.iddrive.com|\
+		adsense-no@google.com|\
+		aktive@nuug.no|\
+		altibox@altibox.no|\
+		animoto@rodland.no|\
+		annonsering@nuug.no|\
+		aogb@moller.no|\
+		asaputilities-owner@yahoogroups.com|\
+		beoinfo@bang-olufsen.dk|\
+		click@photojojo.com|\
+		club@pinnaclesys.com|\
+		confirm@egullet.org|\
+		cpn-editors@canon.cccampaigns.net|\
+		dabshop@dabshop.no|\
+		develooper.com|\
 		digest-noreply@quora.com|\
+		dm@elektroimportoren.no|\
+		dont-reply@foto.no|\
+		dontreply@altibox.no|\
+		eBay-US@reply.ebay.com|\
+		ebay@rodland.no|\
+		email@email.ononesoftware.com|\
+		emailing@parrot-news.com|\
+		emreply@progress.com|\
+		enews@email.ononesoftware.com|\
+		enjoy@enjoy.no|\
+		eyefi@rodland.no|\
+		firma@skarpekniver.com|\
+		gadgetlab@wired.amgcirc.com|\
+		gadgetlab@wired.dcswx.com|\
+		gadgetlab@wiredmagazine.us|\
+		gamepro.com@.*\.netpower.no|\
+		gpspassion@free.fr|\
+		groupreports@groups.msn.com|\
+		hafslund@nettsvar.no|\
+		Hafslund_Net.*@postsnet.com|\
+		hilmershus@dbpartner.no|\
+		icesas@jobshop.no|\
+		ikkesvar@kolonihagen.anp.se|\
+		info@500px.com|\
+		info@confex.no|\
+		info@eyeone.com|\
+		info@haux.com|\
+		info@innesvingen.no|\
+		info@newsgator.com|\
+		info@nor.sas.com|\
+		info@runkeeper.com|\
+		info@stepstone.no|\
+		info@whcc.com|\
+		infoeu@niksoftware.com|\
+		info_norway@investtech.com|\
+		Investor Insights|\
+		javazone@java.no|\
+		jobbmail@aetat.no|\
+		jobline.no|\
+		key3media_events@xmr3.com|\
+		klara.opdahl@darcy.no|\
+		kontakt@nor.sas.com|\
+		ks@fineart.no|\
+		kundeservice@avanse.no|\
+		kundeservice@comoyo.com|\
+		kundeservice@fineart.no|\
+		kundeservice@skagenfondene.no|\
+		kursinfo@japanphoto.no|\
+		lastthursday@ds1.domainspa.com|\
+		lessons@hackdesign.org|\
+		liquid@multimediaexpress.no|\
+		Luvbight-owner@yahoogroups.com|\
+		Luvbight@yahoogroups.com|\
+		macheist@rodland.no|\
+		marketing@eyeficard.com|\
+		medlemmer@nuug.no|\
+		meetups@500px.com|\
+		modmyi.com@gmail.com|\
+		mranheim@progress.com|\
+		nettjobb@nettavisen.no|\
+		news@e.dx.com|\
+		news@mail.hobbyking.com|\
+		news@nvidia.com|\
+		news@offers.bigfoot.com|\
+		newsflash@.*macromedia.com|\
+		newsletter@email.threadless.com|\
+		newsletter@mailer.altova.com|\
+		newsletter@newsletters.play.com|\
+		newsletter@play.com|\
 		newsletter@voddler.com|\
+		Newsstand@iona.com|\
+		no-reply@elprice.no|\
+		no-reply@gametreeonline.com|\
+		no-reply@news.spotifymail.com|\
+		noreply@.*\.vmware\.com|\
+		noreply@baatplassen.no|\
+		noreply@casetagram.com|\
+		noreply@eurofoto.no|\
+		noreply@fotovideo.no|\
+		noreply@freshmeat.net|\
+		noreply@golfstorepro.com|\
+		noreply@googlegroups.com|\
 		noreply@jula.se|\
+		noreply@newrelic.com|\
+		noreply@newsletter.eurofoto.no|\
+		noreply@tv2.no|\
+		noreply@worldcommunitygrid.org|\
+		notifications@groups.msn.com|\
+		notify2@myheritage.com|\
+		no_gem_reply@dell.com|\
+		no_reply@elprice.no|\
+		no_reply@sense.com|\
+		nyhetsbrev@japanphoto.no|\
+		nyhetsbrev@vps.no|\
+		oklara@online.no|\
+		oslo-bounces@nmwl.no|\
+		oslo-info-bounces@nmwl.no|\
+		oslo-info-request@nmwl.no|\
+		oslo@bolia.com|\
+		perdanie@online.no|\
+		Platial_Inc@mail.vresp.com|\
+		post@roedtangen.no|\
+		postmaster@dn.no|\
+		postmaster@nhst.no|\
+		pressemeldinger@telenor.no|\
+		richter@ultraconsulting.com|\
+		shordeaux@waterproof.fr|\
+		skinews@skiinfo.com|\
+		smssupport@vianett.com|\
+		smssupport@vianett.no|\
+		sol-nyhetsbrev@asap-asp.net|\
+		Sonos Forums|\
+		Sonos@googlegroups.com|\
+		sonos@sonos.com|\
+		stocklink@rodland.no|\
+		stocklinkinfo2@stocklink.no|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		utskick@dustinhome.no|\
+		Visualware@reply.m.*\.net|\
+		webmaster@mac1.no|\
+		weekly@pinterest.com|\
+		Windows_in_the_Enterprise@itw.itworld.com|\
+		wired@rodland.no|\
+		www@debet.solbors.no|\
+		xbox@email.xbox.com|\
+		yatack.no|\
 		.*total.*ml.free.fr)
 {
 	LOG = "** RULE: MISC READ $NL"
@@ -226,7 +209,6 @@
 		nyhetsbrev@dustinhome.no|\
 		stormberg@questbackcommunicator.com|\
 		.*info.*@bea.com)
-
 {
 	LOG = "** RULE: MISC READ $NL"
 
@@ -239,12 +221,12 @@
 
 # put the rest og maillists in 7_MISC and mark them as read
 :0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
         LOG = "** RULE: POLICE $NL"
 
