@@ -83,7 +83,7 @@ KNOWN_DOMAINS   = (openadexchange\.net|(skogdata|finn|fast|finntech|rodland|lavt
 SPAM_DOMAINS	= daum\.net|nate\.com|hanmail\.net|ybb\.ne\.jp|yahoo\.co\.jp|hotmail\.co\.jp|job\.com|experteer\.com|international-job-search\.com
 SPAM_ADR	= inet@microsoft.com|totcmddd@rodland.no
 SPAM_ADR_ROD	= "(tcmd|totcmd|arthurclulow|biuro|dwrodlandm|qswcmona|tgvmona|helen|adam|anna|george|joe|peter|alex|brian|jack|james|matt|mike|steve|andrew|sam|brent|claudia|dave|jerry|jim|michael|robert|serg|tom|bill|debby|jane|john|jose|julie|mary|ray|sandra|smith|stan|brenda|dan|jimmy|maria|alice|linda|leo|bob|david|kevin|samrodlandwog|gilrodlandfow|mbam)@rodland.no"
-OK_ADR_ROD	= "(drobo|logwatch|mona|reidar|rmr|martin|fredrik|fmr|cecilie|cmr|andreas|vps|sonos|eurocon|twitterbot)@rodland\.no"
+OK_ADR_ROD	= "(drobo|nas|logwatch|mona|reidar|rmr|martin|fredrik|fmr|cecilie|cmr|andreas|vps|sonos|eurocon|twitterbot|anniken)@rodland\.no"
 
 #########################################################################
 # Variables used when matching						#

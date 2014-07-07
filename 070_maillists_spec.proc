@@ -459,7 +459,7 @@
 }
 
 :0
-*$ ($TO_FROM):.*(newsletter@ifttt.com)
+*$ ($TO_FROM):.*(newsletter@ifttt.com|dailydigest@ifttt.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: 9_misc/MAILLISTE_IFTTT $NL"

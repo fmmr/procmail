@@ -146,6 +146,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(martin@rodland.no)
+* ! ^From:.*(martin@rodland.no)
 {
  	LOG = "** RULE: MARTIN $NL"
         
@@ -161,6 +162,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(anniken@rodland.no)
+* ! ^From:.*(anniken@rodland.no)
 {
  	LOG = "** RULE: ANNIKEN $NL"
         
