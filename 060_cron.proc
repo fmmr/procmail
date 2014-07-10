@@ -157,3 +157,19 @@
         :0
         ! outlook@rodland.no
 }
+
+#########################################################################
+# RULE 									#
+# R23 router-msg							#
+#########################################################################
+:0
+*$ ^To:.*(cron@rodland.no)
+{
+	LOG = "** RULE: TO_CRON $NL"
+
+        :0fhw
+        | formail -I "$MY_MAILLIST: 1_CRON"
+ 
+        :0
+        ! outlook@rodland.no
+}
