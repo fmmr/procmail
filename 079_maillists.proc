@@ -14,6 +14,7 @@
 *$ ($TO_FROM):.*(@lucidimagination.com|\
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
+		utskick@dustinhome.no|\
 		wired@email.wired.com|\
 		Wired@wiredmagazine.us)
 {
@@ -177,7 +178,6 @@
 		stocklink@rodland.no|\
 		stocklinkinfo2@stocklink.no|\
 		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
-		utskick@dustinhome.no|\
 		Visualware@reply.m.*\.net|\
 		webmaster@mac1.no|\
 		weekly@pinterest.com|\
@@ -205,8 +205,6 @@
 		ikkesvar@stormberg.net|\
 		oslo1@hifiklubben.no|\
 		newsletter@email.lumosity.com|\
-		no-reply@dustinhome.no|\
-		nyhetsbrev@dustinhome.no|\
 		stormberg@questbackcommunicator.com|\
 		.*info.*@bea.com)
 {
@@ -226,6 +224,8 @@
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
 		email.campaign@sg.booking.com|\
+		no-reply@dustinhome.no|\
+		nyhetsbrev@dustinhome.no|\
 		hit-reply@booking.com|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
