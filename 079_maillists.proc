@@ -225,6 +225,7 @@
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
+		email.campaign@sg.booking.com|\
 		hit-reply@booking.com|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
