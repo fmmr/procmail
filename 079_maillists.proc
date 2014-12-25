@@ -15,7 +15,6 @@
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
 		reply.*@et.uber.com|\
-		@sender.runkeeper.com|\
 		utskick@dustinhome.no|\
 		wired@email.wired.com|\
 		Wired@wiredmagazine.us)
@@ -53,6 +52,7 @@
 		altibox@altibox.no|\
 		animoto@rodland.no|\
 		annonsering@nuug.no|\
+		@email.vimeo.com|\
 		aogb@moller.no|\
 		asaputilities-owner@yahoogroups.com|\
 		beoinfo@bang-olufsen.dk|\
@@ -93,7 +93,6 @@
 		info@innesvingen.no|\
 		info@newsgator.com|\
 		info@nor.sas.com|\
-		info@runkeeper.com|\
 		info@stepstone.no|\
 		info@whcc.com|\
 		infoeu@niksoftware.com|\
@@ -205,6 +204,7 @@
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
 		ikkesvar@stormberg.net|\
+		@bounce.email.vimeo.com|\
 		oslo1@hifiklubben.no|\
 		newsletter@email.lumosity.com|\
 		stormberg@questbackcommunicator.com|\

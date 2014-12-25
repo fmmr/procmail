@@ -288,7 +288,10 @@
 		latest@gowalla.com|\
 		support@getglue.com|\
 		updates@flixster.com|\
+		info@runkeeper.com|\
 		no-reply@runkeeper.com|\
+		@sender.runkeeper.com|\
+		@mg.runkeeper.com|\
 		digest@getglue.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
