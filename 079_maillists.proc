@@ -14,6 +14,9 @@
 *$ ($TO_FROM):.*(@lucidimagination.com|\
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
+		edm@scandinavianphoto.no|\
+		venstre@venstre.no|\
+		account@untappd.com|\
 		notifications@bandsintown.com|\
 		reply.*@et.uber.com|\
 		utskick@dustinhome.no|\
@@ -36,10 +39,15 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		@bruker.sol.no|\
+		info@craftandvision.com|\
 		@cdsfulfillment.com|\
 		@fun.ea.com|\
+		noreply@nationaltheatret.anpdm.com|\
+		salg@nationaltheatret.no|\
 		@haux.com|\
 		@idedata.no|\
+		info@mailer.netflix.com|\
+		notifications@ello.co|\
 		@lists.php.net|\
 		@poikosoft.com|\
 		@reply.github.com|\
@@ -136,6 +144,7 @@
 		Newsstand@iona.com|\
 		no-reply@elprice.no|\
 		no-reply@gametreeonline.com|\
+		News@InsideApple.Apple.com|\
 		no-reply@news.spotifymail.com|\
 		noreply@.*\.vmware\.com|\
 		noreply@baatplassen.no|\
@@ -204,8 +213,10 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
+		@nb.stormberg.com|\
 		ikkesvar@stormberg.net|\
 		@bounce.email.vimeo.com|\
+		no-reply@yelp.com|\
 		oslo1@hifiklubben.no|\
 		newsletter@email.lumosity.com|\
 		@email.gopro.com|\
@@ -228,8 +239,10 @@
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
 		email.campaign@sg.booking.com|\
+		newsletter@go.dustin.eu|\
 		no-reply@dustinhome.no|\
 		nyhetsbrev@dustinhome.no|\
+		info@e.mittanbud.no|\
 		hit-reply@booking.com|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
