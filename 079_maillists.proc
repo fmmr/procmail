@@ -213,6 +213,7 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
+		stormbergno@nb.stormberg.com|\
 		@nb.stormberg.com|\
 		ikkesvar@stormberg.net|\
 		@bounce.email.vimeo.com|\
