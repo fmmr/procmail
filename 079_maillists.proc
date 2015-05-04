@@ -14,6 +14,8 @@
 *$ ($TO_FROM):.*(@lucidimagination.com|\
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
+		xxl@communicatoremail.com|\
+		info@alfredforum.com|\
 		edm@scandinavianphoto.no|\
 		venstre@venstre.no|\
 		account@untappd.com|\
@@ -39,6 +41,7 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		@bruker.sol.no|\
+		no-reply@dropboxmail.com|\
 		info@craftandvision.com|\
 		@cdsfulfillment.com|\
 		@fun.ea.com|\
@@ -214,6 +217,7 @@
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
 		stormbergno@nb.stormberg.com|\
+		info@learn2.no|\
 		@nb.stormberg.com|\
 		ikkesvar@stormberg.net|\
 		@bounce.email.vimeo.com|\
