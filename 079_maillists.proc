@@ -42,8 +42,10 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		@bruker.sol.no|\
+		hello@getpocket.com|\
 		no-reply@dropboxmail.com|\
 		info@craftandvision.com|\
+		no-reply@duolingo.com|\
 		@cdsfulfillment.com|\
 		@fun.ea.com|\
 		noreply@nationaltheatret.anpdm.com|\
@@ -188,6 +190,7 @@
 		smssupport@vianett.no|\
 		sol-nyhetsbrev@asap-asp.net|\
 		Sonos Forums|\
+		no-reply@email.sonos.com|\
 		Sonos@googlegroups.com|\
 		sonos@sonos.com|\
 		stocklink@rodland.no|\
@@ -218,12 +221,17 @@
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
 		stormbergno@nb.stormberg.com|\
-		info@learn2.no|\
 		@nb.stormberg.com|\
+		weekly@explore.pinterest.com|\
+		info@learn2.no|\
+		email@mail1.prezi.com|\
+		@nb.stormberg.com|\
+		kundeservice@penger.no|\
 		ikkesvar@stormberg.net|\
 		@bounce.email.vimeo.com|\
 		no-reply@yelp.com|\
 		oslo1@hifiklubben.no|\
+		tove.dahl.gulichsen@ullensaker.kommune.no|\
 		informasjon.cc@elkjop.no|\
 		cdon@bounce.cdongroup.com|\
 		nyhetsbrev@cdon.no|\

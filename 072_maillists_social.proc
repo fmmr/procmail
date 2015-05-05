@@ -250,7 +250,7 @@
 # Klout
 ##############
 :0
-*$ ($TO_FROM):.*(do-not-reply@klout.com|klout@rodland.no|Klout@kloutmail.com|@kloutmail.com)
+*$ ($TO_FROM):.*(do-not-reply@klout.com|klout@rodland.no|Klout@kloutmail.com|@kloutmail.com|Klout@kloutmail.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: MAILLISTE_KLOUT $NL"
