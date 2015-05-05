@@ -14,6 +14,7 @@
 *$ ($TO_FROM):.*(@lucidimagination.com|\
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
+		ikkesvar@kolonihagen.anp.se|\
 		xxl@communicatoremail.com|\
 		info@alfredforum.com|\
 		edm@scandinavianphoto.no|\
@@ -77,7 +78,6 @@
 		cpn-editors@canon.cccampaigns.net|\
 		dabshop@dabshop.no|\
 		develooper.com|\
-		digest-noreply@quora.com|\
 		dm@elektroimportoren.no|\
 		dont-reply@foto.no|\
 		dontreply@altibox.no|\
@@ -86,7 +86,6 @@
 		email@email.ononesoftware.com|\
 		emailing@parrot-news.com|\
 		emreply@progress.com|\
-		enews@email.ononesoftware.com|\
 		enjoy@enjoy.no|\
 		eyefi@rodland.no|\
 		firma@skarpekniver.com|\
@@ -100,7 +99,6 @@
 		Hafslund_Net.*@postsnet.com|\
 		hilmershus@dbpartner.no|\
 		icesas@jobshop.no|\
-		ikkesvar@kolonihagen.anp.se|\
 		info@500px.com|\
 		info@confex.no|\
 		info@eyeone.com|\
@@ -155,14 +153,12 @@
 		noreply@.*\.vmware\.com|\
 		noreply@baatplassen.no|\
 		noreply@casetagram.com|\
-		noreply@eurofoto.no|\
 		noreply@fotovideo.no|\
 		noreply@freshmeat.net|\
 		noreply@golfstorepro.com|\
 		noreply@googlegroups.com|\
 		noreply@jula.se|\
 		noreply@newrelic.com|\
-		noreply@newsletter.eurofoto.no|\
 		noreply@tv2.no|\
 		noreply@worldcommunitygrid.org|\
 		notifications@groups.msn.com|\
@@ -176,7 +172,6 @@
 		oslo-bounces@nmwl.no|\
 		oslo-info-bounces@nmwl.no|\
 		oslo-info-request@nmwl.no|\
-		oslo@bolia.com|\
 		perdanie@online.no|\
 		Platial_Inc@mail.vresp.com|\
 		post@roedtangen.no|\
@@ -195,12 +190,10 @@
 		sonos@sonos.com|\
 		stocklink@rodland.no|\
 		stocklinkinfo2@stocklink.no|\
-		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
 		Visualware@reply.m.*\.net|\
 		webmaster@mac1.no|\
 		weekly@pinterest.com|\
 		Windows_in_the_Enterprise@itw.itworld.com|\
-		wired@rodland.no|\
 		www@debet.solbors.no|\
 		xbox@email.xbox.com|\
 		yatack.no|\
@@ -222,15 +215,19 @@
 		mkt@manning.com|\
 		stormbergno@nb.stormberg.com|\
 		@nb.stormberg.com|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
 		weekly@explore.pinterest.com|\
+		noreply@eurofoto.no|\
+		noreply@newsletter.eurofoto.no|\
 		info@learn2.no|\
+		oslo@bolia.com|\
 		email@mail1.prezi.com|\
 		@nb.stormberg.com|\
+		enews@email.ononesoftware.com|\
 		kundeservice@penger.no|\
 		ikkesvar@stormberg.net|\
 		@bounce.email.vimeo.com|\
 		no-reply@yelp.com|\
-		oslo1@hifiklubben.no|\
 		tove.dahl.gulichsen@ullensaker.kommune.no|\
 		informasjon.cc@elkjop.no|\
 		cdon@bounce.cdongroup.com|\
@@ -257,13 +254,16 @@
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
+		oslo1@hifiklubben.no|\
 		email.campaign@sg.booking.com|\
 		newsletter@go.dustin.eu|\
 		noreply@foursquare.com|\
 		weekly@explore.pinterest.com|\
+		digest-noreply@quora.com|\
 		no-reply@dustinhome.no|\
 		nyhetsbrev@dustinhome.no|\
 		info@e.mittanbud.no|\
+		newsletter@thescene.com|\
 		hit-reply@booking.com|\
 		@email.play.com|\
 		kundeservice@yatack.tk)

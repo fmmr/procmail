@@ -214,7 +214,7 @@
 	LOG = "** RULE: 9_misc/MAILLISTE_NTNU $NL"
 
 	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
+        | formail -I "$READ" -I "$MY_MAILLIST: 2_READ"
 
 	:0
 	! outlook@rodland.no
@@ -403,7 +403,7 @@
 	LOG = "** RULE: 9_misc/MAILLISTE_INTERIOR $NL"
 
 	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
+        | formail -I "$READ" -I "$MY_MAILLIST: 2_READ"
 
 	:0
 	! outlook@rodland.no
