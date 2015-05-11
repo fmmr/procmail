@@ -171,8 +171,11 @@
 {
 	LOG = "** RULE: MAILLISTE_COURSERA $NL"
 
+        :0fhw
+        | formail -I "$READ"
+
 	:0
-	0_COURSERA
+	6_COURSERA
 }
 
 #########################################################################

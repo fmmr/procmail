@@ -95,7 +95,6 @@ SKIP_SMS	= "$PUT_DEFAULT"
 SMS		= "99219817@mobilpost.no"
 STOCKNET	= "(velkommen|kunde?n?(service|dienst)|stocknet(info)?|support|maklare)@(stocknet|aston)\.(no|se|de|dk|com|fr)"
 STOCKLINK	= "stocklink@aston|stocklink@stocklink|redaksjonen@stocklink"
-AHS_DEV		= "maildaemon@stocknet.no|ahs-dev@aston.no|root@aston.no|stocknet@|stocknet-dev@|sybase@aston.no|whatsup@|@investtech.com|vpshandler@stocknet.no|SAXESS@aston.no"
 MY_CRON_D	= "(fail2ban|logwatch|nobody|root|twitterbot)@(mail\.|maisen\.)?rodland\.no|((fmr|root)@rodland.no|frerodla@.*) \(Cron Daemon\)"
 
 #########################################################################
