@@ -92,6 +92,7 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
 		@burst.sparklist.com|\
+		replies@oracle-mail.com|\
 		javanet@rodland.no|\
 		@dev.java.net|\
 		@hermes.sun.com|\
