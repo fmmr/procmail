@@ -44,10 +44,12 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		@bruker.sol.no|\
+		bot@heroku.com|\
 		hello@getpocket.com|\
 		no-reply@dropboxmail.com|\
 		info@craftandvision.com|\
 		no-reply@duolingo.com|\
+		noreply@blizzard.com|\
 		@cdsfulfillment.com|\
 		@fun.ea.com|\
 		noreply@nationaltheatret.anpdm.com|\
@@ -226,6 +228,7 @@
 		noreply@newsletter.eurofoto.no|\
 		info@learn2.no|\
 		oslo@bolia.com|\
+		kulturhuset@baerum.kommune.no|\
 		email@mail1.prezi.com|\
 		@nb.stormberg.com|\
 		enews@email.ononesoftware.com|\
