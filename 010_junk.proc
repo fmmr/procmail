@@ -144,6 +144,11 @@
 		@superemailoffers.com|\
 		@vampiress.zzn.com|\
 		@viagra.*\.com|\
+		@c-date.no|\
+                @erovie.no|\
+                sidesprang.no|\
+                sexgangsters.com|\
+                utleie@rodland.no|\
 		@whatisthedealanyhoo.com|\
 		@winningteammarketing.com|\
 		@wittyleonards.net|\
@@ -159,3 +164,5 @@
 	:0:
 	$SPAMDIR/junk
 }
+
+
