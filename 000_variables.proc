@@ -90,7 +90,7 @@ OK_ADR_ROD	= "(drobo|nas|logwatch|mona|reidar|rmr|martin|fredrik|fmr|cecilie|cmr
 #########################################################################
 MONA		= "mona"
 ME		= "(fmr|fredrik|frodland|fredrik\.rodland)@((mail\.|ally\.)?rodland\.no|fast\.no|fastsearch\.com)"
-PUT_DEFAULT	= "vps@rodland.no|ansatt2004@stocknet.no|siemens@rodland.no|farvelabben@rodland.no"
+PUT_DEFAULT	= "vps@rodland.no|ansatt2004@stocknet.no|siemens@rodland.no|farvelabben@rodland.no|@boards.trello.com"
 SKIP_SMS	= "$PUT_DEFAULT"
 SMS		= "99219817@mobilpost.no"
 STOCKNET	= "(velkommen|kunde?n?(service|dienst)|stocknet(info)?|support|maklare)@(stocknet|aston)\.(no|se|de|dk|com|fr)"
