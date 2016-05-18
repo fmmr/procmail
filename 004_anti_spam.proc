@@ -144,7 +144,7 @@
 }
 
 :0fw:hamlock
-| /usr/local/bin/sb_filter.py -d /usr/local/lib/hammie.db 2> /dev/null
+| /usr/local/bin/sb_filter.py -d /usr/local/lib/hammie.db -o Categorization:spam_cutoff:0.8 2> /dev/null
 
 SBSCORE=`$FORMAIL -zxX-Spambayes-Classification:`
 LOG = "** SBSCORE: $SBSCORE $NL"
