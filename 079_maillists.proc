@@ -17,6 +17,7 @@
 		News@jetbrains.com|\
 		ikkesvar@kolonihagen.anp.se|\
 		xxl@communicatoremail.com|\
+		info@verkter.no|\
 		info@alfredforum.com|\
 		edm@scandinavianphoto.no|\
 		venstre@venstre.no|\
@@ -44,6 +45,7 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
+		post@dnd.no|\
 		@bruker.sol.no|\
 		bot@heroku.com|\
 		hello@getpocket.com|\
@@ -185,7 +187,11 @@
 		postmaster@dn.no|\
 		postmaster@nhst.no|\
 		pressemeldinger@telenor.no|\
+		hello@light.co|\
 		richter@ultraconsulting.com|\
+		nyheitsbrev@detnorsketeatret.no|\
+		teater@rodland.no|\
+		info@los.no|\
 		shordeaux@waterproof.fr|\
 		skinews@skiinfo.com|\
 		smssupport@vianett.com|\
@@ -232,6 +238,7 @@
 		@nb.stormberg.com|\
 		@drobo.com|\
 		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		info@themayflowerrotherhithe.co.uk|\
 		weekly@explore.pinterest.com|\
 		innsikt@steria.no|\
 		no-reply@folketeateret.no|\
@@ -241,6 +248,8 @@
 		info@learn2.no|\
 		oslo@bolia.com|\
 		kulturhuset@baerum.kommune.no|\
+		casetagram@rodland.no|\
+		hello@casetify.com|\
 		email@mail1.prezi.com|\
 		info@ndcoslo.com|\
 		@newrelic.com|\

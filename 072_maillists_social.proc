@@ -49,7 +49,7 @@
 # LinkedIn								#
 #########################################################################
 :0
-*$ ($TO_FROM):.*(@linkedin.com)
+*$ ($TO_FROM):.*(@linkedin.com|@e.linkedin.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: MAILLISTE_LINKEDIN $NL"
