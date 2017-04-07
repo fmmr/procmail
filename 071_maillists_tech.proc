@@ -163,23 +163,6 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# coursera                                                              #
-#########################################################################
-:0
-*$ ($TO_FROM):.*(coursera.org)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: MAILLISTE_COURSERA $NL"
-
-        :0fhw
-        | formail -I "$READ"
-
-	:0
-	6_COURSERA
-}
-
-#########################################################################
 # RULE 11								#
 # RESIN maillist							#
 #########################################################################
@@ -737,6 +720,7 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
 		@itea.ntnu.no|\
+		coursera.org|\
 		@listproc.pcworld.com|\
 		newsletters@lm.pcworld.com|\
 		info@ndc2010.no|\
