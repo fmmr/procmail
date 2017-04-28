@@ -126,3 +126,13 @@
 	:0
 	! outlook@rodland.no
 }
+
+
+:0
+* ($TO_FROM):.*(ikkesvar@ruter.no)
+{
+	LOG = "** RULE: RUTER $NL"
+
+	:0:
+	1_SHOPPING
+}
