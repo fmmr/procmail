@@ -129,7 +129,8 @@
 
 
 :0
-* ($TO_FROM):.*(ikkesvar@ruter.no)
+* ^From:.*(ikkesvar@ruter.no)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: RUTER $NL"
 

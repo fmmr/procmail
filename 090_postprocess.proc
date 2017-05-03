@@ -111,7 +111,7 @@ ${MONTH_FOLDER}/innboks
 #	INNBOKS
 #}
 
-VERBOSE=yes
+#VERBOSE=yes
 
 #########################################################################
 # RULE 06								#
@@ -140,7 +140,7 @@ VERBOSE=yes
 	:0
 	! mailer@rodland.no
 }
-VERBOSE=no
+#VERBOSE=no
 
 #########################################################################
 # RULE 07								#
