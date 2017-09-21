@@ -14,9 +14,19 @@
 *$ ($TO_FROM):.*(@lucidimagination.com|\
 		utleie@rodland.no|\
 		verktoyforumet@gmail.com|\
+		noreply@tryggivann.no|\
+		nyhetsbrev@foto.no|\
+		mailer@doodle.com|\
 		News@jetbrains.com|\
+		gjensidige@nettsvar.no|\
+		gjensidige.privat@gjensidige.no|\
+		nas@rodland.no|\
+		Nyhetsbrev@trumf.no|\
 		ikkesvar@kolonihagen.anp.se|\
 		xxl@communicatoremail.com|\
+		nyhetsbrev@xxl.no|\
+		gpluss@gresvig.no|\
+		hello@spotify.com|\
 		info@verkter.no|\
 		info@alfredforum.com|\
 		edm@scandinavianphoto.no|\
@@ -45,17 +55,24 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
+		no_reply@ted.com|\
 		post@dnd.no|\
+		noreply@mailer.bitbucket.org|\
+		@skarpeknivercom.intercom-mail.com|\
+		info@confluent.io|\
+		coders@codingame.com|\
 		@bruker.sol.no|\
 		bot@heroku.com|\
 		hello@getpocket.com|\
 		konferanse@steria.no|\
+		kontakt@minioya.no|\
 		haux@haux.dk|\
 		no-reply@dropboxmail.com|\
 		info@craftandvision.com|\
 		no-reply@duolingo.com|\
 		noreply@blizzard.com|\
 		@cdsfulfillment.com|\
+		noreply@getpocket.com|\
 		@fun.ea.com|\
 		noreply@nationaltheatret.anpdm.com|\
 		salg@nationaltheatret.no|\
@@ -194,6 +211,7 @@
 		teater@rodland.no|\
 		info@los.no|\
 		shordeaux@waterproof.fr|\
+		noreply@tv2sumo.no|\
 		skinews@skiinfo.com|\
 		smssupport@vianett.com|\
 		smssupport@vianett.no|\
@@ -202,7 +220,6 @@
 		no-reply@email.sonos.com|\
 		Sonos@googlegroups.com|\
 		nyhetsbrev@scandinavianphoto.no|\
-		gjensidige.privat@gjensidige.no|\
 		help@pelp.no|\
 		WLoH@scrabbleforbundet.no|\
 		wloh@betr.no|\
@@ -236,9 +253,11 @@
 		mkt@manning.com|\
 		stormbergno@nb.stormberg.com|\
 		marked@bnbank.no|\
+		post@fotojorgen.no|\
 		@nb.stormberg.com|\
 		@drobo.com|\
 		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		info@tegnerforbundet.no|\
 		info@themayflowerrotherhithe.co.uk|\
 		weekly@explore.pinterest.com|\
 		innsikt@steria.no|\
@@ -247,14 +266,18 @@
 		senteret@toppgolf.no|\
 		noreply@newsletter.eurofoto.no|\
 		info@learn2.no|\
+		admin@pastebin.com|\
 		oslo@bolia.com|\
 		kulturhuset@baerum.kommune.no|\
 		casetagram@rodland.no|\
 		hello@casetify.com|\
 		email@mail1.prezi.com|\
 		info@ndcoslo.com|\
+		kundesenter@los.no|\
+		community@email.health.nokia.com|\
 		@newrelic.com|\
 		@nb.stormberg.com|\
+		no-reply@info.rodekors.no|\
 		enews@email.ononesoftware.com|\
 		presse@toothfairy.no|\
 		navionics@navionics.com|\
@@ -289,6 +312,7 @@
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
 		no_reply@colorline.no|\
+		askeladden@navnelapper.no|\
 		plantasjen@ocdlg.com|\
 		@email.holidayautos.com|\
 		@mailing.tradeinn.com|\
