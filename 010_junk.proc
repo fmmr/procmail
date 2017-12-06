@@ -173,6 +173,8 @@
 *$ ($TO_FROM):.*(no-reply@dropbox.com)
 *$ ! ^TO_($ME)
 *$ ! ^TO_(dropbox@rodland.no)
+*$ ! ^TO_(hovik_backup@rodland.no)
+*$ ! ^TO_(db.@rodland.no)
 {
 	LOG = "** RULE: DROPBOX SPAM $NL"
 
