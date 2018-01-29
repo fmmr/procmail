@@ -57,7 +57,6 @@
 		@allimant.org|\
 		no_reply@ted.com|\
 		post@dnd.no|\
-		newsletters.no@email.ecco.com|\
 		noreply@mailer.bitbucket.org|\
 		@skarpeknivercom.intercom-mail.com|\
 		info@confluent.io|\
@@ -73,7 +72,6 @@
 		no-reply@duolingo.com|\
 		noreply@blizzard.com|\
 		@cdsfulfillment.com|\
-		noreply@getpocket.com|\
 		@fun.ea.com|\
 		noreply@nationaltheatret.anpdm.com|\
 		salg@nationaltheatret.no|\
@@ -133,7 +131,6 @@
 		info@newsgator.com|\
 		info@nor.sas.com|\
 		info@stepstone.no|\
-		info@whcc.com|\
 		infoeu@niksoftware.com|\
 		info_norway@investtech.com|\
 		Investor Insights|\
@@ -252,7 +249,6 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
-		stormbergno@nb.stormberg.com|\
 		marked@bnbank.no|\
 		post@fotojorgen.no|\
 		@nb.stormberg.com|\
@@ -268,7 +264,6 @@
 		noreply@newsletter.eurofoto.no|\
 		info@learn2.no|\
 		admin@pastebin.com|\
-		oslo@bolia.com|\
 		kulturhuset@baerum.kommune.no|\
 		casetagram@rodland.no|\
 		hello@casetify.com|\
@@ -292,7 +287,6 @@
 		informasjon.cc@elkjop.no|\
 		cdon@bounce.cdongroup.com|\
 		nyhetsbrev@cdon.no|\
-		hello@whcc.com|\
 		team@kaggle.com|\
 		newsletter@email.lumosity.com|\
 		@email.gopro.com|\
@@ -313,7 +307,13 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(StepStone@StepStone.no|\
 		@bounce.email.play.com|\
+		info@whcc.com|\
+		hello@whcc.com|\
+		stormbergno@nb.stormberg.com|\
+		noreply@getpocket.com|\
 		no_reply@colorline.no|\
+		oslo@bolia.com|\
+		newsletters.no@email.ecco.com|\
 		askeladden@navnelapper.no|\
 		plantasjen@ocdlg.com|\
 		@email.holidayautos.com|\
