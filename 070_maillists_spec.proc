@@ -394,10 +394,7 @@
 #########################################################################
 :0
 *$ ($TO_FROM):.*(business@illumsbolighus.com|\
-		illums@rodland.no|\
-		news.no@list.bolia.com|\
-		bolia@rodland.no|\
-		no-reply@bolia.com)
+		illums@rodland.no)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: 9_misc/MAILLISTE_INTERIOR $NL"
