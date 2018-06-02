@@ -9,6 +9,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
+		@meetup.com|\
 		@polar.com|\
 		@toolstop-online.com|\
 		@venstre.no|\
@@ -17,6 +18,8 @@
 		edm@scandinavianphoto.no|\
 		gjensidige.privat@gjensidige.no|\
 		gjensidige@nettsvar.no|\
+		google@rodland.no|\
+		googlealerts-noreply@google.com|\
 		gpluss@gresvig.no|\
 		hello@spotify.com|\
 		help+newsletter@threadless.com|\
@@ -25,6 +28,9 @@
 		info@verkter.no|\
 		mailer@doodle.com|\
 		nas@rodland.no|\
+		nespresso@emailing.nespresso.com|\
+		nespresso@rodland.no|\
+		news@egullet.org|\
 		News@jetbrains.com|\
 		news@newsle.com|\
 		noreply@prisjakt.no|\

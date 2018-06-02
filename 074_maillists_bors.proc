@@ -2,8 +2,6 @@
 # 	074	bors-mailling-lists		074_maillists_bors.proc	#
 #########################################################################
 
-#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
-
 #########################################################################
 # RULE 25	                                                        #
 # STOCKLINK daily-news mails                                            #

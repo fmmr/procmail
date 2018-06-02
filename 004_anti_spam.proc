@@ -2,9 +2,6 @@
 # 	004	anti-spam-processing					#
 #########################################################################
 
-#LOG="ÅÅ§ÅÅ§ Entering anti-spam${NL}"
-
-
 #
 # The following rules (01, 02, 03, 05) are never used, so I comment them out (20041105)
 #

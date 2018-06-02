@@ -2,8 +2,6 @@
 # 	050	various		050_fmr_main.proc			#
 #########################################################################
 
-#LOG="¤¤ Entering fmr_main${NL}"
-
 #########################################################################
 # RULE 01								#
 # all remaining mails _from_ me gets in frafmr except these the ones	#

@@ -2,8 +2,6 @@
 # 	010	junk		010_junk.proc				#
 #########################################################################
 
-#LOG="ÅÅ§ÅÅ§ Entering junk${NL}"
-
 #########################################################################
 # RULE 01								#
 # E-mails that have no From, To, or subject-fields (VIRUS)		#
@@ -34,10 +32,10 @@
 :0 B
 * ****** Message from InterScan E-Mail VirusWall NT ******
 {
-        LOG = "** RULE: JUNK-InterScan $NL"
+		LOG = "** RULE: JUNK-InterScan $NL"
 
-        :0:
-        $VIRDIR/virus-could-be
+		:0:
+		$VIRDIR/virus-could-be
 }
 
 #########################################################################
@@ -49,7 +47,6 @@
 #* (\
 #	(er|v=E6re).*(p=E5|av).*(seminar|m=F8te|reise|kontoret)|\
 #	(out|away).*(from|of).*office|\
-#	Automatisk svar n(=E5|ÅÅÂ)r du er borte*|\
 #	er bortevekk til|\
 #	er hjemme i.*dag|\
 #	er ikke p=E5 kontoret|\
@@ -98,8 +95,8 @@
 
 	LOG = "** RULE: MAILER-DAEMON TO-ME $NL"
 
-        :0
-        ! mailer@rodland.no
+		:0
+		! mailer@rodland.no
 
 #	$DEFAULT
 }
@@ -145,17 +142,16 @@
 		@vampiress.zzn.com|\
 		@viagra.*\.com|\
 		@c-date.no|\
-                @erovie.no|\
-                sidesprang.no|\
-                sexgangsters.com|\
-                utleie@rodland.no|\
+		@erovie.no|\
+		sidesprang.no|\
+		sexgangsters.com|\
+		utleie@rodland.no|\
 		@whatisthedealanyhoo.com|\
 		@winningteammarketing.com|\
 		@wittyleonards.net|\
 		(ebargains|eHolidaySpecials|email|FreePresent|adultspecials|BigDeals)@mx...*\.....\.com|\
 		(TailWaggingOffer|TopSecret|youask4it2|superdeals1)@mx...*\.....\.com|\
 		brilliantmarketinginc@.*\.(com|net)|\
-		VIAGRA Æ Official Site|\
 		fredrik.rodland@(aol|canada|inbox|yahoo)\.com|\
 		frodland@(email|aol|europe|lycos|inbox|yahoo)\.com)
 {

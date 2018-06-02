@@ -2,7 +2,7 @@
 # 	070	mailling-lists		070_maillists.proc		#
 #########################################################################
 
-#LOG="ÅÅÅ§ÅÅÅ§ Entering fmr_maillist${NL}"
+#LOG="   Entering fmr_maillist${NL}"
 
 #########################################################################
 # RULE 05 & 06	 							#
@@ -729,6 +729,24 @@
 }
 
 #########################################################################
+# RULE																  #
+# gamespot															  #
+#########################################################################
+:0
+*$ ($TO_FROM):.*(newsletters@gamespot.online.com|EAGAMES@fun.ea.com|CNET_Networks_Member_Services@newsletter.online.com|xbox@email.xbox.com)
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+{
+	LOG = "** RULE: 9_misc/MAILLISTE_GAMESPOT $NL"
+
+	:0fhw
+	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
+
+	:0
+	! outlook@rodland.no
+}
+
+
+#########################################################################
 # RULE 27								#
 # Various PC-maillist that I have joined volonterely			#
 # Special handling for Knut.Carlsen because he matches one of the 	#
@@ -800,4 +818,5 @@
 	:0
 	! outlook@rodland.no
 }
+
 

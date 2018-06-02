@@ -10,7 +10,9 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
 		.*info.*@bea.com|\
+		.*skepsis.no|\
 		0@oslonyeteater.com|\
+		@.*\.garmin\.com|\
 		@bounce.email.vimeo.com|\
 		@email.globe.com|\
 		@email.gopro.com|\
@@ -19,13 +21,20 @@
 		@nb.stormberg.com|\
 		@nb.stormberg.com|\
 		admin@pastebin.com|\
+		alumni@ntnu.no|\
+		asbjorn.dyrendal@hf.ntnu.no|\
 		beoinfo@bang-olufsen.dk|\
+		business@illumsbolighus.com|\
+		clas@rodland.no|\
 		community@email.health.nokia.com|\
+		contact@ted.com|\
 		email@mail1.prezi.com|\
 		enews@email.ononesoftware.com|\
 		feedback@email.tripit.com|\
 		Firmapost@email.ticketmaster.no|\
+		garmin@rodland.no|\
 		ikkesvar@stormberg.net|\
+		illums@rodland.no|\
 		info@learn2.no|\
 		info@ndcoslo.com|\
 		info@tegnerforbundet.no|\
@@ -44,7 +53,11 @@
 		no-reply@mail.yelp.com|\
 		no-reply@yelp.com|\
 		noreply-local-guides@google.com|\
+		noreply@googlegroups.com|\
 		noreply@moo.com|\
+		ntnu@rodland.no|\
+		okmyrold@online.no|\
+		post@fartsboks.com|\
 		post@fotojorgen.no|\
 		presse@toothfairy.no|\
 		reply@oreilly.com|\
@@ -56,6 +69,8 @@
 		team@e.fitbit.com|\
 		team@kaggle.com|\
 		teatertilbud@oslonyeteater.com|\
+		TEDcom@mail.*subscribermail.com|\
+		tedcom@rodland.no|\
 		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
 		thepostmanteam@getpostman.com|\
 		tove.dahl.gulichsen@ullensaker.kommune.no|\

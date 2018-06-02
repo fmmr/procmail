@@ -14,22 +14,29 @@
 		@email.play.com|\
 		@mailing.tradeinn.com|\
 		account.notification@kromtech.net|\
+		aperitif.no|\
 		askeladden@navnelapper.no|\
 		bolia@rodland.no|\
 		casetagram@rodland.no|\
 		cdon@bounce.cdongroup.com|\
 		contactus@kiva.org|\
 		digest-noreply@quora.com|\
+		elpriceinfo@elprice.no|\
 		email.campaign@sg.booking.com|\
 		hello@casetify.com|\
 		hello@whcc.com|\
 		hit-reply@booking.com|\
+		idedata@rodland.no|\
+		ikkesvar@netthandelen.no|\
+		ikkesvar@netthandeleninfo.no|\
+		info.*@news.groupon.no|\
 		info@e.mittanbud.no|\
 		info@mail.hotels.com|\
 		info@whcc.com|\
 		info@whiteaway.no|\
 		kundeservice@yatack.tk|\
 		lopd@tradeinn.com|\
+		Luvbight@yahoogroups.com|\
 		news.no@list.bolia.com|\
 		news@edm.dx.com|\
 		news@email.londonandpartners.com|\
@@ -42,19 +49,24 @@
 		noreply@eurofoto.no|\
 		noreply@foursquare.com|\
 		noreply@getpocket.com|\
+		noreply@marinetraffic.com|\
 		noreply@newsletter.eurofoto.no|\
 		notifications@newsletters.ello.co|\
 		no_reply@colorline.no|\
 		nyhetsbrev@cdon.no|\
 		nyhetsbrev@dustinhome.no|\
+		nyhetsmail@idedata.no|\
 		offers@wish.com|\
 		oslo1@hifiklubben.no|\
 		oslo@bolia.com|\
 		plantasjen@ocdlg.com|\
+		police.*xmission.com|\
+		salg@idedata.no|\
+		skinews@skiinfo.com|\
 		StepStone@StepStone.no\
 		stormbergno@nb.stormberg.com|\
 		The.Zetter2@cmp.dotmailer.co.uk|\
-		weekly@explore.pinterest.com|\
+		weekly@explore.pinterest.com\
 )
 {
 	LOG = "** RULE: MISC $NL"
