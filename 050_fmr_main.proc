@@ -37,7 +37,7 @@
 # Mail from skandiabanken (actually BBS) should go to folder: bank	#
 #########################################################################
 :0
-* ^From:.*(oper@bbs.no|giromail@bbs.no|skandiabanken|bbs-distribusjon@bbs.no|kundeservice@nordnet.no|noreply@nordnet.no|varsel@efaktura.no)
+* ^From:.*(oper@bbs.no|giromail@bbs.no|skandiabanken|bbs-distribusjon@bbs.no|kundeservice@nordnet.no|noreply@nordnet.no|varsel@efaktura.no|@sbanken.no)
 * ! ($TO_FROM):.*(efaktura@rodland.no)
 {
 	LOG = "** RULE: BANK $NL"
@@ -47,7 +47,7 @@
 }
 
 :0
-* ($TO_FROM):.*(noreply@acta.anp.se|acta@rodland.no|noreply@bnbank.no)
+* ($TO_FROM):.*(noreply@acta.anp.se|acta@rodland.no|@bnbank.no|@entercard.com|paypal@mail.paypal.no)
 {
 	LOG = "** RULE: BANK $NL"
 
@@ -129,7 +129,7 @@
 
 
 :0
-* ^From:.*(ikkesvar@ruter.no)
+* ^From:.*(ikkesvar@ruter.no|transaction@notice.aliexpress.com)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
 	LOG = "** RULE: RUTER $NL"

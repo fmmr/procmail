@@ -16,7 +16,9 @@
 		verktoyforumet@gmail.com|\
 		noreply@tryggivann.no|\
 		nyhetsbrev@foto.no|\
+		noreply@prisjakt.no|\
 		help+newsletter@threadless.com|\
+		@volvocars.com|\
 		mailer@doodle.com|\
 		News@jetbrains.com|\
 		gjensidige@nettsvar.no|\
@@ -31,7 +33,7 @@
 		info@verkter.no|\
 		info@alfredforum.com|\
 		edm@scandinavianphoto.no|\
-		venstre@venstre.no|\
+		@venstre.no|\
 		news@newsle.com|\
 		@toolstop-online.com|\
 		account@untappd.com|\
@@ -57,15 +59,18 @@
 *$ ($TO_FROM):.*(@.*\.vmware\.com|\
 		@allimant.org|\
 		no_reply@ted.com|\
+		@news.norwegian.com|\
 		post@dnd.no|\
 		gpluss@gsport.no|\
 		noreply@mailer.bitbucket.org|\
 		@skarpeknivercom.intercom-mail.com|\
+		@comms.canon-europe.com|\
 		info@confluent.io|\
 		coders@codingame.com|\
 		thibaud@codingame.com|\
 		info@confluent.io|\
 		@bruker.sol.no|\
+		blurb@makebooks.blurb.com|\
 		bot@heroku.com|\
 		hello@getpocket.com|\
 		lynkurs@soprasteria.no|\
@@ -87,6 +92,7 @@
 		@lists.php.net|\
 		@poikosoft.com|\
 		@reply.github.com|\
+		no-reply@github.com|\
 		@vandyke.com|\
 		@waterproof.fr|\
 		@willhaben.at|\
@@ -255,8 +261,13 @@
 *$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
 		mkt@manning.com|\
 		marked@bnbank.no|\
+		0@oslonyeteater.com|\
 		post@fotojorgen.no|\
 		@nb.stormberg.com|\
+		thepostmanteam@getpostman.com|\
+		Firmapost@email.ticketmaster.no|\
+		success@travis-ci.com|\
+		feedback@email.tripit.com|\
 		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
 		info@tegnerforbundet.no|\
 		info@themayflowerrotherhithe.co.uk|\
@@ -265,6 +276,7 @@
 		no-reply@folketeateret.no|\
 		Velkommen@folketeateret.no|\
 		senteret@toppgolf.no|\
+		team@e.fitbit.com|\
 		info@learn2.no|\
 		admin@pastebin.com|\
 		kulturhuset@baerum.kommune.no|\
@@ -311,6 +323,7 @@
 		cdon@bounce.cdongroup.com|\
 		nyhetsbrev@cdon.no|\
 		stormbergno@nb.stormberg.com|\
+		news@email.londonandpartners.com|\
 		hello@casetify.com|\
 		noreply@getpocket.com|\
 		no_reply@colorline.no|\
@@ -325,23 +338,28 @@
 		email.campaign@sg.booking.com|\
 	        news.no@list.bolia.com|\
 	        bolia@rodland.no|\
+		info@mail.hotels.com|\
                 no-reply@bolia.co|\
+		The.Zetter2@cmp.dotmailer.co.uk|\
 		oslo@bolia.com|\
 		noreply@foursquare.com|\
 		weekly@explore.pinterest.com|\
+		notifications@newsletters.ello.co|\
 		digest-noreply@quora.com|\
 		no-reply@dustinhome.no|\
 		info@whiteaway.no|\
+		news@edm.dx.com|\
 		nyhetsbrev@dustinhome.no|\
 		info@e.mittanbud.no|\
 		newsletter@thescene.com|\
 		noreply@eurofoto.no|\
 		noreply@newsletter.eurofoto.no|\
 		hit-reply@booking.com|\
+		offers@wish.com|\
 		@email.play.com|\
 		kundeservice@yatack.tk)
 {
-        LOG = "** RULE: POLICE $NL"
+        LOG = "** RULE: MISC_EMAILS $NL"
 
         :0fhw
         | formail -I "$MY_MAILLIST: 7_MISC" -I "$READ"

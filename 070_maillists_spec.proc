@@ -307,7 +307,7 @@
 # sonos                                                                 #
 #########################################################################
 :0
-*$ ($TO_FROM):.*(support@sonos.com|sonos@rodland.no|Sonos@googlegroups.com)
+*$ ($TO_FROM):.*(support@sonos.com|sonos@rodland.no|Sonos@googlegroups.com|@sonos.com)
 * ^Subject:.*( update|Reply to Post|Sonos-Dev)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 {
