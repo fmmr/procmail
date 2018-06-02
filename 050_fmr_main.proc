@@ -47,7 +47,7 @@
 }
 
 :0
-* ($TO_FROM):.*(noreply@acta.anp.se|acta@rodland.no|@bnbank.no|@entercard.com|paypal@mail.paypal.no)
+* ($TO_FROM):.*(noreply@acta.anp.se|acta@rodland.no|@bnbank.no|@entercard.com|paypal@mail.paypal.no|@bnbank.no)
 {
 	LOG = "** RULE: BANK $NL"
 
