@@ -1,0 +1,51 @@
+#########################################################################
+# 	080_misc_outlook.proc
+#########################################################################
+
+# PRI
+# outlook inbox
+
+# Want to read these, put them in outlook inbox
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(@lucidimagination.com|\
+		utleie@rodland.no|\
+		verktoyforumet@gmail.com|\
+		noreply@tryggivann.no|\
+		nyhetsbrev@foto.no|\
+		noreply@prisjakt.no|\
+		help+newsletter@threadless.com|\
+		@volvocars.com|\
+		mailer@doodle.com|\
+		News@jetbrains.com|\
+		gjensidige@nettsvar.no|\
+		gjensidige.privat@gjensidige.no|\
+		nas@rodland.no|\
+		Nyhetsbrev@trumf.no|\
+		ikkesvar@kolonihagen.anp.se|\
+		xxl@communicatoremail.com|\
+		nyhetsbrev@xxl.no|\
+		gpluss@gresvig.no|\
+		hello@spotify.com|\
+		info@verkter.no|\
+		info@alfredforum.com|\
+		edm@scandinavianphoto.no|\
+		@venstre.no|\
+		news@newsle.com|\
+		@toolstop-online.com|\
+		account@untappd.com|\
+		notifications@bandsintown.com|\
+		reply.*@et.uber.com|\
+		utskick@dustinhome.no|\
+		wired@email.wired.com|\
+		Wired@wiredmagazine.us)
+{
+	LOG = "** RULE: MAILLISTE_BAK $NL"
+
+	:0 c:
+	${MONTH_FOLDER}/mailliste
+
+	:0
+	! outlook@rodland.no
+}
+

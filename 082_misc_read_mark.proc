@@ -1,0 +1,65 @@
+#########################################################################
+# 	082_misc_read_mark.proc
+#########################################################################
+
+# PRI
+# 2_READ (marked as read)
+
+# Might Might want to read these, put them in outlook 2_READ and mark them as read
+:0
+*$ ! ($TO_FROM):.*($PUT_DEFAULT)
+*$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
+		mkt@manning.com|\
+		marked@bnbank.no|\
+		0@oslonyeteater.com|\
+		post@fotojorgen.no|\
+		@nb.stormberg.com|\
+		thepostmanteam@getpostman.com|\
+		Firmapost@email.ticketmaster.no|\
+		success@travis-ci.com|\
+		feedback@email.tripit.com|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		info@tegnerforbundet.no|\
+		info@themayflowerrotherhithe.co.uk|\
+		weekly@explore.pinterest.com|\
+		innsikt@steria.no|\
+		no-reply@folketeateret.no|\
+		Velkommen@folketeateret.no|\
+		senteret@toppgolf.no|\
+		team@e.fitbit.com|\
+		info@learn2.no|\
+		admin@pastebin.com|\
+		kulturhuset@baerum.kommune.no|\
+		casetagram@rodland.no|\
+		email@mail1.prezi.com|\
+		info@ndcoslo.com|\
+		kundesenter@los.no|\
+		community@email.health.nokia.com|\
+		@nb.stormberg.com|\
+		no-reply@info.rodekors.no|\
+		enews@email.ononesoftware.com|\
+		presse@toothfairy.no|\
+		navionics@navionics.com|\
+		shapeways@shapeways.com|\
+		kundeservice@penger.no|\
+		ikkesvar@stormberg.net|\
+		@bounce.email.vimeo.com|\
+		taco@trello.com|\
+		no-reply@yelp.com|\
+		tove.dahl.gulichsen@ullensaker.kommune.no|\
+		informasjon.cc@elkjop.no|\
+		team@kaggle.com|\
+		newsletter@email.lumosity.com|\
+		@email.gopro.com|\
+		stormberg@questbackcommunicator.com|\
+		.*info.*@bea.com)
+{
+	LOG = "** RULE: MISC READ $NL"
+
+	:0fhw
+	| formail -I "$READ" -I "$MY_MAILLIST: 2_READ"
+
+	:0
+	! outlook@rodland.no
+}
+
