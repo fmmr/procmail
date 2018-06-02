@@ -9,6 +9,7 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
+		@ghisler.com|\
 		@meetup.com|\
 		@polar.com|\
 		@toolstop-online.com|\

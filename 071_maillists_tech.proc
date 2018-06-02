@@ -15,7 +15,7 @@
 {
 	LOG = "** RULE: SUSE_1 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH"
 
 	:0
@@ -28,7 +28,7 @@
 {
 	LOG = "** RULE: SUSE_2 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH"
 
 	:0
@@ -45,7 +45,7 @@
 {
 	LOG = "** RULE: PHP_1 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -58,7 +58,7 @@
 {
 	LOG = "** RULE: PHP_2 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -77,7 +77,7 @@
 {
 	LOG = "** RULE: JAVA_WORLD $NL"
 
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -108,7 +108,7 @@
 {
 	LOG = "** RULE: JAVA $NL"
 
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH"
 
 	:0
@@ -116,42 +116,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# javabin                                                               #
-#########################################################################
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(web@java\.no|invit@java\.no|@lucidworks.com)
-{
-	LOG = "** RULE: JAVABIN $NL"
-
-        :0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# luciworks                                                             #
-#########################################################################
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(@lucidworks.com)
-{
-	LOG = "** RULE: JAVABIN $NL"
-
-        :0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# javaspec                                                              #
+# RULE																  #
+# javaspec															  #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(@javaspecialists.co.za|@javaspecialists.eu)
@@ -164,8 +130,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# jetbrains                                                             #
+# RULE																  #
+# jetbrains															 #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(sales@jetbrains.com)
@@ -190,7 +156,7 @@
 {
 	LOG = "** RULE: RESIN $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -208,7 +174,7 @@
 {
 	LOG = "** RULE: SECURITY_BASIC $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -221,7 +187,7 @@
 {
 	LOG = "** RULE: SECURITY_BUG $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -234,7 +200,7 @@
 {
 	LOG = "** RULE: SECURITY $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -251,7 +217,7 @@
 {
 	LOG = "** RULE: PROCMAIL_LIST $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -268,7 +234,7 @@
 {
 	LOG = "** RULE: SPAMBAYES_LISTID $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -281,7 +247,7 @@
 {
 	LOG = "** RULE: SPAMBAYES_DEV_LISTID $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 2_READ"
 
 	:0
@@ -294,7 +260,7 @@
 {
 	LOG = "** RULE: SPAMBAYES_BUGS_LISTID $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -307,7 +273,7 @@
 {
 	LOG = "** RULE: SPAMBAYES_SUB $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -320,7 +286,7 @@
 {
 	LOG = "** RULE: SPAMBAYES_FROM $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -337,7 +303,7 @@
 {
 	LOG = "** RULE: CHECKSTYLE-TO $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -351,7 +317,7 @@
 {
 	LOG = "** RULE: CHECKSTYLE-SUB $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -368,7 +334,7 @@
 {
 	LOG = "** RULE: AZUREUS_LIST $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -380,13 +346,13 @@
 *$ ($TO_FROM):.*(play-framework@googlegroups.com)
 *$ ! ^TO_($ME)
 {
-        LOG = "** RULE: PLAY $NL"
+		LOG = "** RULE: PLAY $NL"
 
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 5_PLAY"
 
-        :0
-        ! outlook@rodland.no
+		:0
+		! outlook@rodland.no
 }
 
 
@@ -412,13 +378,13 @@
 *$ ($TO_FROM):.*(@googlegroups.com)
 *$ ! ^TO_($ME)
 {
-        LOG = "** RULE: GOOGLE_GROUPS $NL"
+		LOG = "** RULE: GOOGLE_GROUPS $NL"
 
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH"
 
-        :0
-        ! outlook@rodland.no
+		:0
+		! outlook@rodland.no
 }
 
 
@@ -432,7 +398,7 @@
 {
 	LOG = "** RULE: RAZORLIST_1 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -446,7 +412,7 @@
 {
 	LOG = "** RULE: RAZORLIST_2 $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH" -I "$READ"
 
 	:0
@@ -455,8 +421,8 @@
 
 
 #########################################################################
-# RULE                                                                  #
-# nslu2                                                                 #
+# RULE																  #
+# nslu2																 #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(nslu2-linux-owner@yahoogroups.com|\
@@ -477,25 +443,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# totcmd                                                                #
-#########################################################################
-:0
-*$ ($TO_FROM):.*(@ghisler.com)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: MAILLISTE_TOTCMD $NL"
-
-	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# eclipse                                                                #
+# RULE																  #
+# eclipse																#
 #########################################################################
 :0
 *$ ($TO_FROM):.*(@eclipse.org)
@@ -511,8 +460,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# dummies                                                               #
+# RULE																  #
+# dummies															   #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(dummiesdaily.com|etips.dummies.com|dummies@rodland.no)
@@ -528,8 +477,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# dataforeningen                                                        #
+# RULE																  #
+# dataforeningen														#
 #########################################################################
 :0
 *$ ($TO_FROM):.*(@dataforeningen.no)
@@ -545,8 +494,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# jakarta                                                               #
+# RULE																  #
+# jakarta															   #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(@jakarta.apache.org)
@@ -575,8 +524,8 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# lockergnome                                                           #
+# RULE																  #
+# lockergnome														   #
 #########################################################################
 :0
 *$ ($TO_FROM):.*(administrivia@lockergnome.com)
@@ -591,44 +540,11 @@
 	! outlook@rodland.no
 }
 
-#########################################################################
-# RULE                                                                  #
-# apple									#
-#########################################################################
-:0
-*$ ($TO_FROM):.*(noreply@adc.apple.com|News_Europe@insideapple.apple.com|noreply-iphonedev@apple.com)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: MAILLISTE_APPLE $NL"
 
-	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# apple mac1								#
-#########################################################################
-:0
-*$ ($TO_FROM):.*(webmaster@mac1.no)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: MAILLISTE_MAC1 $NL"
-
-	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# SOLR-COMMIT								#
-#########################################################################
+#####################################
+# RULE								#
+# SOLR-COMMIT						#
+#####################################
 :0
 *$ ($TO_FROM):.*((dev|java-dev|solr-commits)@lucene.apache.org)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
@@ -642,10 +558,10 @@
 	! outlook@rodland.no
 }
 
-#########################################################################
-# RULE                                                                  #
-# SOLR									#
-#########################################################################
+#####################################
+# RULE								#
+# SOLR								#
+#####################################
 :0
 *$ ($TO_FROM):.*(solr-dev@lucene.apache.org)
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
@@ -660,7 +576,7 @@
 }
 
 #########################################################################
-# RULE                                                                  #
+# RULE																  #
 # SOLR									#
 #########################################################################
 :0
@@ -677,24 +593,7 @@
 }
 
 #########################################################################
-# RULE                                                                  #
-# NEW RELIC
-#########################################################################
-:0
-*$ ($TO_FROM):.*(support@newrelic.com|noreply@newrelic.com)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: NEW RELIC $NL"
-
-	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
-
-	:0
-	! fmr@openadex.com
-}
-
-#########################################################################
-# RULE                                                                  #
+# RULE																  #
 # SOLR									#
 #########################################################################
 :0
@@ -705,24 +604,6 @@
 
 	:0fhw
 	| formail -I "$MY_MAILLIST: 4_SOLR"
-
-	:0
-	! outlook@rodland.no
-}
-
-#########################################################################
-# RULE                                                                  #
-# MISC TO 2_READ							#
-#########################################################################
-:0
-*$ ($TO_FROM):.*(agile@collab.net|\
-		aboutme@about.me)
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-{
-	LOG = "** RULE: MAILLISTE_MISC_TECH $NL"
-
-	:0fhw
-	| formail -I "$MY_MAILLIST: 2_READ"
 
 	:0
 	! outlook@rodland.no
@@ -798,8 +679,8 @@
 		sonic-enews@sonicsoftware.com|\
 		support@VANDYKE.COM|\
 		support@hipchat.com|\
-                @drobo.com|\
-                @newrelic.com|\
+		@drobo.com|\
+		@newrelic.com|\
 		suse-announce.*@suse|\
 		newsletter@asap-utilities.com|\
 		TipWorld|\
@@ -812,7 +693,7 @@
 {
 	LOG = "** RULE: PC_MAILLISTE $NL"
 	
-        :0fhw
+	:0fhw
 	| formail -I "$MY_MAILLIST: 6_TECH"
 
 	:0
