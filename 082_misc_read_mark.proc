@@ -8,7 +8,7 @@
 # Might Might want to read these, put them in outlook 2_READ and mark them as read
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(|\
+*$ ($TO_FROM):.*(\
 		.*info.*@bea.com|\
 		0@oslonyeteater.com|\
 		@bounce.email.vimeo.com|\
@@ -60,10 +60,10 @@
 		thepostmanteam@getpostman.com|\
 		tove.dahl.gulichsen@ullensaker.kommune.no|\
 		Velkommen@folketeateret.no|\
-		weekly@explore.pinterest.com|\
+		weekly@explore.pinterest.com\
 )
 {
-	LOG = "** RULE: MISC READ $NL"
+	LOG = "** RULE: MISC_READ_MARK $NL"
 
 	:0fhw
 	| formail -I "$READ" -I "$MY_MAILLIST: 2_READ"

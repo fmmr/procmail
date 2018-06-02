@@ -8,7 +8,7 @@
 # put the rest og maillists in 7_MISC and mark them as read
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(|\
+*$ ($TO_FROM):.*(\
 		@bounce.email.play.com|\
 		@email.holidayautos.com|\
 		@email.play.com|\
@@ -52,10 +52,10 @@
 		stormbergno@nb.stormberg.com|\
 		The.Zetter2@cmp.dotmailer.co.uk|\
 		weekly@explore.pinterest.com|\
-		StepStone@StepStone.no|\
+		StepStone@StepStone.no\
 )
 {
-	LOG = "** RULE: MISC_EMAILS $NL"
+	LOG = "** RULE: MISC $NL"
 
 	:0fhw
 	| formail -I "$MY_MAILLIST: 7_MISC" -I "$READ"

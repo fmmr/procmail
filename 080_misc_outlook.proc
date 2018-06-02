@@ -8,7 +8,7 @@
 # Want to read these, put them in outlook inbox
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(|\
+*$ ($TO_FROM):.*(\
 		@polar.com|\
 		@toolstop-online.com|\
 		@venstre.no|\
@@ -39,7 +39,7 @@
 		verktoyforumet@gmail.com|\
 		wired@email.wired.com|\
 		Wired@wiredmagazine.us|\
-		xxl@communicatoremail.com|\
+		xxl@communicatoremail.com\
 )
 {
 	LOG = "** RULE: MAILLISTE_BAK $NL"

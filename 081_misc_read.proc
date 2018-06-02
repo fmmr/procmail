@@ -9,7 +9,7 @@
 # Might want to read these, put them in outlook 2_READ
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(|\
+*$ ($TO_FROM):.*(\
 		.*total.*ml.free.fr|\
 		@.*\.vmware\.com|\
 		@allimant.org|\
@@ -202,10 +202,10 @@
 		WLoH@scrabbleforbundet.no|\
 		www@debet.solbors.no|\
 		xbox@email.xbox.com|\
-		yatack.no|\
+		yatack.no\
 )
 {
-	LOG = "** RULE: MISC READ $NL"
+	LOG = "** RULE: MISC_READ $NL"
 
 	:0fhw
 	| formail -I "$MY_MAILLIST: 2_READ"
