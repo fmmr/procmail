@@ -8,54 +8,58 @@
 # put the rest og maillists in 7_MISC and mark them as read
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(StepStone@StepStone.no|\
+*$ ($TO_FROM):.*(|\
 		@bounce.email.play.com|\
-		info@whcc.com|\
-		hello@whcc.com|\
-		cdon@bounce.cdongroup.com|\
-		nyhetsbrev@cdon.no|\
-		stormbergno@nb.stormberg.com|\
-		news@email.londonandpartners.com|\
-		hello@casetify.com|\
-		noreply@getpocket.com|\
-		no_reply@colorline.no|\
-		newsletters.no@email.ecco.com|\
-		askeladden@navnelapper.no|\
-		plantasjen@ocdlg.com|\
 		@email.holidayautos.com|\
-		@mailing.tradeinn.com|\
-		lopd@tradeinn.com|\
-		contactus@kiva.org|\
-		oslo1@hifiklubben.no|\
-		email.campaign@sg.booking.com|\
-	        news.no@list.bolia.com|\
-	        bolia@rodland.no|\
-		info@mail.hotels.com|\
-                no-reply@bolia.co|\
-		The.Zetter2@cmp.dotmailer.co.uk|\
-		oslo@bolia.com|\
-		noreply@foursquare.com|\
-		weekly@explore.pinterest.com|\
-		notifications@newsletters.ello.co|\
-		digest-noreply@quora.com|\
-		no-reply@dustinhome.no|\
-		info@whiteaway.no|\
-		news@edm.dx.com|\
-		nyhetsbrev@dustinhome.no|\
-		info@e.mittanbud.no|\
-		newsletter@thescene.com|\
-		noreply@eurofoto.no|\
-		noreply@newsletter.eurofoto.no|\
-		hit-reply@booking.com|\
-		offers@wish.com|\
 		@email.play.com|\
-		kundeservice@yatack.tk)
+		@mailing.tradeinn.com|\
+		account.notification@kromtech.net|\
+		askeladden@navnelapper.no|\
+		bolia@rodland.no|\
+		cdon@bounce.cdongroup.com|\
+		contactus@kiva.org|\
+		digest-noreply@quora.com|\
+		email.campaign@sg.booking.com|\
+		hello@casetify.com|\
+		hello@whcc.com|\
+		hit-reply@booking.com|\
+		info@e.mittanbud.no|\
+		info@mail.hotels.com|\
+		info@whcc.com|\
+		info@whiteaway.no|\
+		kundeservice@yatack.tk|\
+		lopd@tradeinn.com|\
+		news.no@list.bolia.com|\
+		news@edm.dx.com|\
+		news@email.londonandpartners.com|\
+		newsletter@news.just-eat.no|\
+		newsletter@thescene.com|\
+		newsletters.no@email.ecco.com|\
+		no-reply@bolia.co|\
+		no-reply@dustinhome.no|\
+		noreply@eurofoto.no|\
+		noreply@foursquare.com|\
+		noreply@getpocket.com|\
+		noreply@newsletter.eurofoto.no|\
+		notifications@newsletters.ello.co|\
+		no_reply@colorline.no|\
+		nyhetsbrev@cdon.no|\
+		nyhetsbrev@dustinhome.no|\
+		offers@wish.com|\
+		oslo1@hifiklubben.no|\
+		oslo@bolia.com|\
+		plantasjen@ocdlg.com|\
+		stormbergno@nb.stormberg.com|\
+		The.Zetter2@cmp.dotmailer.co.uk|\
+		weekly@explore.pinterest.com|\
+		StepStone@StepStone.no|\
+)
 {
-        LOG = "** RULE: MISC_EMAILS $NL"
+	LOG = "** RULE: MISC_EMAILS $NL"
 
-        :0fhw
-        | formail -I "$MY_MAILLIST: 7_MISC" -I "$READ"
+	:0fhw
+	| formail -I "$MY_MAILLIST: 7_MISC" -I "$READ"
 
-        :0
-        ! outlook@rodland.no
+	:0
+	! outlook@rodland.no
 }

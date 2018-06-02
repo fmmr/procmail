@@ -9,43 +9,24 @@
 # Might want to read these, put them in outlook 2_READ
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(@.*\.vmware\.com|\
+*$ ($TO_FROM):.*(|\
+		.*total.*ml.free.fr|\
+		@.*\.vmware\.com|\
 		@allimant.org|\
-		no_reply@ted.com|\
-		@news.norwegian.com|\
-		post@dnd.no|\
-		gpluss@gsport.no|\
-		noreply@mailer.bitbucket.org|\
-		@skarpeknivercom.intercom-mail.com|\
-		@comms.canon-europe.com|\
-		info@confluent.io|\
-		coders@codingame.com|\
-		thibaud@codingame.com|\
-		info@confluent.io|\
 		@bruker.sol.no|\
-		blurb@makebooks.blurb.com|\
-		bot@heroku.com|\
-		hello@getpocket.com|\
-		lynkurs@soprasteria.no|\
-		konferanse@steria.no|\
-		kontakt@minioya.no|\
-		haux@haux.dk|\
-		no-reply@dropboxmail.com|\
-		info@craftandvision.com|\
-		no-reply@duolingo.com|\
-		noreply@blizzard.com|\
 		@cdsfulfillment.com|\
+		@comms.canon-europe.com|\
+		@email.vimeo.com|\
 		@fun.ea.com|\
-		noreply@nationaltheatret.anpdm.com|\
-		salg@nationaltheatret.no|\
 		@haux.com|\
 		@idedata.no|\
-		info@mailer.netflix.com|\
-		notifications@ello.co|\
 		@lists.php.net|\
+		@mubi.com|\
+		@news.lauritz.com|\
+		@news.norwegian.com|\
 		@poikosoft.com|\
 		@reply.github.com|\
-		no-reply@github.com|\
+		@skarpeknivercom.intercom-mail.com|\
 		@vandyke.com|\
 		@waterproof.fr|\
 		@willhaben.at|\
@@ -56,12 +37,14 @@
 		altibox@altibox.no|\
 		animoto@rodland.no|\
 		annonsering@nuug.no|\
-		@email.vimeo.com|\
 		aogb@moller.no|\
 		asaputilities-owner@yahoogroups.com|\
 		beoinfo@bang-olufsen.dk|\
+		blurb@makebooks.blurb.com|\
+		bot@heroku.com|\
 		click@photojojo.com|\
 		club@pinnaclesys.com|\
+		coders@codingame.com|\
 		confirm@egullet.org|\
 		cpn-editors@canon.cccampaigns.net|\
 		dabshop@dabshop.no|\
@@ -81,17 +64,27 @@
 		gadgetlab@wired.dcswx.com|\
 		gadgetlab@wiredmagazine.us|\
 		gamepro.com@.*\.netpower.no|\
+		gpluss@gsport.no|\
 		gpspassion@free.fr|\
 		groupreports@groups.msn.com|\
 		hafslund@nettsvar.no|\
 		Hafslund_Net.*@postsnet.com|\
+		haux@haux.dk|\
+		hello@getpocket.com|\
+		hello@light.co|\
+		help@pelp.no|\
 		hilmershus@dbpartner.no|\
 		icesas@jobshop.no|\
 		info@500px.com|\
 		info@confex.no|\
+		info@confluent.io|\
+		info@confluent.io|\
+		info@craftandvision.com|\
 		info@eyeone.com|\
 		info@haux.com|\
 		info@innesvingen.no|\
+		info@los.no|\
+		info@mailer.netflix.com|\
 		info@newsgator.com|\
 		info@nor.sas.com|\
 		info@stepstone.no|\
@@ -103,6 +96,9 @@
 		jobline.no|\
 		key3media_events@xmr3.com|\
 		klara.opdahl@darcy.no|\
+		konferanse@steria.no|\
+		kontakt@elefun.no|\
+		kontakt@minioya.no|\
 		kontakt@nor.sas.com|\
 		ks@fineart.no|\
 		kundeservice@avanse.no|\
@@ -115,6 +111,7 @@
 		liquid@multimediaexpress.no|\
 		Luvbight-owner@yahoogroups.com|\
 		Luvbight@yahoogroups.com|\
+		lynkurs@soprasteria.no|\
 		macheist@rodland.no|\
 		marketing@eyeficard.com|\
 		medlemmer@nuug.no|\
@@ -123,6 +120,7 @@
 		mranheim@progress.com|\
 		nettjobb@nettavisen.no|\
 		news@e.dx.com|\
+		News@InsideApple.Apple.com|\
 		news@mail.hobbyking.com|\
 		news@nvidia.com|\
 		news@offers.bigfoot.com|\
@@ -133,71 +131,79 @@
 		newsletter@play.com|\
 		newsletter@voddler.com|\
 		Newsstand@iona.com|\
+		no-reply@dropboxmail.com|\
+		no-reply@duolingo.com|\
 		no-reply@elprice.no|\
+		no-reply@email.sonos.com|\
 		no-reply@gametreeonline.com|\
-		News@InsideApple.Apple.com|\
+		no-reply@github.com|\
 		no-reply@news.spotifymail.com|\
 		noreply@.*\.vmware\.com|\
 		noreply@baatplassen.no|\
+		noreply@blizzard.com|\
 		noreply@casetagram.com|\
 		noreply@fotovideo.no|\
 		noreply@freshmeat.net|\
+		noreply@github.com|\
 		noreply@golfstorepro.com|\
 		noreply@googlegroups.com|\
 		noreply@jula.se|\
+		noreply@mailer.bitbucket.org|\
+		noreply@nationaltheatret.anpdm.com|\
 		noreply@tv2.no|\
+		noreply@tv2sumo.no|\
 		noreply@worldcommunitygrid.org|\
+		notifications@ello.co|\
 		notifications@groups.msn.com|\
 		notify2@myheritage.com|\
 		no_gem_reply@dell.com|\
 		no_reply@elprice.no|\
-		kontakt@elefun.no|\
+		no_reply@email.apple.com|\
 		no_reply@sense.com|\
-		@mubi.com|\
+		no_reply@ted.com|\
+		nyheitsbrev@detnorsketeatret.no|\
 		nyhetsbrev@japanphoto.no|\
+		nyhetsbrev@scandinavianphoto.no|\
 		nyhetsbrev@vps.no|\
+		offers@wish.com|\
 		oklara@online.no|\
 		oslo-bounces@nmwl.no|\
 		oslo-info-bounces@nmwl.no|\
 		oslo-info-request@nmwl.no|\
 		perdanie@online.no|\
 		Platial_Inc@mail.vresp.com|\
+		post@dnd.no|\
 		post@roedtangen.no|\
 		postmaster@dn.no|\
 		postmaster@nhst.no|\
 		pressemeldinger@telenor.no|\
-		hello@light.co|\
 		richter@ultraconsulting.com|\
-		nyheitsbrev@detnorsketeatret.no|\
-		teater@rodland.no|\
-		info@los.no|\
+		salg@nationaltheatret.no|\
 		shordeaux@waterproof.fr|\
-		noreply@tv2sumo.no|\
 		skinews@skiinfo.com|\
 		smssupport@vianett.com|\
 		smssupport@vianett.no|\
 		sol-nyhetsbrev@asap-asp.net|\
 		Sonos Forums|\
-		no-reply@email.sonos.com|\
 		Sonos@googlegroups.com|\
-		nyhetsbrev@scandinavianphoto.no|\
-		help@pelp.no|\
-		WLoH@scrabbleforbundet.no|\
-		wloh@betr.no|\
-		venstre@rodland.no|\
-		support@lily.camera|\
 		sonos@sonos.com|\
 		stocklink@rodland.no|\
 		stocklinkinfo2@stocklink.no|\
+		support@lily.camera|\
+		support@yr.no|\
+		teater@rodland.no|\
+		thibaud@codingame.com|\
+		venstre@rodland.no|\
 		Visualware@reply.m.*\.net|\
 		webmaster@mac1.no|\
 		weekly@pinterest.com|\
 		Windows_in_the_Enterprise@itw.itworld.com|\
+		wloh@betr.no|\
+		WLoH@scrabbleforbundet.no|\
 		www@debet.solbors.no|\
 		xbox@email.xbox.com|\
-		offers@wish.com|\
 		yatack.no|\
-		.*total.*ml.free.fr)
+)
 {
 	LOG = "** RULE: MISC READ $NL"
 

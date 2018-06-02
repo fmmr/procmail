@@ -8,51 +8,60 @@
 # Might Might want to read these, put them in outlook 2_READ and mark them as read
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(beoinfo@bang-olufsen.dk|\
-		mkt@manning.com|\
-		marked@bnbank.no|\
+*$ ($TO_FROM):.*(|\
+		.*info.*@bea.com|\
 		0@oslonyeteater.com|\
-		post@fotojorgen.no|\
+		@bounce.email.vimeo.com|\
+		@email.globe.com|\
+		@email.gopro.com|\
+		@emails.plejmo.com|\
 		@nb.stormberg.com|\
-		thepostmanteam@getpostman.com|\
-		Firmapost@email.ticketmaster.no|\
-		success@travis-ci.com|\
+		@nb.stormberg.com|\
+		admin@pastebin.com|\
+		beoinfo@bang-olufsen.dk|\
+		casetagram@rodland.no|\
+		community@email.health.nokia.com|\
+		email@mail1.prezi.com|\
+		enews@email.ononesoftware.com|\
 		feedback@email.tripit.com|\
-		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		Firmapost@email.ticketmaster.no|\
+		ikkesvar@stormberg.net|\
+		info@learn2.no|\
+		info@ndcoslo.com|\
 		info@tegnerforbundet.no|\
 		info@themayflowerrotherhithe.co.uk|\
-		weekly@explore.pinterest.com|\
-		innsikt@steria.no|\
-		no-reply@folketeateret.no|\
-		Velkommen@folketeateret.no|\
-		senteret@toppgolf.no|\
-		team@e.fitbit.com|\
-		info@learn2.no|\
-		admin@pastebin.com|\
-		kulturhuset@baerum.kommune.no|\
-		casetagram@rodland.no|\
-		email@mail1.prezi.com|\
-		info@ndcoslo.com|\
-		kundesenter@los.no|\
-		community@email.health.nokia.com|\
-		@nb.stormberg.com|\
-		no-reply@info.rodekors.no|\
-		enews@email.ononesoftware.com|\
-		presse@toothfairy.no|\
-		navionics@navionics.com|\
-		shapeways@shapeways.com|\
-		kundeservice@penger.no|\
-		ikkesvar@stormberg.net|\
-		@bounce.email.vimeo.com|\
-		taco@trello.com|\
-		no-reply@yelp.com|\
-		tove.dahl.gulichsen@ullensaker.kommune.no|\
 		informasjon.cc@elkjop.no|\
-		team@kaggle.com|\
+		innsikt@steria.no|\
+		kulturhuset@baerum.kommune.no|\
+		kundesenter@los.no|\
+		kundeservice@penger.no|\
+		marked@bnbank.no|\
+		mkt@manning.com|\
+		navionics@navionics.com|\
 		newsletter@email.lumosity.com|\
-		@email.gopro.com|\
+		no-reply@folketeateret.no|\
+		no-reply@info.rodekors.no|\
+		no-reply@mail.yelp.com|\
+		no-reply@yelp.com|\
+		noreply-local-guides@google.com|\
+		noreply@moo.com|\
+		post@fotojorgen.no|\
+		presse@toothfairy.no|\
+		reply@oreilly.com|\
+		senteret@toppgolf.no|\
+		shapeways@shapeways.com|\
 		stormberg@questbackcommunicator.com|\
-		.*info.*@bea.com)
+		success@travis-ci.com|\
+		taco@trello.com|\
+		team@e.fitbit.com|\
+		team@kaggle.com|\
+		teatertilbud@oslonyeteater.com|\
+		tegnerforbundet_invitasjon@lists.tegnerforbundet.no|\
+		thepostmanteam@getpostman.com|\
+		tove.dahl.gulichsen@ullensaker.kommune.no|\
+		Velkommen@folketeateret.no|\
+		weekly@explore.pinterest.com|\
+)
 {
 	LOG = "** RULE: MISC READ $NL"
 
