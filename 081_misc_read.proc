@@ -10,7 +10,6 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
-		.*total.*ml.free.fr|\
 		@.*\.vmware\.com|\
 		@allimant.org|\
 		@bruker.sol.no|\
@@ -21,7 +20,6 @@
 		@haux.com|\
 		@idedata.no|\
 		@lists.php.net|\
-		@mubi.com|\
 		@news.lauritz.com|\
 		@news.norwegian.com|\
 		@poikosoft.com|\
@@ -96,7 +94,6 @@
 		jobline.no|\
 		key3media_events@xmr3.com|\
 		klara.opdahl@darcy.no|\
-		konferanse@steria.no|\
 		kontakt@elefun.no|\
 		kontakt@minioya.no|\
 		kontakt@nor.sas.com|\
@@ -111,7 +108,6 @@
 		liquid@multimediaexpress.no|\
 		Luvbight-owner@yahoogroups.com|\
 		Luvbight@yahoogroups.com|\
-		lynkurs@soprasteria.no|\
 		macheist@rodland.no|\
 		marketing@eyeficard.com|\
 		medlemmer@nuug.no|\
@@ -165,7 +161,6 @@
 		nyhetsbrev@japanphoto.no|\
 		nyhetsbrev@scandinavianphoto.no|\
 		nyhetsbrev@vps.no|\
-		offers@wish.com|\
 		oklara@online.no|\
 		oslo-bounces@nmwl.no|\
 		oslo-info-bounces@nmwl.no|\

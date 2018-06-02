@@ -16,6 +16,7 @@
 		account.notification@kromtech.net|\
 		askeladden@navnelapper.no|\
 		bolia@rodland.no|\
+		casetagram@rodland.no|\
 		cdon@bounce.cdongroup.com|\
 		contactus@kiva.org|\
 		digest-noreply@quora.com|\
@@ -32,6 +33,7 @@
 		news.no@list.bolia.com|\
 		news@edm.dx.com|\
 		news@email.londonandpartners.com|\
+		newsletter@email.lumosity.com|\
 		newsletter@news.just-eat.no|\
 		newsletter@thescene.com|\
 		newsletters.no@email.ecco.com|\
@@ -49,10 +51,10 @@
 		oslo1@hifiklubben.no|\
 		oslo@bolia.com|\
 		plantasjen@ocdlg.com|\
+		StepStone@StepStone.no\
 		stormbergno@nb.stormberg.com|\
 		The.Zetter2@cmp.dotmailer.co.uk|\
 		weekly@explore.pinterest.com|\
-		StepStone@StepStone.no\
 )
 {
 	LOG = "** RULE: MISC $NL"
