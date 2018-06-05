@@ -35,7 +35,7 @@
 # Mail from skandiabanken (actually BBS) should go to folder: bank	#
 #########################################################################
 :0
-* ^From:.*(oper@bbs.no|giromail@bbs.no|skandiabanken|bbs-distribusjon@bbs.no|kundeservice@nordnet.no|noreply@nordnet.no|varsel@efaktura.no|@sbanken.no)
+* ^From:.*(skandiabanken|@bbs.no|varsel@efaktura.no|@sbanken.no|@nordnet.no)
 * ! ($TO_FROM):.*(efaktura@rodland.no)
 {
 	LOG = "** RULE: BANK $NL"

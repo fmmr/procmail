@@ -10,7 +10,9 @@
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
 		@bounce.email.play.com|\
+		info@minnegrossisten.no|\
 		@email.holidayautos.com|\
+		noreply@responsanalyse.no|\
 		@email.play.com|\
 		@mailing.tradeinn.com|\
 		account.notification@kromtech.net|\
@@ -34,7 +36,7 @@
 		ikkesvar@netthandeleninfo.no|\
 		info.*@news.groupon.no|\
 		info@e.mittanbud.no|\
-		info@mail.hotels.com|\
+		@mail.hotels.com|\
 		info@whcc.com|\
 		info@whiteaway.no|\
 		kundeservice@yatack.tk|\

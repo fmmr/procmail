@@ -11,6 +11,8 @@
 *$ ($TO_FROM):.*(\
 		.*info.*@bea.com|\
 		.*skepsis.no|\
+		notifications@bandsintown.com|\
+		@alerts.bandsintown.com|\
 		@oslonyeteater.com|\
 		@.*\.garmin\.com|\
 		feedback@playmagnus.com|\
