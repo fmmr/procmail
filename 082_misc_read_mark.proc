@@ -11,19 +11,19 @@
 *$ ($TO_FROM):.*(\
 		.*info.*@bea.com|\
 		.*skepsis.no|\
-		0@oslonyeteater.com|\
+		@oslonyeteater.com|\
 		@.*\.garmin\.com|\
+		feedback@playmagnus.com|\
 		.*newsletter@threadless.com|\
 		noreply@aenett.no|\
 		@bounce.email.vimeo.com|\
+		notifications@ppt.bandsintown.com|\
 		@dnd.no|\
 		@email.globe.com|\
 		@email.gopro.com|\
 		@emails.plejmo.com|\
 		@mubi.com|\
 		vistaprint@email.vistaprint.no|\
-		@nb.stormberg.com|\
-		@nb.stormberg.com|\
 		admin@pastebin.com|\
 		alumni@ntnu.no|\
 		asbjorn.dyrendal@hf.ntnu.no|\
@@ -37,7 +37,6 @@
 		feedback@email.tripit.com|\
 		Firmapost@email.ticketmaster.no|\
 		garmin@rodland.no|\
-		ikkesvar@stormberg.net|\
 		illums@rodland.no|\
 		info@learn2.no|\
 		info@ndcoslo.com|\
@@ -68,7 +67,6 @@
 		reply@oreilly.com|\
 		senteret@toppgolf.no|\
 		shapeways@shapeways.com|\
-		stormberg@questbackcommunicator.com|\
 		success@travis-ci.com|\
 		support@newrelic.com|\
 		taco@trello.com|\
