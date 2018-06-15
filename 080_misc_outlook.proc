@@ -13,7 +13,6 @@
 		@meetup.com|\
 		@polar.com|\
 		@vertikalhelse.no|\
-		@toolstop-online.com|\
 		coders@codingame.com|\
 		@venstre.no|\
 		@volvocars.com|\
@@ -23,7 +22,6 @@
 		gjensidige@nettsvar.no|\
 		google@rodland.no|\
 		googlealerts-noreply@google.com|\
-		gpluss@gresvig.no|\
 		hello@spotify.com|\
 		help+newsletter@threadless.com|\
 		ikkesvar@kolonihagen.anp.se|\
@@ -40,15 +38,12 @@
 		noreply@tryggivann.no|\
 		nyhetsbrev@foto.no|\
 		Nyhetsbrev@trumf.no|\
-		nyhetsbrev@xxl.no|\
 		reply.*@et.uber.com|\
 		utleie@rodland.no|\
 		utskick@dustinhome.no|\
 		verktoyforumet@gmail.com|\
 		wired@email.wired.com|\
-		Wired@wiredmagazine.us|\
-		xxl@communicatoremail.com\
-)
+		Wired@wiredmagazine.us)
 {
 	LOG = "** RULE: MAILLISTE_BAK $NL"
 
