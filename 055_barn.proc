@@ -5,41 +5,14 @@
 
 #########################################################################
 # 									#
-# Barnehagen								#
-# 									#
-#########################################################################
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(hildemb@hotmail.com|\
-		elisabeth.christensen@baerum.kommune.no|\
-		heidi.tho@baerum.kommune.no|\
-		vibeke.gjertviksten@baerum.kommune.no|\
-		nina.leonthin.elvebakk@baerum.kommune.no|\
-		hovik.barnehage@baerum.kommune.no|\
-		hilde.bolset@baerum.kommune.no)
-{
-	LOG = "** RULE: BARN BARNEHAGE $NL"
-
-	:0
-	1_BARN
-}
-
-#########################################################################
-# 									#
 # Skole									#
 # 									#
 #########################################################################
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(staale@hovikskole.no|\
-		ebba_asperud@hotmail.com|\
-		camilla@infografikk.no|\
+*$ ($TO_FROM):.*(@hovikskole.no|\
 		hovik.skole@baerum.kommune.no|\
-		Tove.Roskaft@akersolutions.com|\
-		www-data@holvika.skoleveven.no|\
-		camilla.berner@broadpark.no|\
-		heleha@online.no|\
-		Lene@dinamo.no)
+		www-data@holvika.skoleveven.no)
 {
 	LOG = "** RULE: BARN SKOLE $NL"
 
@@ -97,29 +70,15 @@
  
 #########################################################################
 #                                                                       #
-# Fotball                                                               #
+# Misc barn                                                             #
 #                                                                       #
 #########################################################################
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(janmartin.holst@dnbnor.no)
+*$ ($TO_FROM):.*(vivi.strehl@logica.com|\
+		leir@oksnoen.no)
 {
- 	LOG = "** RULE: BARN FOTBALL $NL"
-        
-        :0
-        1_BARN
-}
- 
-#########################################################################
-#                                                                       #
-# Fotball                                                               #
-#                                                                       #
-#########################################################################
-:0
-*$ ! ($TO_FROM):.*($PUT_DEFAULT)
-*$ ($TO_FROM):.*(vivi.strehl@logica.com)
-{
- 	LOG = "** RULE: BARN KORPS $NL"
+ 	LOG = "** RULE: BARN MISC $NL"
         
         :0
         1_BARN

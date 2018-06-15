@@ -11,8 +11,13 @@
 *$ ($TO_FROM):.*(\
 		.*info.*@bea.com|\
 		.*skepsis.no|\
+		reply@easyfact.no|\
 		notifications@bandsintown.com|\
+		info@stagewayevent.no|\
 		@alerts.bandsintown.com|\
+		newsletter@email.norwegianreward.com|\
+		telenordialog1@telenor.com|\
+		@bedriftsidrett.no|\
 		@oslonyeteater.com|\
 		@.*\.garmin\.com|\
 		feedback@playmagnus.com|\
@@ -25,6 +30,7 @@
 		@email.gopro.com|\
 		@emails.plejmo.com|\
 		@mubi.com|\
+		vistaprint@tm.vistaprint.no|\
 		vistaprint@email.vistaprint.no|\
 		admin@pastebin.com|\
 		alumni@ntnu.no|\
