@@ -9,9 +9,13 @@
 :0
 *$ ! ($TO_FROM):.*($PUT_DEFAULT)
 *$ ($TO_FROM):.*(\
+		newsletter@email.bikester.com|\
 		@bounce.email.play.com|\
+		nyhetsbrev@gsport.no|\
+		newsletter@email.bikester.no|\
 		info@minnegrossisten.no|\
 		@email.holidayautos.com|\
+		newsletter@email.cdon.com|\
 		noreply@responsanalyse.no|\
 		noreply@email.suunto.com|\
 		@email.play.com|\

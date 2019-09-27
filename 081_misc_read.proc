@@ -12,7 +12,9 @@
 *$ ($TO_FROM):.*(\
 		@.*\.vmware\.com|\
 		@allimant.org|\
+		Nyhetsbrev@nyhetsbrev.trumf.no|\
 		@bruker.sol.no|\
+		noreply@medium.com|\
 		post@musikkflekken.no|\
                 nyhetsbrev@xxl.no|\
 		@emails.ifttt.com|\
