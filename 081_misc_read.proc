@@ -13,14 +13,19 @@
 		@.*\.vmware\.com|\
 		@allimant.org|\
 		Nyhetsbrev@nyhetsbrev.trumf.no|\
+		nyhetsbrev@foto.no|\
 		@bruker.sol.no|\
 		noreply@medium.com|\
+		@email.threadless.com|\
+		@threadless.com|\
+		@emsender.threadless.com|\
 		post@musikkflekken.no|\
                 nyhetsbrev@xxl.no|\
 		@emails.ifttt.com|\
                 xxl@communicatoremail.com|\
 		gpluss@gresvig.no|\
 		productupdate@elastic.co|\
+		elasticon@elastic.co|\
 		info@bilia.no|\
 		@cdsfulfillment.com|\
 		@comms.canon-europe.com|\
@@ -139,7 +144,6 @@
 		news@nvidia.com|\
 		news@offers.bigfoot.com|\
 		newsflash@.*macromedia.com|\
-		newsletter@email.threadless.com|\
 		newsletter@ifttt.com|\
 		newsletter@mailer.altova.com|\
 		newsletter@newsletters.play.com|\
